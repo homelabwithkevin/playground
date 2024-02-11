@@ -52,6 +52,12 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
         role-to-assume: ${{ env.ROLE_TO_ASSUME }}
 
-    - name: AWS SAM deploy
+    - name: AWS SAM Build
+      if: true
       run: |
-        ls
+        sam build
+
+    - name: AWS SAM Deploy
+      if: false
+      run: |
+        sam build
