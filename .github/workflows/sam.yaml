@@ -34,9 +34,10 @@ jobs:
         python-version: "3.11"
     
     - name: Setup SAM
-      - uses: aws-actions/setup-sam@v2
-        with:
-          use-installer: true
+      uses: aws-actions/setup-sam@v2
+      if: true
+      with:
+        use-installer: true
 
     - name: Install dependencies
       if: false
