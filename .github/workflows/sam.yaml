@@ -5,10 +5,16 @@ on:
     branches: [ "main", "**"]
 
 env:
-  AWS_REGION: us-east-1
+  AWS_REGION: us-east-2
+  ROLE_TO_ASSUME: arn:aws:iam::195663387853:role/playground-sam-gh
 
 permissions:
   contents: read
+  id-token: write
+
+defaults:
+  run:
+    working-directory: aws-roles/sam/playground-sam-role
 
 jobs:
   deploy:
@@ -19,7 +25,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      if: false
+      if: true
 
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
@@ -32,9 +38,12 @@ jobs:
         pip install aws-sam-cli
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v4
       if: false
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+
+    - name: AWS SAM deploy
+      run: |
+        ls
