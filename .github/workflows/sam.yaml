@@ -62,5 +62,4 @@ jobs:
     - name: AWS SAM Deploy
       if: true
       run: |
-        # cd ${{ env.WORKING_DIRECTORY }} && sam deploy
         sam deploy --stack-name ${{ env.STACK_NAME }}
