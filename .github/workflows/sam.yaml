@@ -60,4 +60,4 @@ jobs:
     - name: AWS SAM Deploy
       if: true
       run: |
-        sam deploy
+        ls && sam deploy
