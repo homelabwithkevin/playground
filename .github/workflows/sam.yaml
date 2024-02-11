@@ -7,7 +7,7 @@ on:
 env:
   AWS_REGION: us-east-2
   ROLE_TO_ASSUME: arn:aws:iam::195663387853:role/playground-sam-gh
-  WORKING-DIRECTORY: aws-roles/sam/playground-sam-role
+  WORKING_DIRECTORY: aws-roles/sam/playground-sam-role
 
 permissions:
   contents: read
