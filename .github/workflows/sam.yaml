@@ -3,6 +3,8 @@ name: Deploy to Amazon via AWS SAM
 on:
   push:
     branches: [ "main", "**"]
+    paths:
+      - aws-roles/sam/playground-sam-role
 
 env:
   AWS_REGION: us-east-2
