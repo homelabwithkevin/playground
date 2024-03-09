@@ -100,7 +100,8 @@ resource "aws_iam_role" "role" {
               "iam:AttachRolePolicy",
               "iam:UpdateRole",
               "iam:PutRolePolicy",
-              "iam:GetRolePolicy"
+              "iam:GetRolePolicy",
+              "iam:PassRole"
             ]
             Effect   = "Allow"
             Resource = "arn:aws:iam::${var.account_number}:role/${var.stack_name}*"
