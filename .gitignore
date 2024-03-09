@@ -1,3 +1,4 @@
 *.csv
 *.exe
 main
+*aws-sam/
