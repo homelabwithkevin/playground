@@ -5,6 +5,7 @@ on:
     branches: [ "main", "**"]
     paths:
       - aws-roles/sam/playground-sam-role
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-2
