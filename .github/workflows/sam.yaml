@@ -39,7 +39,7 @@ jobs:
       uses: aws-actions/setup-sam@v2
       if: true
       with:
-        use-installer: true
+        use-installer: false
 
     - name: Install dependencies
       if: false
