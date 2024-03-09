@@ -34,7 +34,7 @@ jobs:
       if: true
       with:
         python-version: "3.11"
-    
+
     - name: Setup SAM
       uses: aws-actions/setup-sam@v2
       if: true
@@ -62,4 +62,4 @@ jobs:
     - name: AWS SAM Deploy
       if: true
       run: |
-        sam deploy --stack-name ${{ env.STACK_NAME }}
+        sam deploy --stack-name playground-sam-role
