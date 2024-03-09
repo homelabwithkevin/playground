@@ -62,5 +62,4 @@ jobs:
     - name: AWS SAM Deploy
       if: true
       run: |
-        # sam deploy --stack-name playground-sam-role --region us-east-2
         sam deploy
