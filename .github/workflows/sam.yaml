@@ -62,4 +62,5 @@ jobs:
     - name: AWS SAM Deploy
       if: true
       run: |
-        sam deploy --stack-name playground-sam-role
+        ls
+        # sam deploy --stack-name playground-sam-role
