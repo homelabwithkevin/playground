@@ -37,12 +37,12 @@ jobs:
 
     - name: Setup SAM
       uses: aws-actions/setup-sam@v2
-      if: false
+      if: true
       with:
         use-installer: true
 
     - name: Install dependencies
-      if: true
+      if: false
       run: |
         python -m pip install --upgrade pip
         pip install aws-sam-cli
@@ -62,4 +62,4 @@ jobs:
     - name: AWS SAM Deploy
       if: true
       run: |
-        sam deploy --stack-name playground-sam-role
+        sam deploy --stack-name playground-sam-role --region us-east-2
