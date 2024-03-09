@@ -37,7 +37,7 @@ jobs:
 
     - name: Setup SAM
       uses: aws-actions/setup-sam@v2
-      if: true
+      if: false
       with:
         use-installer: true
 
