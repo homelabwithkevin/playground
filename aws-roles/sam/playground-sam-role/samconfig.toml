@@ -20,6 +20,7 @@ resolve_s3 = true
 s3_prefix = "playground-sam-role"
 region = "us-east-2"
 image_repositories = []
+stack_name = "playground-sam-role"
 
 [default.package.parameters]
 resolve_s3 = true
