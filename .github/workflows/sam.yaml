@@ -39,7 +39,7 @@ jobs:
       uses: aws-actions/setup-sam@v2
       if: true
       with:
-        use-installer: false
+        use-installer: true
 
     - name: Install dependencies
       if: false
@@ -62,4 +62,4 @@ jobs:
     - name: AWS SAM Deploy
       if: true
       run: |
-        sam deploy --stack-name ${{ env.STACK_NAME }} --region ${{ env.AWS_REGION }}
+        sam deploy
