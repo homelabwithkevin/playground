@@ -1,0 +1,140 @@
+Parameters:
+  GitHubOrg:
+    Description: Name of GitHub organization/user (case sensitive)
+    Type: String
+  RepositoryName:
+    Description: Name of GitHub repository (case sensitive)
+    Type: String
+  OIDCProviderArn:
+    Description: Arn for the GitHub OIDC Provider.
+    Default: ''
+    Type: String
+  OIDCAudience:
+    Description: Audience supplied to configure-aws-credentials.
+    Default: sts.amazonaws.com
+    Type: String
+  StackName:
+    Description: Stack Name
+    Default: youtube
+    Type: String
+  ApiGateway:
+    Description: API Gateway Id
+    Default: 	o0cuvarre3
+    Type: String
+Conditions:
+  CreateOIDCProvider: !Equals
+    - !Ref OIDCProviderArn
+    - ''
+Resources:
+  Role:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: 'sts:AssumeRoleWithWebIdentity'
+            Principal:
+              Federated: !If
+                - CreateOIDCProvider
+                - !Ref GithubOidc
+                - !Ref OIDCProviderArn
+            Condition:
+              StringEquals:
+                'token.actions.githubusercontent.com:aud': !Ref OIDCAudience
+              StringLike:
+                'token.actions.githubusercontent.com:sub': !Sub 'repo:${GitHubOrg}/${RepositoryName}:*'
+      Policies:
+        - PolicyName: CloudFormation
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "cloudformation:CreateChangeSet"
+                  - "cloudformation:CreateStack"
+                  - "cloudformation:DeleteStack"
+                  - "cloudformation:DescribeChangeSet"
+                  - "cloudformation:DescribeStackEvents"
+                  - "cloudformation:DescribeStacks"
+                  - "cloudformation:ExecuteChangeSet"
+                  - "cloudformation:GetTemplateSummary"
+                  - "cloudformation:ListStackResources"
+                  - "cloudformation:UpdateStack"
+                Resource:
+                  - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${StackName}*'
+                  - 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/aws-sam-cli-managed-default/*'
+                  - 'arn:aws:cloudformation:*:aws:transform/Serverless-2016-10-31'
+
+        - PolicyName: S3
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:CreateBucket"
+                  - "s3:GetObject"
+                  - "s3:PutObject"
+                Resource:
+                  - 'arn:aws:s3:::aws-sam-cli-managed-default-samclisourcebucket-*'
+
+        - PolicyName: Lambda
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "lambda:AddPermission"
+                  - "lambda:CreateFunction"
+                  - "lambda:DeleteFunction"
+                  - "lambda:GetFunction"
+                  - "lambda:GetFunctionConfiguration"
+                  - "lambda:ListTags"
+                  - "lambda:RemovePermission"
+                  - "lambda:TagResource"
+                  - "lambda:UntagResource"
+                  - "lambda:UpdateFunctionCode"
+                Resource:
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${StackName}-*'
+
+        - PolicyName: API
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "apigateway:DELETE"
+                  - "apigateway:GET"
+                  - "apigateway:PATCH"
+                  - "apigateway:POST"
+                  - "apigateway:PUT"
+                Resource:
+                  - !Sub "arn:aws:apigateway:${AWS::Region}::/apis/${ApiGateway}"
+                  - !Sub "arn:aws:apigateway:${AWS::Region}::/apis/${ApiGateway}/*"
+                  
+        - PolicyName: IAM
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'iam:CreateRole'
+                  - 'iam:AttachRolePolicy'
+                  - 'iam:DeleteRole'
+                  - 'iam:DetachRolePolicy'
+                  - 'iam:GetRole'
+                  - 'iam:TagRole'
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${StackName}-*'
+
+  GithubOidc:
+    Type: 'AWS::IAM::OIDCProvider'
+    Condition: CreateOIDCProvider
+    Properties:
+      Url: 'https://token.actions.githubusercontent.com'
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - ffffffffffffffffffffffffffffffffffffffff
+Outputs:
+  Role:
+    Value: !GetAtt Role.Arn
