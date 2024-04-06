@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: yt-dlp-playground
+
+Resources:
+  requests:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: requests-playground
+      Description: requests-playground
+      ContentUri: layers/requests
+      CompatibleRuntimes:
+        - python3.10
+        - python3.11
+    Metadata:
+      BuildMethod: python3.10
+
+  urllib:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: urllib-playground
+      Description: urllib-playground
+      ContentUri: layers/urllib
+      CompatibleRuntimes:
+        - python3.10
+        - python3.11
+    Metadata:
+      BuildMethod: python3.10
+
+  ytdlp:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: yt-dlp-playground
+      Description: yt-dlp-playground
+      ContentUri: layers/yt-dlp
+      CompatibleRuntimes:
+        - python3.10
+        - python3.11
+    Metadata:
+      BuildMethod: python3.10
