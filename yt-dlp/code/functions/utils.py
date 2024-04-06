@@ -1,12 +1,41 @@
-"""
-    Utility Functions
-
-    Functions:
-        parse_channel_entries
-        parse_video_information
-"""
-
 import yt_dlp
+
+def get_channel_entries(URL, LIMIT):
+    """
+    Retrieves channel entries from the given URL.
+
+    Args:
+        URL (str): The URL of the channel.
+        LIMIT (int): The maximum number of entries to retrieve.
+
+    Returns:
+        dict: A dictionary containing the channel entries.
+
+    """
+    ydl_opts = {
+            'outtmpl': '%(id)s/%(id)s.%(ext)s',
+            'playlistend': LIMIT,
+            'ignoreerrors': True,
+            'format': 'bestvideo*+bestaudio/best',
+            'merge_output_format': 'mp4',
+            'quiet': True,
+            'cachedir': False,
+            'extract_flat': True,
+        }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(URL, download=False)
+
+        # for key, value in enumerate(info):
+        #     print(f'{value} = info["{value}"]')
+
+        entries = info['entries']
+        uploader_id = info['uploader_id']
+
+        return {
+            'uploader_id': uploader_id,
+            'entries': parse_channel_entries(uploader_id=uploader_id, entries=entries, parse_video=False)
+        }
 
 def parse_channel_entries(uploader_id, entries, parse_video):
     """
@@ -42,7 +71,6 @@ def parse_channel_entries(uploader_id, entries, parse_video):
             data['thumbnail'] = thumbnail
             data['upload_date'] = upload_date
 
-        print(data)
         list_videos.append(data)
 
     return list_videos

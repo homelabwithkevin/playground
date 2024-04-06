@@ -2,6 +2,18 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: yt-dlp-playground
 
+Globals:
+  Function:
+    Timeout: 120
+    MemorySize: 256
+    Runtime: python3.10
+    Architectures:
+      - x86_64
+    Layers:
+      - !Ref requests
+      - !Ref ytdlp
+      - !Ref urllib
+
 Resources:
   requests:
     Type: AWS::Serverless::LayerVersion
@@ -38,3 +50,51 @@ Resources:
         - python3.11
     Metadata:
       BuildMethod: python3.10
+
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Auth:
+        # ApiKeyRequired: false
+        ApiKeyRequired: true
+        UsagePlan:
+            CreateUsagePlan: PER_API
+            Description: yt-dlp-playground
+            Quota:
+              Limit: 1000
+              Period: MONTH
+            Throttle:
+              BurstLimit: 100
+              RateLimit: 50
+
+  ApiKey:
+    Type: 'AWS::ApiGateway::ApiKey'
+    DependsOn:
+      - ApiGatewayApi
+    Properties:
+      Name: kevin-yt-dlp-playground
+      Description: kevin-yt-dlp-playground
+      Enabled: true
+      StageKeys:
+        - RestApiId: !Ref ApiGatewayApi
+          StageName: prod
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: code/
+      Handler: index.lambda_handler
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /api
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+
+Outputs:
+  HelloWorldApi:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/prod/api"
