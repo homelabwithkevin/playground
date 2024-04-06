@@ -1,4 +1,5 @@
 import yt_dlp
+import json
 
 def get_channel_entries(URL, LIMIT):
     """
@@ -34,7 +35,8 @@ def get_channel_entries(URL, LIMIT):
 
         return {
             'uploader_id': uploader_id,
-            'entries': parse_channel_entries(uploader_id=uploader_id, entries=entries, parse_video=False)
+            'entries': parse_channel_entries(uploader_id=uploader_id, entries=entries, parse_video=False),
+            'info': info
         }
 
 def parse_channel_entries(uploader_id, entries, parse_video):
@@ -75,7 +77,7 @@ def parse_channel_entries(uploader_id, entries, parse_video):
 
     return list_videos
 
-def parse_video_information(URL):
+def parse_video_information(URL, VIDEO=False):
     """
     Parses the video information for a given URL.
 
@@ -87,6 +89,9 @@ def parse_video_information(URL):
     """
     with yt_dlp.YoutubeDL() as ydl:
         info = ydl.extract_info(URL, download=False)
+
+        if VIDEO:
+            return info
 
         thumbnail = info['thumbnail']
         upload_date = info['upload_date']
