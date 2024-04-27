@@ -1,8 +1,8 @@
-
 import os
 from PIL import Image
 from PIL.ExifTags import TAGS
 import redis
+import json
 
 def load_env():
     if not os.path.exists(".env"):
@@ -17,19 +17,6 @@ def load_env():
         os.environ[key] = value
 
     return os.environ['pictures'], os.environ['redis']
-
-def load_pictures():
-    for root, dirs, files in os.walk(picture_path):
-        for file in files:
-            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
-                image_path = (os.path.join(root, file))
-                with Image.open(image_path) as img:
-                    exif_data = img._getexif()
-                    if exif_data:
-                        for tag, value in exif_data.items():
-                            tag_name = TAGS.get(tag, tag)
-                            if tag_name == 'DateTimeOriginal':
-                                print(value, root, file)
 
 def connect_redis(redis_info):
     host = redis_info.split(":")[0]
@@ -50,8 +37,27 @@ def put_redis(client, key, value):
         return None
     return result
 
+def load_pictures(client):
+    for root, dirs, files in os.walk(picture_path):
+        for file in files:
+            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+                image_path = (os.path.join(root, file))
+                picture_folder = root.split("\\")[-1]
+                with Image.open(image_path) as img:
+                    exif_data = img._getexif()
+                    if exif_data:
+                        for tag, value in exif_data.items():
+                            tag_name = TAGS.get(tag, tag)
+                            if tag_name == 'DateTimeOriginal':
+                                # print(value, root, picture_folder, file)
+                                created = value
+                                try:
+                                    put_redis(client, image_path, created)
+                                except Exception as e:
+                                    print(e)
+
 picture_path, redis_info = load_env()
 
 client = connect_redis(redis_info)
-put_redis(client, "test", "test")
-get_redis(client, "test")
+
+load_pictures(client)
