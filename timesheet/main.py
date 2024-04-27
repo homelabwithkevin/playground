@@ -10,3 +10,12 @@ def get_date(now):
 
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("action", help="What do you want to do?")
+args = parser.parse_args()
+
+if args.action == 'test':
+    print('test')
+else:
+    print(f'Invalid action: {args.action}')
