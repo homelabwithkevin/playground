@@ -1,10 +1,10 @@
-package main
+package utils
 
 import (
 	"time"
 )
 
-func calculate_time_difference(start_time string, end_time string) (int, float64) {
+func CalculateTimeDifference(start_time string, end_time string) (int, float64) {
 	start, _ := time.Parse("15:04", start_time)
 	end, _ := time.Parse("15:04", end_time)
 

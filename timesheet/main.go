@@ -13,7 +13,7 @@ func main() {
 	full_date, date, weekday, week_number := utils.GetDate()
 	fmt.Printf("\n%s\n%s\n%s\n%d\n", full_date, date, weekday, week_number)
 
-	results := read_file(week_number)
+	results := utils.ReadFile(week_number)
 
 	reader := bufio.NewReader(os.Stdin)
 
@@ -48,7 +48,7 @@ func main() {
 		stop = utils.GetCurrentTime()
 	}
 
-	diff_seconds, diff_hours := calculate_time_difference(start, stop)
+	diff_seconds, diff_hours := utils.CalculateTimeDifference(start, stop)
 
 	data := fmt.Sprintf("%d,%s,%s,%s,%s,%d,%f,%s\n", week_number, date, full_date, start, stop, diff_seconds, diff_hours, results_input)
 	fmt.Printf("start, stop, diff_seconds, diff_hours\n")

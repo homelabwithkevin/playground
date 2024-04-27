@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/csv"
@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func read_file(week_number int) []string {
+func ReadFile(week_number int) []string {
 	file, _ := os.Open("timesheet.csv")
 
 	defer file.Close()

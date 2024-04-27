@@ -1,11 +1,11 @@
-package main
+package utils
 
 import (
 	"fmt"
 	"math/rand"
 )
 
-func generate_random_numbers(count int) string {
+func GenerateRandomNumbers(count int) string {
 	var numbers_str string
 
 	for i := 0; i < count; i++ {
@@ -14,11 +14,11 @@ func generate_random_numbers(count int) string {
 	return numbers_str
 }
 
-func generate_random_projects(count int) string {
+func GenerateRandomProjectrs(count int) string {
 	var name string
 
 	for i := 0; i < count; i++ {
-		name += fmt.Sprintf("PROJ-%s\n", generate_random_numbers(8))
+		name += fmt.Sprintf("PROJ-%s\n", GenerateRandomNumbers(8))
 	}
 
 	fmt.Print(name)
