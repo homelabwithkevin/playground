@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import argparse
 import random
 import click
 import pandas as pd
@@ -25,21 +24,6 @@ def generate_random_data(count=10):
         number = generate_random_numbers()
         names.append(f'PROJ-{number}')
     return names
-
-def arggy():
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("action", help=("What action do you want to take?\n"
-                                        "test: testing action\n"
-                                        "generate_random_data: generate random data for projects\n"))
-    args = parser.parse_args()
-
-    if args.action == 'test':
-        print('test')
-    elif args.action == 'generate_random_data':
-        print('Generating random data...')
-        generate_random_data(count=10)
-    else:
-        print(f'Invalid action: {args.action}')
 
 def calculate_duration(start, stop):
     start_hour = int(start.split(":")[0])
@@ -93,8 +77,6 @@ full_date, date, weekday, week_number = get_date(now)
 @click.command()
 def main():
     items = read_file()
-
-    # Display the list using the click.secho() function
     x = 0
 
     options = [
