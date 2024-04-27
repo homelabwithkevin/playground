@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import argparse
 import random
 import click
+import pandas as pd
 
 def get_date(now):
     full_date = now.strftime("%Y-%m-%d %H:%M - %A")
@@ -54,6 +55,10 @@ def write_to_file(data):
     with open('timesheet.csv', 'a') as file:
         file.write(data + "\n")
 
+def open_file():
+    df = pd.read_csv('timesheet.csv')
+    print(df)
+
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
 
@@ -69,18 +74,22 @@ def main():
         click.secho(f'{x}: {item}')
         x = x + 1
 
-    select = int(click.prompt("\nSelect your item"))
-    result_select = items[select]
+    click.secho(f'r: read CSV')
 
-    click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
-    start = click.prompt("\nStart")
-    stop = click.prompt("\nstop")
+    select = click.prompt("\nSelect your item")
+    if select != 'r':
+        result_select = items[int(select)]
+        click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
+        start = click.prompt("\nStart")
+        stop = click.prompt("\nstop")
 
-    seconds, hours = calculate_duration(start, stop)
+        seconds, hours = calculate_duration(start, stop)
 
-    data = ",".join([week_number, date, full_date, start, stop, seconds, hours, result_select])
-    write_to_file(data)
-    print(data)
+        data = ",".join([week_number, date, full_date, start, stop, seconds, hours, result_select])
+        write_to_file(data)
+        print(data)
+    else:
+        open_file()
 
 if __name__ == '__main__':
     main()
