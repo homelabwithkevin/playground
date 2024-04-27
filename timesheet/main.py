@@ -122,7 +122,6 @@ def main():
         click.secho(f"Available items for this week: {week_number} \n")
         select = click.prompt("\nSelect your item")
 
-
     if select.isdigit():
         result_select = items[int(select)]
         click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
