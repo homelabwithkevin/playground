@@ -9,5 +9,6 @@ func main() {
 	full_date, date, weekday, week_number := get_date()
 	fmt.Printf("\n%s\n%s\n%s\n%d\n", full_date, date, weekday, week_number)
 
-	read_file(week_number)
+	results := read_file(week_number)
+	fmt.Print(results)
 }
