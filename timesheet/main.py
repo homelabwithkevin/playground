@@ -92,12 +92,7 @@ full_date, date, weekday, week_number = get_date(now)
 
 @click.command()
 def main():
-    file_items = read_file()
-    if not file_items:
-        # Create a list of items to display
-        items = generate_random_data(count=5)
-    else:
-        items = file_items
+    items = read_file()
 
     # Display the list using the click.secho() function
     x = 0
@@ -116,12 +111,16 @@ def main():
         click.secho(opts)
     print(separator)
 
-    click.secho(f"Available items for this week: {week_number} \n")
     for item in items:
         click.secho(f'{x}: {item}')
         x = x + 1
 
-    select = click.prompt("\nSelect your item")
+    if not items:
+        click.secho(f"No items yet for this week: {week_number} \n")
+        select = 'n'
+    else:
+        click.secho(f"Available items for this week: {week_number} \n")
+        select = click.prompt("\nSelect your item")
 
 
     if select.isdigit():
