@@ -66,7 +66,6 @@ def open_file(week=None):
 
 def read_file():
     df = pd.read_csv('timesheet.csv')
-    print(week_number)
     new_df = df[df['week_number'] == int(week_number) ]
     return new_df['result_select'].to_list()
 
@@ -103,18 +102,41 @@ def main():
     # Display the list using the click.secho() function
     x = 0
 
-    click.secho(f'r: read CSV')
-    click.secho(f'g: generate random data\n')
+    options = [
+        'CLI Options (or select existing item)',
+        'n: new entry',
+        'g: generate random data',
+        'r: read CSV'
+    ]
 
+    separator = '========================'
+
+    print(separator)
+    for opts in options:
+        click.secho(opts)
+    print(separator)
+
+    click.secho(f"Available items for this week: {week_number} \n")
     for item in items:
         click.secho(f'{x}: {item}')
         x = x + 1
 
     select = click.prompt("\nSelect your item")
 
+
     if select.isdigit():
         result_select = items[int(select)]
         click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
+        start = click.prompt("\nStart", default=rounded_fifteen())
+        stop = click.prompt("\nstop", default=rounded_fifteen())
+
+        seconds, hours = calculate_duration(start, stop)
+
+        data = ",".join([week_number, date, full_date, start, stop, seconds, hours, result_select])
+        write_to_file(data)
+        print(data)
+    elif select == 'n':
+        result_select = click.prompt("\nNew item name")
         start = click.prompt("\nStart", default=rounded_fifteen())
         stop = click.prompt("\nstop", default=rounded_fifteen())
 
