@@ -1,6 +1,7 @@
 from datetime import datetime
 import argparse
 import random
+import click
 
 def get_date(now):
     full_date = now.strftime("%Y-%m-%d %H:%M - %A")
@@ -22,21 +23,44 @@ def generate_random_data(count=10):
     for i in range(count):
         number = generate_random_numbers()
         names.append(f'PROJ-{number}')
-    print(names)
+    return names
+
+def arggy():
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument("action", help=("What action do you want to take?\n"
+                                        "test: testing action\n"
+                                        "generate_random_data: generate random data for projects\n"))
+    args = parser.parse_args()
+
+    if args.action == 'test':
+        print('test')
+    elif args.action == 'generate_random_data':
+        print('Generating random data...')
+        generate_random_data(count=10)
+    else:
+        print(f'Invalid action: {args.action}')
 
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
 
-parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
-parser.add_argument("action", help=("What action do you want to take?\n"
-                                    "test: testing action\n"
-                                    "generate_random_data: generate random data for projects\n"))
-args = parser.parse_args()
+@click.command()
+def main():
+    # Create a list of items to display
+    items = generate_random_data(count=5)
 
-if args.action == 'test':
-    print('test')
-elif args.action == 'generate_random_data':
-    print('Generating random data...')
-    generate_random_data()
-else:
-    print(f'Invalid action: {args.action}')
+    # Display the list using the click.secho() function
+    x = 0
+
+    for item in items:
+        click.secho(f'{x}: {item}')
+        x = x + 1
+
+    select = int(click.prompt("\nSelect your item"))
+    result_select = items[select]
+
+    start = click.prompt("\nStart")
+    stop = click.prompt("\nstop")
+    print(start, stop, result_select)
+
+if __name__ == '__main__':
+    main()
