@@ -48,7 +48,11 @@ def calculate_duration(start, stop):
 
     in_seconds = (timedelta(hours=stop_hour, minutes=stop_minute) - timedelta(hours=start_hour, minutes=start_minute)).total_seconds()
     in_hours = in_seconds / 60.0
-    return in_seconds, in_hours
+    return str(in_seconds), str(in_hours)
+
+def write_to_file(data):
+    with open('timesheet.csv', 'a') as file:
+        file.write(data + "\n")
 
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
@@ -74,7 +78,9 @@ def main():
 
     seconds, hours = calculate_duration(start, stop)
 
-    print("\n", week_number, date, full_date, start, stop, seconds, hours, result_select)
+    data = ",".join([week_number, date, full_date, start, stop, seconds, hours, result_select])
+    write_to_file(data)
+    print(data)
 
 if __name__ == '__main__':
     main()
