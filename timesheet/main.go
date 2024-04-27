@@ -1,24 +1,26 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
-	fmt.Printf("Hello, World!")
 	full_date, date, weekday, week_number := get_date()
 	fmt.Printf("\n%s\n%s\n%s\n%d\n", full_date, date, weekday, week_number)
 
 	results := read_file(week_number)
 
-	var userInput string
-	var start string
-	var stop string
+	reader := bufio.NewReader(os.Stdin)
 
 	for {
 		fmt.Print("\nSelect a project: ")
-		fmt.Scanln(&userInput)
+		userInput, _ := reader.ReadString('\n')
+		userInput = strings.TrimSpace(userInput)
+
 		userInput_int, err := strconv.Atoi(userInput)
 		if err != nil {
 			fmt.Printf("Invalid input: %s", userInput)
@@ -29,7 +31,15 @@ func main() {
 	}
 
 	fmt.Print("\nEnter Start: ")
-	fmt.Scanln(&start)
-	fmt.Print("\nEnter Stop: ")
-	fmt.Scanln(&stop)
+	start, _ := reader.ReadString('\n')
+	start = strings.TrimSpace(start)
+
+	fmt.Printf("\nEnter Stop: [%s]", get_current_time())
+	stop, _ := reader.ReadString('\n')
+	stop = strings.TrimSpace(stop)
+	if stop == "" {
+		stop = get_current_time()
+	}
+
+	fmt.Printf(start, stop)
 }
