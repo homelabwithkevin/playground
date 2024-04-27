@@ -30,9 +30,12 @@ func main() {
 		}
 	}
 
-	fmt.Print("\nEnter Start: ")
+	fmt.Printf("\nEnter Start: [%s]", get_previous_time())
 	start, _ := reader.ReadString('\n')
 	start = strings.TrimSpace(start)
+	if start == "" {
+		start = get_previous_time()
+	}
 
 	fmt.Printf("\nEnter Stop: [%s]", get_current_time())
 	stop, _ := reader.ReadString('\n')
@@ -41,5 +44,8 @@ func main() {
 		stop = get_current_time()
 	}
 
-	fmt.Printf(start, stop)
+	diff_seconds, diff_hours := calculate_time_difference(start, stop)
+	fmt.Printf("start, stop, diff_seconds, diff_hours\n")
+
+	fmt.Printf("%s %s %d %f", start, stop, diff_seconds, diff_hours)
 }

@@ -19,3 +19,10 @@ func get_current_time() string {
 	rounded := now.Round(time.Minute * 15)
 	return rounded.Format("15:04")
 }
+
+func get_previous_time() string {
+	now := time.Now()
+	rounded := now.Round(time.Minute * 15)
+	rounded = rounded.Add(-15 * time.Minute)
+	return rounded.Format("15:04")
+}
