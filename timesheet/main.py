@@ -55,8 +55,12 @@ def write_to_file(data):
     with open('timesheet.csv', 'a') as file:
         file.write(data + "\n")
 
-def open_file():
+def open_file(week=None):
     df = pd.read_csv('timesheet.csv')
+
+    if week:
+        df = df[df['week_number'] == int(week)]
+
     table = df.pivot_table(values='hours', index=['week_number', 'date', 'result_select'], aggfunc='sum')
     print(table)
 
@@ -116,6 +120,10 @@ def main():
     elif select == 'g':
         print(f'Generating random project data')
         generate_project_data()
+    elif select == 'r':
+        print(f'Reading csv...')
+        select_week = click.prompt("\nSpecific week?", default=0)
+        open_file(week=select_week)
     else:
         print(f'Invalid select: {select}')
 
