@@ -60,6 +60,12 @@ def open_file():
     table = df.pivot_table(values='hours', index=['week_number', 'date', 'result_select'], aggfunc='sum')
     print(table)
 
+def read_file():
+    df = pd.read_csv('timesheet.csv')
+    print(week_number)
+    new_df = df[df['week_number'] == int(week_number) ]
+    return new_df['result_select'].to_list()
+
 def generate_project_data(count=10):
     for i in range(count):
         start = "00:00"
@@ -77,8 +83,12 @@ full_date, date, weekday, week_number = get_date(now)
 
 @click.command()
 def main():
-    # Create a list of items to display
-    items = generate_random_data(count=5)
+    file_items = read_file()
+    if not file_items:
+        # Create a list of items to display
+        items = generate_random_data(count=5)
+    else:
+        items = file_items
 
     # Display the list using the click.secho() function
     x = 0
