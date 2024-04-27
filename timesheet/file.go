@@ -18,6 +18,7 @@ func read_file(week_number int) []string {
 	fmt.Printf("%s\n", records[0])
 
 	var results []string
+	var uniqueResults []string
 
 	for _, record := range records {
 		local := record[0]
@@ -29,8 +30,19 @@ func read_file(week_number int) []string {
 	}
 
 	for idx, result := range results {
-		fmt.Printf("%d: %s\n", idx, result)
+		skip := false
+		for _, u := range uniqueResults {
+			if result == u {
+				skip = true
+				break
+			}
+		}
+
+		if !skip {
+			fmt.Printf("%d: %s\n", idx, result)
+			uniqueResults = append(uniqueResults, result)
+		}
 	}
 
-	return results
+	return uniqueResults
 }
