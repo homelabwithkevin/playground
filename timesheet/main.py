@@ -60,6 +60,18 @@ def open_file():
     table = df.pivot_table(values='hours', index=['week_number', 'date', 'result_select'], aggfunc='sum')
     print(table)
 
+def generate_project_data(count=10):
+    for i in range(count):
+        start = "00:00"
+        stop = "00:00"
+        seconds = generate_random_numbers(count=3)
+        hours = generate_random_numbers(count=1)
+        result_select = generate_random_data(count=1)[0]
+
+        data = ",".join([week_number, date, full_date, start, stop, seconds, hours, result_select])
+        write_to_file(data)
+        print(data)
+
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
 
@@ -71,14 +83,16 @@ def main():
     # Display the list using the click.secho() function
     x = 0
 
+    click.secho(f'r: read CSV')
+    click.secho(f'g: generate random data')
+
     for item in items:
         click.secho(f'{x}: {item}')
         x = x + 1
 
-    click.secho(f'r: read CSV')
-
     select = click.prompt("\nSelect your item")
-    if select != 'r':
+
+    if type(select) == int:
         result_select = items[int(select)]
         click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
         start = click.prompt("\nStart")
@@ -89,6 +103,9 @@ def main():
         data = ",".join([week_number, date, full_date, start, stop, seconds, hours, result_select])
         write_to_file(data)
         print(data)
+    elif select == 'g':
+        print(f'Generating random project data')
+        generate_project_data()
     else:
         open_file()
 
