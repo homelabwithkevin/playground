@@ -37,6 +37,12 @@ def put_redis(client, key, value):
         return None
     return result
 
+def hset_redis(client, key, field, value):
+    result =  client.hset(key, field, value)
+    if not result:
+        return None
+    return result
+
 def load_pictures(client):
     for root, dirs, files in os.walk(picture_path):
         for file in files:
@@ -49,10 +55,14 @@ def load_pictures(client):
                         for tag, value in exif_data.items():
                             tag_name = TAGS.get(tag, tag)
                             if tag_name == 'DateTimeOriginal':
-                                # print(value, root, picture_folder, file)
-                                created = value
+                                # 2007:02:18 14:07:30"
+                                year, month, day = (value.split(" "))[0].split(":")
                                 try:
-                                    put_redis(client, image_path, created)
+                                    # HSet in Redis by year, year month, and year month day
+                                    # This will help with the "memories"
+                                    hset_redis(client, key=year, field=image_path, value=image_path)
+                                    hset_redis(client, key=f"{year}-{month}", field=image_path, value=image_path)
+                                    hset_redis(client, key=f"{year}-{month}-{day}", field=image_path, value=image_path)
                                 except Exception as e:
                                     print(e)
 
