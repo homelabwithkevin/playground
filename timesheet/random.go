@@ -13,3 +13,14 @@ func generate_random_numbers(count int) string {
 	}
 	return numbers_str
 }
+
+func generate_random_projects(count int) string {
+	var name string
+
+	for i := 0; i < count; i++ {
+		name += fmt.Sprintf("PROJ-%s\n", generate_random_numbers(8))
+	}
+
+	fmt.Print(name)
+	return name
+}
