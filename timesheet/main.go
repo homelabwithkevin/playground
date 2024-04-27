@@ -8,4 +8,5 @@ func main() {
 	fmt.Printf("Hello, World!")
 	full_date, date, weekday, week_number := get_date()
 	fmt.Printf("\n%s\n%s\n%s\n%d\n", full_date, date, weekday, week_number)
+	fmt.Print(get_current_time())
 }

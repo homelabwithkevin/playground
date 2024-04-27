@@ -13,3 +13,9 @@ func get_date() (string, string, string, int) {
 
 	return full_date, date, weekday, week_number
 }
+
+func get_current_time() string {
+	now := time.Now()
+	rounded := now.Round(time.Minute * 15)
+	return rounded.Format("15:04")
+}
