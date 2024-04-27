@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import argparse
 import random
 import click
@@ -40,6 +40,16 @@ def arggy():
     else:
         print(f'Invalid action: {args.action}')
 
+def calculate_duration(start, stop):
+    start_hour = int(start.split(":")[0])
+    start_minute = int(start.split(":")[1])
+    stop_hour = int(stop.split(":")[0])
+    stop_minute = int(stop.split(":")[1])
+
+    in_seconds = (timedelta(hours=stop_hour, minutes=stop_minute) - timedelta(hours=start_hour, minutes=start_minute)).total_seconds()
+    in_hours = in_seconds / 60.0
+    return in_seconds, in_hours
+
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
 
@@ -60,7 +70,10 @@ def main():
 
     start = click.prompt("\nStart")
     stop = click.prompt("\nstop")
-    print(start, stop, result_select)
+
+    seconds, hours = calculate_duration(start, stop)
+
+    print("\n", week_number, date, full_date, start, stop, seconds, hours, result_select)
 
 if __name__ == '__main__':
     main()
