@@ -82,6 +82,12 @@ def generate_project_data(count=10):
         write_to_file(data)
         print(data)
 
+def rounded_fifteen(round_to=15):
+    rounded_time = round(now.minute / round_to) * round_to
+    rounded_text = ":".join([str(now.hour), str(rounded_time)])
+
+    return rounded_text
+
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
 
@@ -109,8 +115,8 @@ def main():
     if select.isdigit():
         result_select = items[int(select)]
         click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
-        start = click.prompt("\nStart")
-        stop = click.prompt("\nstop")
+        start = click.prompt("\nStart", default=rounded_fifteen())
+        stop = click.prompt("\nstop", default=rounded_fifteen())
 
         seconds, hours = calculate_duration(start, stop)
 
