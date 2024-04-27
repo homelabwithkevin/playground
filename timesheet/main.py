@@ -84,7 +84,7 @@ def main():
     x = 0
 
     click.secho(f'r: read CSV')
-    click.secho(f'g: generate random data')
+    click.secho(f'g: generate random data\n')
 
     for item in items:
         click.secho(f'{x}: {item}')
@@ -92,7 +92,7 @@ def main():
 
     select = click.prompt("\nSelect your item")
 
-    if type(select) == int:
+    if select.isdigit():
         result_select = items[int(select)]
         click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
         start = click.prompt("\nStart")
@@ -107,7 +107,7 @@ def main():
         print(f'Generating random project data')
         generate_project_data()
     else:
-        open_file()
+        print(f'Invalid select: {select}')
 
 if __name__ == '__main__':
     main()
