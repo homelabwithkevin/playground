@@ -13,6 +13,8 @@ func main() {
 	results := read_file(week_number)
 
 	var userInput string
+	var start string
+	var stop string
 
 	for {
 		fmt.Print("\nSelect a project: ")
@@ -25,4 +27,9 @@ func main() {
 			break
 		}
 	}
+
+	fmt.Print("\nEnter Start: ")
+	fmt.Scanln(&start)
+	fmt.Print("\nEnter Stop: ")
+	fmt.Scanln(&stop)
 }
