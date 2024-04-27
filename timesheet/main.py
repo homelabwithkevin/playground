@@ -11,11 +11,15 @@ def get_date(now):
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
 
-parser = argparse.ArgumentParser()
-parser.add_argument("action", help="What do you want to do?")
+parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+parser.add_argument("action", help=("What action do you want to take?\n"
+                                    "test: testing action\n"
+                                    "generate_random_data: generate random data for projects\n"))
 args = parser.parse_args()
 
 if args.action == 'test':
     print('test')
+elif args.action == 'generate_random_data':
+    print('Generating random data...')
 else:
     print(f'Invalid action: {args.action}')
