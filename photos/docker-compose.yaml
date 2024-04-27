@@ -4,5 +4,5 @@ services:
     image: valkey/valkey:unstable
     container_name: valkey
     ports:
-      - "8080:8080"
+      - "8080:6379"
     restart: always
