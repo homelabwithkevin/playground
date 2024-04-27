@@ -68,6 +68,7 @@ def main():
     select = int(click.prompt("\nSelect your item"))
     result_select = items[select]
 
+    click.secho(f'\nEnter your start and stop time. 24-hour like 23:55.')
     start = click.prompt("\nStart")
     stop = click.prompt("\nstop")
 
