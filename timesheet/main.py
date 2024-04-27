@@ -57,7 +57,8 @@ def write_to_file(data):
 
 def open_file():
     df = pd.read_csv('timesheet.csv')
-    print(df)
+    table = df.pivot_table(values='hours', index=['week_number', 'date', 'result_select'], aggfunc='sum')
+    print(table)
 
 now = datetime.now()
 full_date, date, weekday, week_number = get_date(now)
