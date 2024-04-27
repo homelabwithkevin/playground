@@ -16,6 +16,8 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
+	var results_input string
+
 	for {
 		fmt.Print("\nSelect a project: ")
 		userInput, _ := reader.ReadString('\n')
@@ -26,6 +28,7 @@ func main() {
 			fmt.Printf("Invalid input: %s", userInput)
 		} else {
 			fmt.Printf(results[userInput_int])
+			results_input = results[userInput_int]
 			break
 		}
 	}
@@ -45,7 +48,21 @@ func main() {
 	}
 
 	diff_seconds, diff_hours := calculate_time_difference(start, stop)
-	fmt.Printf("start, stop, diff_seconds, diff_hours\n")
 
-	fmt.Printf("%s %s %d %f", start, stop, diff_seconds, diff_hours)
+	data := fmt.Sprintf("%d,%s,%s,%s,%s,%d,%f,%s\n", week_number, date, full_date, start, stop, diff_seconds, diff_hours, results_input)
+	fmt.Printf("start, stop, diff_seconds, diff_hours\n")
+	fmt.Print(data)
+
+	file, err := os.OpenFile("timesheet.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+		return
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(data)
+	if err != nil {
+		fmt.Println("Error writing to file:", err)
+		return
+	}
 }
