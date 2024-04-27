@@ -43,12 +43,13 @@ def hset_redis(client, key, field, value):
         return None
     return result
 
-def load_pictures(client):
-    for root, dirs, files in os.walk(picture_path):
+def load_pictures(client, folder):
+    for root, dirs, files in os.walk(folder):
         for file in files:
             if file.lower().endswith(('.jpg', '.jpeg', '.png')):
                 image_path = (os.path.join(root, file))
                 picture_folder = root.split("\\")[-1]
+
                 with Image.open(image_path) as img:
                     exif_data = img._getexif()
                     if exif_data:
@@ -60,6 +61,7 @@ def load_pictures(client):
                                 try:
                                     # HSet in Redis by year, year month, and year month day
                                     # This will help with the "memories"
+                                    print(image_path, year)
                                     hset_redis(client, key=year, field=image_path, value=image_path)
                                     hset_redis(client, key=f"{year}-{month}", field=image_path, value=image_path)
                                     hset_redis(client, key=f"{year}-{month}-{day}", field=image_path, value=image_path)
@@ -70,4 +72,6 @@ picture_path, redis_info = load_env()
 
 client = connect_redis(redis_info)
 
-load_pictures(client)
+folders = picture_path.split(', ')
+for folder in folders:
+    load_pictures(client, folder)
