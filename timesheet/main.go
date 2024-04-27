@@ -3,13 +3,14 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"main/utils"
 	"os"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	full_date, date, weekday, week_number := get_date()
+	full_date, date, weekday, week_number := utils.GetDate()
 	fmt.Printf("\n%s\n%s\n%s\n%d\n", full_date, date, weekday, week_number)
 
 	results := read_file(week_number)
@@ -33,18 +34,18 @@ func main() {
 		}
 	}
 
-	fmt.Printf("\nEnter Start: [%s]", get_previous_time())
+	fmt.Printf("\nEnter Start: [%s]", utils.GetPreviousTime())
 	start, _ := reader.ReadString('\n')
 	start = strings.TrimSpace(start)
 	if start == "" {
-		start = get_previous_time()
+		start = utils.GetPreviousTime()
 	}
 
-	fmt.Printf("\nEnter Stop: [%s]", get_current_time())
+	fmt.Printf("\nEnter Stop: [%s]", utils.GetCurrentTime())
 	stop, _ := reader.ReadString('\n')
 	stop = strings.TrimSpace(stop)
 	if stop == "" {
-		stop = get_current_time()
+		stop = utils.GetCurrentTime()
 	}
 
 	diff_seconds, diff_hours := calculate_time_difference(start, stop)

@@ -1,10 +1,10 @@
-package main
+package utils
 
 import (
 	"time"
 )
 
-func get_date() (string, string, string, int) {
+func GetDate() (string, string, string, int) {
 	now := time.Now()
 	full_date := now.Format("2006-01-02 15:04 Monday")
 	date := now.Format("2006-01-02")
@@ -14,13 +14,13 @@ func get_date() (string, string, string, int) {
 	return full_date, date, weekday, week_number
 }
 
-func get_current_time() string {
+func GetCurrentTime() string {
 	now := time.Now()
 	rounded := now.Round(time.Minute * 15)
 	return rounded.Format("15:04")
 }
 
-func get_previous_time() string {
+func GetPreviousTime() string {
 	now := time.Now()
 	rounded := now.Round(time.Minute * 15)
 	rounded = rounded.Add(-15 * time.Minute)
