@@ -6,10 +6,10 @@ const sortedData = data.sort((a: any, b: any) => a - b)
 ---
 
 Years
-<ul>
-    {sortedData.map((item: any) => (
-        <li>
-            {item}
-        </li>
-    ))}
-</ul>
+{
+  sortedData.map((item: any) => (
+    <a href={'http://' + item}>
+      <img src={'http://' + item} height='500' />
+    </a>
+  ))
+}
