@@ -61,14 +61,15 @@ def load_pictures(client, folder):
                                 try:
                                     # HSet in Redis by year, year month, and year month day
                                     # This will help with the "memories"
-                                    print(image_path, year)
-                                    hset_redis(client, key=year, field=image_path, value=image_path)
+                                    new_image_path = "localhost/" + picture_folder + "/" + file
+                                    print(new_image_path, year)
+                                    hset_redis(client, key=year, field=new_image_path, value=new_image_path)
                                     hset_redis(client, key="year", field=year, value=year)
 
-                                    hset_redis(client, key=f"{year}-{month}", field=image_path, value=image_path)
+                                    hset_redis(client, key=f"{year}-{month}", field=new_image_path, value=new_image_path)
                                     hset_redis(client, key="year-month", field=f"{year}-{month}", value=f"{year}-{month}")
 
-                                    hset_redis(client, key=f"{year}-{month}-{day}", field=image_path, value=image_path)
+                                    hset_redis(client, key=f"{year}-{month}-{day}", field=new_image_path, value=new_image_path)
                                     hset_redis(client, key="year-month-day", field=f"{year}-{month}-{day}", value=f"{year}-{month}-{day}")
                                 except Exception as e:
                                     print(e)
