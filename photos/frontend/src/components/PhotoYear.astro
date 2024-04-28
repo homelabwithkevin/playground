@@ -1,0 +1,15 @@
+---
+const { year } = Astro.props
+const response = await fetch(`http://localhost:3000?year=${year}`)
+const data = await response.json()
+const sortedData = data.sort((a: any, b: any) => a - b)
+---
+
+Years
+{
+  sortedData.map((item: any) => (
+    <a href={'http://' + item}>
+      <img src={'http://' + item} height='500' />
+    </a>
+  ))
+}

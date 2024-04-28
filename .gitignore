@@ -2,3 +2,4 @@
 *.exe
 main
 *aws-sam/
+photos/.env

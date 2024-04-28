@@ -1,0 +1,16 @@
+---
+const response = await fetch('http://localhost:3000?year=year')
+const data = await response.json()
+const sortedData = data.sort((a: any, b: any) => a - b)
+---
+
+Years
+<ul>
+  {
+    sortedData.map((item: any) => (
+      <li>
+        <a href={'/photos/' + item}>{item}</a>
+      </li>
+    ))
+  }
+</ul>

@@ -1,0 +1,18 @@
+version: "3"
+services:
+  valkey:
+    image: valkey/valkey:unstable
+    container_name: valkey
+    ports:
+      - "8080:6379"
+    restart: always
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ../../../../../pictures/pictures:/usr/share/nginx/html:ro
+    depends_on:
+      - valkey
+    restart: always
