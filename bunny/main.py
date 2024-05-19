@@ -1,7 +1,10 @@
 import requests
 from datetime import datetime
 
-api_key = ""
+from dotenv import load_dotenv
+import os
+
+api_key = os.getenv('API_KEY')
 base_url = "https://ny.storage.bunnycdn.com/"
 
 headers = {
@@ -38,5 +41,3 @@ def upload_file(file_path):
         response = requests.put(url, headers=headers, data=file_data)
 
     print(response.status_code, response.text)
-
-upload_file('file.jpg')
