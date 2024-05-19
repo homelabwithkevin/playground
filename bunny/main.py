@@ -4,8 +4,11 @@ from datetime import datetime
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 api_key = os.getenv('API_KEY')
 base_url = "https://ny.storage.bunnycdn.com/"
+storage_zone = "arizona-2024"
 
 headers = {
     "accept": "application/json",
@@ -16,7 +19,7 @@ def today():
     return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def list_files():
-    response = requests.get(f'{base_url}/playground', headers=headers)
+    response = requests.get(f'{base_url}/{storage_zone}', headers=headers)
     files = response.json()
     for file in files:
         file_info = {
@@ -37,7 +40,10 @@ def upload_file(file_path):
     }
 
     with open(file_path, 'rb') as file_data:
-        url = f'{base_url}/playground/test/{file_path}.{today()}.jpg'
+        url = f'{base_url}/{storage_zone}/{file_path}.{today()}.jpg'
         response = requests.put(url, headers=headers, data=file_data)
 
     print(response.status_code, response.text)
+
+print(today())
+print(api_key)
