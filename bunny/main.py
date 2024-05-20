@@ -71,12 +71,15 @@ def create_thumbnail(file_path, testing=False):
             desired_picture = os.path.join(root, file)
             thumbnail_path = f'thumbnails/{file}'
 
-            with Image.open(desired_picture) as img:
-                width, height = img.size
-                img.thumbnail((width * .3, height * .3))
-                img.save(thumbnail_path, 'JPEG')
+            try:
+                with Image.open(desired_picture) as img:
+                    width, height = img.size
+                    img.thumbnail((width * .3, height * .3))
+                    img.save(thumbnail_path, 'JPEG')
 
-            upload_file(thumbnail_path, f'thumbnails/{file}')
+                upload_file(thumbnail_path, f'thumbnails/{file}')
+            except:
+                pass
 
             if testing:
                 break
