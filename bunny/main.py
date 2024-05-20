@@ -1,7 +1,20 @@
 import requests
 from datetime import datetime
 
-api_key = ""
+# Setup Dotenv
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+# Setup Logging
+import logging
+logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO)
+
+# Configurations
+api_key = os.getenv('API_KEY')
+folder = os.getenv('FOLDER')
+storage_zone = os.getenv('STORAGE_ZONE')
 base_url = "https://ny.storage.bunnycdn.com/"
 
 headers = {
@@ -13,7 +26,7 @@ def today():
     return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def list_files():
-    response = requests.get(f'{base_url}/playground', headers=headers)
+    response = requests.get(f'{base_url}/{storage_zone}', headers=headers)
     files = response.json()
     for file in files:
         file_info = {
@@ -26,7 +39,7 @@ def list_files():
         }
         print(file_info)
 
-def upload_file(file_path):
+def upload_file(file_path, file):
     headers = {
         "AccessKey": api_key,
         "Content-Type": "application/octet-stream",
@@ -34,9 +47,20 @@ def upload_file(file_path):
     }
 
     with open(file_path, 'rb') as file_data:
-        url = f'{base_url}/playground/test/{file_path}.{today()}.jpg'
+        url = f'{base_url}/{storage_zone}/{file}'
         response = requests.put(url, headers=headers, data=file_data)
 
-    print(response.status_code, response.text)
+    message = response.status_code, response.text, file
+    logger.info(message)
 
-upload_file('file.jpg')
+def list_files_and_upload(file_path, testing=False):
+    for root, dirs, files in os.walk(file_path):
+        for file in files:
+            logger.info(f'Trying to upload {file}')
+            desired_picture = os.path.join(root, file)
+            upload_file(desired_picture, file)
+
+            if testing:
+                break
+
+list_files_and_upload(folder)
