@@ -44,11 +44,12 @@ def upload_file(file_path, file):
         url = f'{base_url}/{storage_zone}/{file}'
         response = requests.put(url, headers=headers, data=file_data)
 
-    print(response.status_code, response.text)
+    print(response.status_code, response.text, file)
 
 def list_files_and_upload(file_path):
     for root, dirs, files in os.walk(file_path):
         for file in files:
+            print(f'Trying to upload {file}')
             desired_picture = os.path.join(root, file)
             upload_file(desired_picture, file)
             break
