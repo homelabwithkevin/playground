@@ -9,6 +9,7 @@ load_dotenv()
 api_key = os.getenv('API_KEY')
 base_url = "https://ny.storage.bunnycdn.com/"
 storage_zone = "arizona-2024"
+folder = os.getenv('FOLDER')
 
 headers = {
     "accept": "application/json",
@@ -32,7 +33,7 @@ def list_files():
         }
         print(file_info)
 
-def upload_file(file_path):
+def upload_file(file_path, file):
     headers = {
         "AccessKey": api_key,
         "Content-Type": "application/octet-stream",
@@ -40,10 +41,16 @@ def upload_file(file_path):
     }
 
     with open(file_path, 'rb') as file_data:
-        url = f'{base_url}/{storage_zone}/{file_path}.{today()}.jpg'
+        url = f'{base_url}/{storage_zone}/{file}.jpg'
         response = requests.put(url, headers=headers, data=file_data)
 
     print(response.status_code, response.text)
 
-print(today())
-print(api_key)
+def list_files_and_upload(file_path):
+    for root, dirs, files in os.walk(file_path):
+        for file in files:
+            desired_picture = os.path.join(root, file)
+            upload_file(desired_picture, file)
+            break
+
+list_files_and_upload(folder)
