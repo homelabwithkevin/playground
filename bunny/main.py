@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+from PIL import Image
 
 # Setup Dotenv
 from dotenv import load_dotenv
@@ -63,4 +64,25 @@ def list_files_and_upload(file_path, testing=False):
             if testing:
                 break
 
-list_files_and_upload(folder)
+def create_thumbnail(file_path, testing=False):
+    for root, dirs, files in os.walk(file_path):
+        for file in files:
+            logger.info(f'Trying to create thumbnail {file}')
+            desired_picture = os.path.join(root, file)
+            thumbnail_path = f'thumbnails/{file}'
+
+            try:
+                with Image.open(desired_picture) as img:
+                    width, height = img.size
+                    img.thumbnail((width * .8, height * .8))
+                    # img.thumbnail((width * .3, height * .3))
+                    img.save(thumbnail_path, 'JPEG')
+
+                upload_file(thumbnail_path, f'eighty/{file}')
+            except:
+                pass
+
+            if testing:
+                break
+
+create_thumbnail(folder, testing=False)
