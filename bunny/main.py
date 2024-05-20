@@ -1,10 +1,16 @@
 import requests
 from datetime import datetime
 
+# Setup Dotenv
 from dotenv import load_dotenv
 import os
-
 load_dotenv()
+
+# Setup Logging
+import logging
+logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO)
+
 
 api_key = os.getenv('API_KEY')
 base_url = "https://ny.storage.bunnycdn.com/"
@@ -44,12 +50,13 @@ def upload_file(file_path, file):
         url = f'{base_url}/{storage_zone}/{file}'
         response = requests.put(url, headers=headers, data=file_data)
 
-    print(response.status_code, response.text, file)
+    message = response.status_code, response.text, file
+    logger.info(message)
 
 def list_files_and_upload(file_path):
     for root, dirs, files in os.walk(file_path):
         for file in files:
-            print(f'Trying to upload {file}')
+            logger.info(f'Trying to upload {file}')
             desired_picture = os.path.join(root, file)
             upload_file(desired_picture, file)
             break
