@@ -11,11 +11,11 @@ import logging
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
 
-
+# Configurations
 api_key = os.getenv('API_KEY')
-base_url = "https://ny.storage.bunnycdn.com/"
-storage_zone = "arizona-2024"
 folder = os.getenv('FOLDER')
+storage_zone = os.getenv('STORAGE_ZONE')
+base_url = "https://ny.storage.bunnycdn.com/"
 
 headers = {
     "accept": "application/json",
