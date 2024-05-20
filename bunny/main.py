@@ -41,7 +41,7 @@ def upload_file(file_path, file):
     }
 
     with open(file_path, 'rb') as file_data:
-        url = f'{base_url}/{storage_zone}/{file}.jpg'
+        url = f'{base_url}/{storage_zone}/{file}'
         response = requests.put(url, headers=headers, data=file_data)
 
     print(response.status_code, response.text)
