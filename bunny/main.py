@@ -53,12 +53,14 @@ def upload_file(file_path, file):
     message = response.status_code, response.text, file
     logger.info(message)
 
-def list_files_and_upload(file_path):
+def list_files_and_upload(file_path, testing=False):
     for root, dirs, files in os.walk(file_path):
         for file in files:
             logger.info(f'Trying to upload {file}')
             desired_picture = os.path.join(root, file)
             upload_file(desired_picture, file)
-            break
+
+            if testing:
+                break
 
 list_files_and_upload(folder)
