@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: messaging-webhook-hlb
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 128
+    Runtime: python3.11
+    Architectures:
+      - x86_64
+
+Resources:
+  Function:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: code/
+      Handler: app.lambda_handler
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: post
+
+Outputs:
+  Api:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+  Function:
+    Description: Hello World Lambda Function ARN
+    Value: !GetAtt Function.Arn
+  FunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value: !GetAtt FunctionRole.Arn
