@@ -16,6 +16,10 @@ text_result = result['text']
 
 text_result_split = re.split('break. |Break. |Break |Break.', text_result)
 
+# Parameters
+mp3_file = '2024-06-25.mp3'
+journal_file = mp3_file.split('\\')[-1].split('.')[0] + '.md'
+
 enable_transcribe = True
 
 if enable_transcribe:
