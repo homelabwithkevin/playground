@@ -3,3 +3,4 @@
 main
 *aws-sam/
 photos/.env
+**/env/**
