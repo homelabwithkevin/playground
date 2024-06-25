@@ -16,9 +16,12 @@ text_result = result['text']
 
 text_result_split = re.split('break. |Break. |Break |Break.', text_result)
 
-with open('journal.txt', 'a') as f:
-    f.write('Whisper Transcription\n\n')
+enable_transcribe = True
 
-for text in text_result_split:
+if enable_transcribe:
     with open('journal.txt', 'a') as f:
-        f.write(text.strip() + '\n\n')
+        f.write('Whisper Transcription\n\n')
+
+    for text in text_result_split:
+        with open('journal.txt', 'a') as f:
+            f.write(text.strip() + '\n\n')
