@@ -4,9 +4,6 @@ import re
 # Available models:
 # tiny, base, small, medium, large
 
-# Initial
-# model = whisper.load_model("tiny")
-
 mp3_file = '2024-06-25.mp3'
 journal_file = mp3_file.split('\\')[-1].split('.')[0] + '.md'
 
