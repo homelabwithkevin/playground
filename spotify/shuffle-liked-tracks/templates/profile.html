@@ -1,6 +1,13 @@
 <!doctype html>
 <title>Spotify Tokens</title>
 <h1>Spotify Tokens</h1>
-<h2>Profile</h2>
 <p>Access token: {{access_token}}</p>
 <p>Refresh token: {{refresh_token}}</p>
+
+
+{% if user_profile %}
+<h2>Profile</h2>
+<p>Welcome {{ user_profile.display_name }}</p>
+<p>Email {{ user_profile.email }}</p>
+<img src="{{ user_profile.images[1].url }}"/>
+{% endif %}
