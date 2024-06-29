@@ -12,7 +12,7 @@ def get_user_profile(access_token):
     return response.json()
 
 def create_playlist(access_token, name, user_id):
-    url = f"https://api.spotify.com/v1/users/me/playlists"
+    url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
 
     data = {
         "name": f"{name}-hlb",
@@ -24,7 +24,8 @@ def create_playlist(access_token, name, user_id):
         "Content-Type": "application/json"
     }
 
-    print(url)
     response = requests.post(url, json=data, headers=headers)
 
-    print(response.text)
+    response_json = response.json()
+    playlist_id = response_json['id']
+    return playlist_id
