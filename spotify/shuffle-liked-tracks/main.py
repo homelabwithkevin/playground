@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, request, make_response, render_template, redirect, url_for
+from flask import Flask, request, make_response, render_template
 from functions import authorization, spotify, utils
 
 # Load environment variables from .env file
