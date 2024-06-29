@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, make_response, render_template
 from functions import authorization
 
 # Load environment variables from .env file
@@ -24,10 +24,16 @@ def callback():
     code = request.args.get('code')
     access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code)
 
+    response = make_response(render_template('callback.html', access_token=access_token, refresh_token=refresh_token))
+    response.set_cookie('access_token', access_token)
+    response.set_cookie('refresh_token', refresh_token)
+    return response
+
+@app.route("/profile")
+def profile():
     return f"""
-    <h1>Spotify Tokens</h1>
-    <p>Access token: {access_token}</p>
-    <p>Refresh token: {refresh_token}</p>
+    <h1>Spotify Profile</h1>
+    <p>Profile: {authorization.get_profile()}</p>
     """
 
 app.run(port=8888)
