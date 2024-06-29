@@ -22,6 +22,12 @@ def hello_world():
 @app.route("/callback")
 def callback():
     code = request.args.get('code')
-    return f"Spotify Code: {code}"
+    access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code)
+
+    return f"""
+    <h1>Spotify Tokens</h1>
+    <p>Access token: {access_token}</p>
+    <p>Refresh token: {refresh_token}</p>
+    """
 
 app.run(port=8888)
