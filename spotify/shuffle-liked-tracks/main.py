@@ -27,14 +27,14 @@ def callback():
     user_profile = spotify.get_user_profile(access_token)
     liked_songs = spotify.get_liked_songs(access_token)
     list_liked_songs = utils.handle_liked_songs(liked_songs)
-
-    print(list_liked_songs)
+    shuffled_songs = utils.shuffle_songs(list_liked_songs)
 
     response = make_response(render_template('profile.html',
                                             access_token=access_token,
                                             refresh_token=refresh_token,
                                             user_profile=user_profile,
-                                            liked_songs=list_liked_songs
+                                            liked_songs=list_liked_songs,
+                                            shuffled_songs=shuffled_songs
                                             ))
 
     response.set_cookie('access_token', access_token)
