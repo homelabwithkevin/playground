@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, request
 from functions import authorization
 
 # Load environment variables from .env file
@@ -18,5 +18,10 @@ app = Flask(__name__)
 @app.route("/")
 def hello_world():
     return f"<a href={url}>{url}</a>"
+
+@app.route("/callback")
+def callback():
+    code = request.args.get('code')
+    return f"Spotify Code: {code}"
 
 app.run(port=8888)
