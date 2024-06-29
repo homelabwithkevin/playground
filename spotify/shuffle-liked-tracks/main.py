@@ -16,8 +16,8 @@ url = authorization.request_user_authorization(redirect_uri, client_id, client_s
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world():
-    return f"<a href={url}>{url}</a>"
+def index():
+    return render_template('index.html', url=url)
 
 @app.route("/callback")
 def callback():
