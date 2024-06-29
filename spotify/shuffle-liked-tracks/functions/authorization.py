@@ -20,3 +20,4 @@ def request_user_authorization(redirect_uri, client_id, client_secret):
 
     url = 'https://accounts.spotify.com/authorize?' + urlencode(params)
     print(f'Navigate to this URL in your browser: \n{url}')
+    return url
