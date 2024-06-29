@@ -25,11 +25,13 @@ def callback():
     access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code)
 
     user_profile = spotify.get_user_profile(access_token)
+    playlist_id = request.cookies.get('playlist_id')
 
     response = make_response(render_template('profile.html',
                                             access_token=access_token,
                                             refresh_token=refresh_token,
-                                            user_profile=user_profile
+                                            user_profile=user_profile,
+                                            playlist_id=playlist_id
                                             ))
 
     response.set_cookie('access_token', access_token)
