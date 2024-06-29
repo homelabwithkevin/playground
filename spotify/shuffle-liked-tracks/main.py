@@ -24,21 +24,32 @@ def callback():
     code = request.args.get('code')
     access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code)
 
-    response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token))
+    user_profile = spotify.get_user_profile(access_token)
+    response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token, user_profile=user_profile))
 
     response.set_cookie('access_token', access_token)
     response.set_cookie('refresh_token', refresh_token)
 
-    return redirect(url_for('profile'))
+    return response
 
 @app.route("/profile")
 def profile():
     access_token = request.cookies.get('access_token')
     refresh_token = request.cookies.get('refresh_token')
 
-    user_profile = spotify.get_user_profile(access_token)
+    if access_token:
+        user_profile = spotify.get_user_profile(access_token)
 
-    response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token, user_profile=user_profile))
-    return response
+        response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token, user_profile=user_profile))
+        response.set_cookie('user_id', user_profile['id'])
+        return response
+    else:
+        return """Could not get access token."""
+
+@app.route('/playlist', methods=['POST'])
+def playlist():
+    name = request.form['name']
+    spotify.create_playlist(request.cookies.get('access_token'), name, request.cookies.get('user_id'))
+    return redirect(url_for('profile'))
 
 app.run(port=8888)

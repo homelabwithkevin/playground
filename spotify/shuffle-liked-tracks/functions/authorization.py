@@ -8,7 +8,9 @@ import json
 def request_user_authorization(redirect_uri, client_id, client_secret):
     permissions =[
         'user-library-read',
-        'user-read-email'
+        'user-read-email',
+        'playlist-modify-public',
+        'playlist-modify-private'
     ]
 
     scope = ' '.join(permissions)
