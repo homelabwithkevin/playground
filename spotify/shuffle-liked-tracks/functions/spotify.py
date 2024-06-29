@@ -16,8 +16,8 @@ def create_playlist(access_token, name, user_id):
     url = f"https://api.spotify.com/v1/users/{user_id}/playlists"
 
     data = {
-        "name": f"{name}-hlb",
-        "description": f"{name}-hlb",
+        "name": f"{name}",
+        "description": f"{name}",
     }
 
     headers = {
@@ -65,3 +65,30 @@ def get_liked_songs(access_token):
             url = (response_json['next'])
 
     return all_tracks
+
+def create_shuffled_playlist(access_token, tracks, name, user_id):
+    print(f'Creating shuffled playlist...')
+
+    playlist_id = create_playlist(access_token, name, user_id)
+    spotify_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
+
+    headers = {
+        'Authorization' : 'Bearer ' + str(access_token),
+        'Content-Type' : 'application/json'
+    }
+
+    body = {
+        'uris': tracks
+    }
+
+    response = requests.post(spotify_url, headers=headers, json=body)
+
+    status_code = response.status_code
+
+    if not status_code == 201:
+        print(f'Failed to Create Shuffled Playlist: {name}')
+        return False
+    else:
+        response_json = json.loads(response.content)
+        print(response_json)
+        return playlist_id
