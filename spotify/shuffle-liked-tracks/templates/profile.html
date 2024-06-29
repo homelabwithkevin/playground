@@ -17,13 +17,17 @@
 <h2>Profile</h2>
 <p>Welcome {{ user_profile.display_name }}</p>
 <!-- <p>Email {{ user_profile.email }}</p> -->
-<img src="{{ user_profile.images[1].url }}"/>
 
 <form action="/playlist" method="POST">
     <label for="name">Playlist Name:</label>
     <input type="text" id="name" name="name" required>
     <input type="submit" value="Create Playlist">
 </form>
+
+</br>
+</br>
+
+<img src="{{ user_profile.images[1].url }}"/>
 
 {% endif %}
 
