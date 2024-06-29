@@ -58,7 +58,7 @@ def playlist():
     user_id = request.cookies.get('user_id')
 
     # Get Liked Songs
-    liked_songs = spotify.get_liked_songs(request.cookies.get('access_token'))
+    liked_songs = spotify.get_liked_songs(access_token=access_token, limit=100)
 
     # Shuffle Liked Songs
     list_liked_songs = utils.handle_liked_songs(liked_songs)

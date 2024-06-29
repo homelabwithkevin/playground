@@ -31,7 +31,7 @@ def create_playlist(access_token, name, user_id):
     playlist_id = response_json['id']
     return playlist_id
 
-def get_liked_songs(access_token):
+def get_liked_songs(access_token, limit):
     all_tracks = []
     url = 'https://api.spotify.com/v1/me/tracks'
 
@@ -53,11 +53,15 @@ def get_liked_songs(access_token):
     else:
         url = (response_json['next'])
 
+    x = 0
     while True:
-        break
         response = requests.get(url, headers=headers, params=params)
         response_json = json.loads(response.content)
         all_tracks.append(response_json)
+
+        x += 1
+        if x == limit:
+            break
 
         if not response_json['next']:
             break
