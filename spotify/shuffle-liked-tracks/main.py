@@ -7,7 +7,8 @@ from functions import authorization
 load_dotenv()
 
 # Accessing variables
+redirect_uri = os.getenv('redirect_uri')
 client_id = os.getenv('client_id')
 client_secret = os.getenv('secret_id')
 
-authorization.request_user_authorization(client_id, client_secret)
+authorization.request_user_authorization(redirect_uri, client_id, client_secret)
