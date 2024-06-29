@@ -41,11 +41,12 @@ def callback():
 def profile():
     access_token = request.cookies.get('access_token')
     refresh_token = request.cookies.get('refresh_token')
+    playlist_id = request.cookies.get('playlist_id')
 
     if access_token:
         user_profile = spotify.get_user_profile(access_token)
 
-        response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token, user_profile=user_profile))
+        response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token, user_profile=user_profile, playlist_id=playlist_id))
         response.set_cookie('user_id', user_profile['id'])
         return response
     else:
@@ -55,7 +56,6 @@ def profile():
 def playlist():
     access_token = request.cookies.get('access_token')
     user_id = request.cookies.get('user_id')
-    name = request.form['name']
 
     # Get Liked Songs
     liked_songs = spotify.get_liked_songs(request.cookies.get('access_token'))
@@ -64,12 +64,25 @@ def playlist():
     list_liked_songs = utils.handle_liked_songs(liked_songs)
     shuffled_songs = utils.shuffle_songs(list_liked_songs)
 
+    if 'playlist_id' in request.form:
+        playlist_id = request.form['playlist_id']
+
+        # I am not sure if you need to delete the playlist items, but I'll do it anyways.
+        playlist_id, name = spotify.delete_playlist_items(playlist_id, access_token)
+    else:
+        name = request.form['name']
+        playlist_id = None
+
     # Create Shuffled Playlist
-    spotify.create_shuffled_playlist(access_token=access_token,
+    result_playlist_id = spotify.create_shuffled_playlist(access_token=access_token,
                                     tracks=shuffled_songs,
                                     name=f"{name} - HLB",
-                                    user_id=user_id)
+                                    user_id=user_id,
+                                    playlist_id=playlist_id
+                                    )
 
-    return redirect(url_for('profile'))
+    response = make_response(render_template('playlist.html', playlist_id=result_playlist_id, playlist_name=name))
+    response.set_cookie('playlist_id', result_playlist_id)
+    return response
 
 app.run(port=8888)

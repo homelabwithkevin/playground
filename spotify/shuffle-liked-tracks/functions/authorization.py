@@ -10,7 +10,8 @@ def request_user_authorization(redirect_uri, client_id, client_secret):
         'user-library-read',
         'user-read-email',
         'playlist-modify-public',
-        'playlist-modify-private'
+        'playlist-modify-private',
+        'playlist-read-private'
     ]
 
     scope = ' '.join(permissions)

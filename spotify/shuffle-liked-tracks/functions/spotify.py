@@ -66,10 +66,12 @@ def get_liked_songs(access_token):
 
     return all_tracks
 
-def create_shuffled_playlist(access_token, tracks, name, user_id):
+def create_shuffled_playlist(access_token, tracks, name, user_id, playlist_id=None):
     print(f'Creating shuffled playlist...')
 
-    playlist_id = create_playlist(access_token, name, user_id)
+    if not playlist_id:
+        playlist_id = create_playlist(access_token, name, user_id)
+
     spotify_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
 
     headers = {
@@ -92,3 +94,37 @@ def create_shuffled_playlist(access_token, tracks, name, user_id):
         response_json = json.loads(response.content)
         print(response_json)
         return playlist_id
+
+def get_playlist_items(playlist_id, access_token):
+    url = f"https://api.spotify.com/v1/playlists/{playlist_id}"
+
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    response = requests.get(url, headers=headers)
+
+    response_json = json.loads(response.content)
+
+    list_tracks = []
+    for item in response_json['tracks']['items']:
+        list_tracks.append({"uri":item['track']['uri']})
+
+    return list_tracks, response_json['snapshot_id'], response_json['name']
+
+def delete_playlist_items(playlist_id, access_token):
+    tracks, snapshot_id, name = get_playlist_items(playlist_id, access_token)
+
+    url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+
+    data = {
+        "tracks": tracks,
+        "snapshot_id": snapshot_id
+    }
+
+    requests.delete(url, headers=headers, json=data)
+    return playlist_id, name
