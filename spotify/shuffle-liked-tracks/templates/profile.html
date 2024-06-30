@@ -1,0 +1,48 @@
+<!doctype html>
+<title>Spotify Tokens</title>
+<!-- <h1>Spotify Tokens</h1>
+<p>Access token: {{access_token}}</p>
+<p>Refresh token: {{refresh_token}}</p> -->
+
+{% if playlist_id %}
+    <p>Playlist Id: {{ playlist_id }}</p>
+    <form action="/playlist" method="POST">
+        <label for="playlist_id">Playlist Id:</label>
+        <input type="text" id="playlist_id" name="playlist_id" required>
+        <input type="submit" value="Create Playlist">
+    </form>
+{% endif %}
+
+{% if user_profile %}
+<h2>Profile</h2>
+<p>Welcome {{ user_profile.display_name }}</p>
+<!-- <p>Email {{ user_profile.email }}</p> -->
+
+<form action="/playlist" method="POST">
+    <label for="name">Playlist Name:</label>
+    <input type="text" id="name" name="name" required>
+    <input type="submit" value="Create Playlist">
+</form>
+
+</br>
+</br>
+
+<img src="{{ user_profile.images[1].url }}"/>
+
+{% endif %}
+
+{% if liked_songs %}
+
+<p>
+    {{ liked_songs }}
+</p>
+
+{% endif %}
+
+{% if shuffled_songs %}
+
+<p>
+    {{ shuffled_songs }}
+</p>
+
+{% endif %}
