@@ -8,6 +8,17 @@ Globals:
     MemorySize: 128
     Runtime: python3.11
 
+Parameters:
+  clientid:
+    Type: String
+    Description: Spotify client id
+  clientsecret:
+    Type: String
+    Description: Spotify client secret
+  redirecturi:
+    Type: String
+    Description: Spotify redirect uri
+
 Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function 
@@ -16,6 +27,11 @@ Resources:
       Handler: app.lambda_handler
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          CLIENT_ID: !Ref clientid
+          CLIENT_SECRET: !Ref clientsecret
+          REDIRECT_URI: !Ref redirecturi
       Events:
         HelloWorld:
           Type: Api 
