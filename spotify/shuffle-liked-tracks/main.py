@@ -22,7 +22,7 @@ def index():
 @app.route("/callback")
 def callback():
     code = request.args.get('code')
-    access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code)
+    access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code, redirect_uri)
 
     user_profile = spotify.get_user_profile(access_token)
     playlist_id = request.cookies.get('playlist_id')
