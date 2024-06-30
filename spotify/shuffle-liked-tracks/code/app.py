@@ -10,6 +10,9 @@ def lambda_handler(event, context):
 
     url = authorization.request_user_authorization(redirect_uri, client_id, client_secret)
 
+    if (event['queryStringParameters']) and (event['queryStringParameters']['code']):
+        code = event['queryStringParameters']['code']
+
     res = {
         'statusCode': 200,
         'headers': {
@@ -21,6 +24,7 @@ def lambda_handler(event, context):
             <title>Spotify Login</title>
             <h1>Spotify Login</h1>
             <a href="{ url }" target="_blank">Login Here</a>
+            <p>Code: { code }</p>
         </html>
         """
     }

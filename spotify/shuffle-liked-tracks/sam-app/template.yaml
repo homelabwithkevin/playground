@@ -38,6 +38,11 @@ Resources:
           Properties:
             Path: /hello
             Method: get
+        Callback:
+          Type: Api 
+          Properties:
+            Path: /callback
+            Method: get
 
 Outputs:
   Function:
