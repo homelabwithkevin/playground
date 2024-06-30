@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: spotify-shuffled-liked-hlb
+
+Globals:
+  Function:
+    Timeout: 300
+    MemorySize: 128
+    Runtime: python3.11
+
+Parameters:
+  clientid:
+    Type: String
+    Description: Spotify client id
+  clientsecret:
+    Type: String
+    Description: Spotify client secret
+  redirecturi:
+    Type: String
+    Description: Spotify redirect uri
+
+Resources:
+  Function:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: ../code
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          CLIENT_ID: !Ref clientid
+          CLIENT_SECRET: !Ref clientsecret
+          REDIRECT_URI: !Ref redirecturi
+      Events:
+        HelloWorld:
+          Type: Api 
+          Properties:
+            Path: /hello
+            Method: get
+
+Outputs:
+  Function:
+    Description: "Function ARN"
+    Value: !GetAtt Function.Arn
+  FunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt FunctionRole.Arn

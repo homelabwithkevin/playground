@@ -1,0 +1,1 @@
+sam build && sam deploy --region us-east-1 --config-env develop

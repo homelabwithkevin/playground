@@ -28,7 +28,7 @@ This project is a Flask-based web application that allows users to shuffle their
    ```bash
    pip install -r requirements.txt
    ```
-4. Run `python main.py` to run Flask web server
+4. Run `python flask.py` to run Flask web server
 
 5. Open your browser to `http://127.0.0.1:8888/`
 
@@ -36,8 +36,13 @@ This project is a Flask-based web application that allows users to shuffle their
 
 7. Create the playlist, use the other field if you already have playlist id
 
+## AWS SAM Procedure
+1.  sam build && sam deploy --region us-east-1 --config-env develop
+
 ## To Do
 1. Convert to AWS Serverless (AWS Lambda, DynamoDB/SSM, etc.)
+   - [-] - SAM
+      - [x] - Initial SAM
 2. Create video tutorial
 
 ![sample.gif](sample.gif)
