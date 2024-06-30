@@ -10,7 +10,7 @@ load_dotenv()
 redirect_uri = os.getenv('redirect_uri')
 client_id = os.getenv('client_id')
 client_secret = os.getenv('secret_id')
-proxy_host = "/proxy/8888"
+proxy_host = os.getenv('proxy_host')
 
 url = authorization.request_user_authorization(redirect_uri, client_id, client_secret)
 
