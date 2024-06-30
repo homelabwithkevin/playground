@@ -4,7 +4,7 @@ version = 0.1
 
 [default]
 [default.global.parameters]
-stack_name = "sam-app"
+stack_name = "spotify-shuffled-liked-tracks-hlb-default"
 
 [default.build.parameters]
 cached = true
@@ -15,7 +15,7 @@ lint = true
 
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
+confirm_changeset = false
 resolve_s3 = true
 
 [default.package.parameters]
@@ -31,9 +31,10 @@ warm_containers = "EAGER"
 warm_containers = "EAGER"
 
 [develop.deploy.parameters]
-stack_name = "spotify-shuffled-liked-tracks-hlb"
+stack_name = "spotify-shuffled-liked-tracks-hlb-develop"
 resolve_s3 = true
 s3_prefix = "spotify-shuffled-liked-tracks-hlb"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
 image_repositories = []
+disable_rollback = true
