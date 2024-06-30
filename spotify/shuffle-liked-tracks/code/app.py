@@ -56,6 +56,33 @@ def lambda_handler(event, context):
             <p>Welcome { user_profile['display_name'] } </p>
             <img src="{ user_profile['images'][1]['url'] }"/>
             <p><a href="/hello">Home</a></p>
+            <p>
+                <form action="playlist" method="POST">
+                    <label for="playlist_name">Playlist Name:</label>
+                    <input type="text" id="playlist_name" name="playlist_name" required>
+                    <input type="submit" value="Create Playlist">
+                </form>
+            </p>
+        </html>
+        """
+    elif path == '/playlist':
+        playlist_name = None
+        if (event['queryStringParameters']) and (event['queryStringParameters']['playlist_name']):
+            playlist_name = event['queryStringParameters']['playlist_name']
+        
+        if event['httpMethod'] == 'POST':
+            if event['body']:
+                playlist_name = event['body'].split('=')[1]
+
+            res['headers']['Location'] = f'playlist?playlist_name={playlist_name}' 
+            res['statusCode'] = 302
+            return res
+
+        res['body'] = f"""
+        <html>
+            <title>Playlist</title>
+            <h1>Playlist</h1>
+            <p>Playlist Name: {playlist_name}</p>
         </html>
         """
     else:

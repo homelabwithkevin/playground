@@ -48,6 +48,16 @@ Resources:
           Properties:
             Path: /profile
             Method: get
+        PlaylistGet:
+          Type: Api 
+          Properties:
+            Path: /playlist
+            Method: get
+        PlaylistPost:
+          Type: Api 
+          Properties:
+            Path: /playlist
+            Method: post
 
 Outputs:
   Function:
