@@ -43,6 +43,11 @@ Resources:
           Properties:
             Path: /callback
             Method: get
+        Profile:
+          Type: Api 
+          Properties:
+            Path: /profile
+            Method: get
 
 Outputs:
   Function:
