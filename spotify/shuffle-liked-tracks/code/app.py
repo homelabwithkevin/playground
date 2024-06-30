@@ -25,15 +25,28 @@ def lambda_handler(event, context):
     if path == '/callback':
         if (event['queryStringParameters']) and (event['queryStringParameters']['code']):
             code = event['queryStringParameters']['code']
-            res['headers']['Location'] = 'profile'
-            res['headers']['Set-Cookie'] = 'cats=awesome'
+
+            access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code, redirect_uri)
+            user_profile = spotify.get_user_profile(access_token)
+
+            # Set some cookies
+            res['headers']['Set-Cookie'] = f'access_token={access_token}'
+
+            # Set Redirect
+            res['headers']['Location'] = 'profile' 
             res['statusCode'] = 302
+
             res['body'] = """
             <html>
                 Code redirect
             </html>
             """
     elif path == '/profile':
+        print('Cookies')
+        cookies = event['headers']['Cookie']
+        print(type(cookies))
+        print(cookies)
+
         res['body'] = f"""
         <html>
             <title>Profile</title>
