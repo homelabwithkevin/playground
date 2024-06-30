@@ -17,14 +17,24 @@ This project is a Flask-based web application that allows users to shuffle their
    ```bash
    git clone https://github.com/your-username/spotify-playlist-shuffler.git
    cd spotify-playlist-shuffler
+   ```
 
-2. Run `python main.py` to run Flask webs server
+2. Activate python environment
+   ```bash
+   python -m venv env
+   env\Scripts\activate.ps1
+   ```
+3. Install requirements
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run `python main.py` to run Flask web server
 
-3. Open your browser to `http://127.0.0.1:8888/`
+5. Open your browser to `http://127.0.0.1:8888/`
 
-4. Click the link
+6. Click the link
 
-5. Create the playlist, use the other field if you already have playlist id
+7. Create the playlist, use the other field if you already have playlist id
 
 ## To Do
 1. Convert to AWS Serverless (AWS Lambda, DynamoDB/SSM, etc.)
