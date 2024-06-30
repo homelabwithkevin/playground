@@ -5,7 +5,7 @@ Description: spotify-shuffled-liked-hlb
 Globals:
   Function:
     Timeout: 300
-    MemorySize: 128
+    MemorySize: 256
     Runtime: python3.11
 
 Parameters:
