@@ -20,10 +20,10 @@ Parameters:
     Description: Spotify redirect uri
 
 Resources:
-  HelloWorldFunction:
+  Function:
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: hello_world/
+      CodeUri: ../code
       Handler: app.lambda_handler
       Architectures:
         - x86_64
@@ -40,12 +40,9 @@ Resources:
             Method: get
 
 Outputs:
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
+  Function:
+    Description: "Function ARN"
+    Value: !GetAtt Function.Arn
+  FunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+    Value: !GetAtt FunctionRole.Arn
