@@ -41,6 +41,8 @@ This project is a Flask-based web application that allows users to shuffle their
 
 ## To Do
 1. Convert to AWS Serverless (AWS Lambda, DynamoDB/SSM, etc.)
+   - [-] - SAM
+      - [x] - Initial SAM
 2. Create video tutorial
 
 ![sample.gif](sample.gif)
