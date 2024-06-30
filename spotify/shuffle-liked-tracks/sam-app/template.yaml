@@ -5,7 +5,7 @@ Description: spotify-shuffled-liked-hlb
 Globals:
   Function:
     Timeout: 300
-    MemorySize: 128
+    MemorySize: 256
     Runtime: python3.11
 
 Parameters:
@@ -38,8 +38,31 @@ Resources:
           Properties:
             Path: /hello
             Method: get
+        Callback:
+          Type: Api 
+          Properties:
+            Path: /callback
+            Method: get
+        Profile:
+          Type: Api 
+          Properties:
+            Path: /profile
+            Method: get
+        PlaylistGet:
+          Type: Api 
+          Properties:
+            Path: /playlist
+            Method: get
+        PlaylistPost:
+          Type: Api 
+          Properties:
+            Path: /playlist
+            Method: post
 
 Outputs:
+  FunctionUrl:
+    Description: Url
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   Function:
     Description: "Function ARN"
     Value: !GetAtt Function.Arn
