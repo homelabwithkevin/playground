@@ -60,6 +60,9 @@ Resources:
             Method: post
 
 Outputs:
+  FunctionUrl:
+    Description: Url
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   Function:
     Description: "Function ARN"
     Value: !GetAtt Function.Arn
