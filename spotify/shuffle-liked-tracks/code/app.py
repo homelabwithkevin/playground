@@ -8,13 +8,21 @@ def lambda_handler(event, context):
 
     print(client_id, client_secret, redirect_uri)
 
+    url = authorization.request_user_authorization(redirect_uri, client_id, client_secret)
+
     res = {
         'statusCode': 200,
         'headers': {
             'Content-Type': '*/*',
             'Set-Cookie': 'kevin=awesome'
         },
-        'body': """<html><h1>Hello World</h1></html>"""
+        'body': f"""
+        <html>
+            <title>Spotify Login</title>
+            <h1>Spotify Login</h1>
+            <a href="{ url }" target="_blank">Login Here</a>
+        </html>
+        """
     }
 
     return res
