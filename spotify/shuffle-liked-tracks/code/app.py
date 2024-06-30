@@ -7,3 +7,14 @@ def lambda_handler(event, context):
     redirect_uri = os.getenv('REDIRECT_URI')
 
     print(client_id, client_secret, redirect_uri)
+
+    res = {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': '*/*',
+            'Set-Cookie': 'kevin=awesome'
+        },
+        'body': """<html><h1>Hello World</h1></html>"""
+    }
+
+    return res
