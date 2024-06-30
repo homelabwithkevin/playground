@@ -49,6 +49,7 @@ def lambda_handler(event, context):
 
         user_profile = spotify.get_user_profile(access_token)
 
+        res['headers']['Set-Cookie'] = f'user_id={user_profile["id"]}'
         res['body'] = f"""
         <html>
             <title>Profile</title>
@@ -67,14 +68,46 @@ def lambda_handler(event, context):
         """
     elif path == '/playlist':
         playlist_name = None
-        if (event['queryStringParameters']) and (event['queryStringParameters']['playlist_name']):
-            playlist_name = event['queryStringParameters']['playlist_name']
+        playlist_id = None
+        user_id = None
+
+        if event['queryStringParameters']:
+            if event['queryStringParameters']['playlist_name']:
+                playlist_name = event['queryStringParameters']['playlist_name']
+
+            if event['queryStringParameters']['playlist_id']:
+                playlist_id = event['queryStringParameters']['playlist_id']
         
         if event['httpMethod'] == 'POST':
             if event['body']:
                 playlist_name = event['body'].split('=')[1]
 
-            res['headers']['Location'] = f'playlist?playlist_name={playlist_name}' 
+            if playlist_name:
+                # Get the cookies.
+                cookies = event['headers']['Cookie']
+                cookies_split = cookies.split(';')
+
+                for c in cookies_split:
+                    key, value = c.split('=')
+                    if key == 'access_token':
+                        access_token = value
+                    if key == ' user_id':
+                        user_id = value
+
+                if user_id:
+                    # Get Liked Songs
+                    liked_songs = spotify.get_liked_songs(access_token=access_token, limit=10)
+
+                    # Shuffle Liked Songs
+                    list_liked_songs = utils.handle_liked_songs(liked_songs)
+                    shuffled_songs = utils.shuffle_songs(list_liked_songs)
+                    playlist_id = spotify.create_shuffled_playlist(access_token=access_token,
+                                                    tracks=shuffled_songs,
+                                                    name=f"{playlist_name} - HLB",
+                                                    user_id=user_id
+                                                    )
+                
+            res['headers']['Location'] = f'playlist?playlist_name={playlist_name}&playlist_id={playlist_id}' 
             res['statusCode'] = 302
             return res
 
@@ -92,7 +125,6 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': {
                 'Content-Type': '*/*',
-                'Set-Cookie': 'kevin=awesome'
             },
             'body': f"""
             <html>
