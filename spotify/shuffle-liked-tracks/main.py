@@ -10,6 +10,7 @@ load_dotenv()
 redirect_uri = os.getenv('redirect_uri')
 client_id = os.getenv('client_id')
 client_secret = os.getenv('secret_id')
+proxy_host = "/proxy/8888"
 
 url = authorization.request_user_authorization(redirect_uri, client_id, client_secret)
 
@@ -19,7 +20,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html', url=url)
 
-@app.route("/callback")
+@app.route('/callback')
 def callback():
     code = request.args.get('code')
     access_token, refresh_token = authorization.request_access_token(client_id, client_secret, code, redirect_uri)
@@ -31,7 +32,8 @@ def callback():
                                             access_token=access_token,
                                             refresh_token=refresh_token,
                                             user_profile=user_profile,
-                                            playlist_id=playlist_id
+                                            playlist_id=playlist_id,
+                                            proxy_host=proxy_host
                                             ))
 
     response.set_cookie('access_token', access_token)
@@ -48,7 +50,7 @@ def profile():
     if access_token:
         user_profile = spotify.get_user_profile(access_token)
 
-        response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token, user_profile=user_profile, playlist_id=playlist_id))
+        response = make_response(render_template('profile.html', access_token=access_token, refresh_token=refresh_token, user_profile=user_profile, playlist_id=playlist_id, proxy_host=proxy_host))
         response.set_cookie('user_id', user_profile['id'])
         return response
     else:
