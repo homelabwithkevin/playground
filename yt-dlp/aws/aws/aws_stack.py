@@ -3,7 +3,9 @@ from aws_cdk import (
     Stack,
     aws_dynamodb as dynamodb,
     aws_sqs as sqs,
-    CfnOutput
+    aws_lambda as _lambda,
+    CfnOutput,
+    Duration
 )
 
 from constructs import Construct
@@ -30,6 +32,20 @@ class AwsStack(Stack):
 
             # Queue
             myqueue = sqs.Queue(self, "hlb-Queue")
+
+            # Lambda
+            _lambda.Function(
+                self,
+                "hlb-Lambda",
+                timeout = Duration.minutes(5),
+                handler = "lambda.handler",
+                runtime = _lambda.Runtime.PYTHON_3_11,
+                code = _lambda.Code.from_asset("../code"),
+                environment = {
+                    "TABLE_NAME": table.table_name,
+                    "QUEUE_URL": myqueue.queue_url
+                }
+            )
 
             # Outputs
             CfnOutput(
