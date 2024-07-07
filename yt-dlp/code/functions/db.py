@@ -17,3 +17,19 @@ def put_item(table, item):
 
     if not response['ResponseMetadata']['HTTPStatusCode'] == 200:
         print(f'Failed to put_item')
+
+def scan(table):
+    """
+        Scan DynamoDB Table
+
+        Args:
+            table (str): The name of the table.
+    """
+    response = client.scan(
+        TableName=table
+    )
+
+    if not response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        print(f'Failed to scan')
+    else:
+        return response['Items']
