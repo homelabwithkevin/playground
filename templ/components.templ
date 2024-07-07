@@ -1,7 +1,21 @@
 package main
 
+import "time"
+
 templ hello(){
     <div>
         Hello
+    </div>
+}
+
+templ timeComponent(d time.Time) {
+    <div>
+        { d.String() }
+    </div>
+}
+
+templ notFoundComponent() {
+    <div>
+        404 - Not found
     </div>
 }
