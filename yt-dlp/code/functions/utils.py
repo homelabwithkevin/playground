@@ -27,15 +27,13 @@ def get_channel_entries(URL, LIMIT):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(URL, download=False)
 
-        # for key, value in enumerate(info):
-        #     print(f'{value} = info["{value}"]')
-
         entries = info['entries']
         uploader_id = info['uploader_id']
+        parsed_entries = parse_channel_entries(uploader_id=uploader_id, entries=entries, parse_video=False )
 
         return {
             'uploader_id': uploader_id,
-            'entries': parse_channel_entries(uploader_id=uploader_id, entries=entries, parse_video=False),
+            'entries': parsed_entries,
             'info': info
         }
 
@@ -52,7 +50,6 @@ def parse_channel_entries(uploader_id, entries, parse_video):
         list: A list of video data dictionaries.
 
     """
-
     list_videos = []
 
     for entry in entries:
