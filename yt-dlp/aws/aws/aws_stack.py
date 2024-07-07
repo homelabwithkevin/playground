@@ -2,6 +2,7 @@ from aws_cdk import (
     # Duration,
     Stack,
     aws_dynamodb as dynamodb,
+    aws_sqs as sqs,
     CfnOutput
 )
 
@@ -11,6 +12,8 @@ class AwsStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None: 
             super().__init__(scope, construct_id, **kwargs)
+
+            # DynamoDB Table
             table = dynamodb.Table(
                 self, 
                 "Table",
@@ -25,8 +28,18 @@ class AwsStack(Stack):
                 )
             )
 
+            # Queue
+            myqueue = sqs.Queue(self, "hlb-Queue")
+
+            # Outputs
             CfnOutput(
                 self,
                 "TableName",
                 value=table.table_name,
+            )
+
+            CfnOutput(
+                self,
+                "Queue",
+                value=myqueue.queue_url,
             )
