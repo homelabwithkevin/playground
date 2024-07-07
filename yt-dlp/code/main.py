@@ -1,7 +1,7 @@
 """
     Runs Flask app to get YouTube channel entries and video information.
 """
-from flask import Flask
+from flask import Flask, request
 from functions.utils import get_channel_entries, parse_video_information
 
 LIMIT = 1
@@ -11,13 +11,18 @@ CHANNEL_URL = 'https://www.youtube.com/@MrBeast/videos'
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world():
+def index():
     return get_channel_entries(URL=CHANNEL_URL, LIMIT=LIMIT)
 
 @app.route("/channel_id/<id>")
 def channel_id(id):
+    limit = request.args.get('limit')
+
+    if not limit:
+        limit = LIMIT
+
     URL = f'https://www.youtube.com/{id}/videos'
-    return get_channel_entries(URL=URL, LIMIT=1)
+    return get_channel_entries(URL=URL, LIMIT=limit)
 
 @app.route("/video_id/<id>")
 def video_id(id):
