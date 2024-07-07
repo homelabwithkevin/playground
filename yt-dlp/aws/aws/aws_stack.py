@@ -34,7 +34,7 @@ class AwsStack(Stack):
             myqueue = sqs.Queue(self, "hlb-Queue")
 
             # Lambda
-            _lambda.Function(
+            reader_function = _lambda.Function(
                 self,
                 "hlb-Lambda",
                 timeout = Duration.minutes(5),
@@ -44,8 +44,11 @@ class AwsStack(Stack):
                 environment = {
                     "TABLE_NAME": table.table_name,
                     "QUEUE_URL": myqueue.queue_url
-                }
+                },
             )
+
+            table.grant_read_data(reader_function.role)
+            myqueue.grant_send_messages(reader_function.role)
 
             # Outputs
             CfnOutput(
