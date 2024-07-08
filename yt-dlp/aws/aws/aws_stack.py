@@ -4,6 +4,7 @@ from aws_cdk import (
     aws_dynamodb as dynamodb,
     aws_sqs as sqs,
     aws_lambda as _lambda,
+    aws_lambda_event_sources as eventsources,
     CfnOutput,
     Duration
 )
@@ -31,9 +32,9 @@ class AwsStack(Stack):
             )
 
             # Queue
-            myqueue = sqs.Queue(self, "hlb-Queue")
+            myqueue = sqs.Queue(self, "hlb-Queue", visibility_timeout=Duration.minutes(5))
 
-            # Lambda
+            # Lambdas
             reader_function = _lambda.Function(
                 self,
                 "hlb-Lambda",
@@ -49,6 +50,21 @@ class AwsStack(Stack):
 
             table.grant_read_data(reader_function.role)
             myqueue.grant_send_messages(reader_function.role)
+
+            queue_function = _lambda.Function(
+                self,
+                "hlb-Lambda-queue",
+                timeout = Duration.minutes(5),
+                handler = "func_queue.handler",
+                runtime = _lambda.Runtime.PYTHON_3_11,
+                code = _lambda.Code.from_asset("../code"),
+                environment = {
+                    "TABLE_NAME": table.table_name,
+                    "QUEUE_URL": myqueue.queue_url
+                },
+            )
+
+            queue_function.add_event_source(eventsources.SqsEventSource(myqueue))
 
             # Outputs
             CfnOutput(
