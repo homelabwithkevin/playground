@@ -5,6 +5,7 @@ from aws_cdk import (
     aws_sqs as sqs,
     aws_lambda as _lambda,
     aws_lambda_event_sources as eventsources,
+    aws_logs as logs,
     CfnOutput,
     Duration
 )
@@ -40,6 +41,7 @@ class AwsStack(Stack):
                 "hlb-Lambda",
                 timeout = Duration.minutes(5),
                 handler = "lambda.handler",
+                log_retention = logs.RetentionDays.FIVE_DAYS,
                 runtime = _lambda.Runtime.PYTHON_3_11,
                 code = _lambda.Code.from_asset("../code"),
                 environment = {
@@ -56,6 +58,7 @@ class AwsStack(Stack):
                 "hlb-Lambda-queue",
                 timeout = Duration.minutes(5),
                 handler = "func_queue.handler",
+                log_retention = logs.RetentionDays.FIVE_DAYS,
                 runtime = _lambda.Runtime.PYTHON_3_11,
                 code = _lambda.Code.from_asset("../code"),
                 environment = {
