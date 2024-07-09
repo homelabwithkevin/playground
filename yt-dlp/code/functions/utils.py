@@ -84,7 +84,17 @@ def parse_video_information(URL, VIDEO=False):
     Returns:
         tuple: A tuple containing the thumbnail URL and upload date of the video.
     """
-    with yt_dlp.YoutubeDL() as ydl:
+    ydl_opts = {
+            'outtmpl': '%(id)s/%(id)s.%(ext)s',
+            'ignoreerrors': True,
+            'format': 'bestvideo*+bestaudio/best',
+            'merge_output_format': 'mp4',
+            'quiet': True,
+            'cachedir': False,
+            'extract_flat': True,
+        }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(URL, download=False)
 
         if VIDEO:
