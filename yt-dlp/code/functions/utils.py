@@ -119,11 +119,10 @@ def make_string_item(data, video=False):
 
     for key, value in enumerate(data):
         if video:
-            if value == 'format' or value == 'requested_formats' or value == 'automatic_captions' or value == 'subtitles' or value == 'thumbnails':
-                pass
-
-        item[value] = {
-            'S': str(data[value])
-        }
+            if value == 'id' or value == 'id' or value == 'uploader_id' or value == 'duration' or value == 'title' or value == 'url' \
+                or value == 'like_count' or value == 'view_count' or value == 'comment_count' or value == 'channel_follower_count' or value == 'upload_date':
+                item[value] = {
+                    'S': str(data[value])
+                }
 
     return item
