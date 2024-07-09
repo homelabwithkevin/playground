@@ -6,7 +6,6 @@ def handler(event, context):
     for record in event['Records']:
         message = json.loads(record['body'])
         id = message['id']['S']
-        id = "erLbbextvlY"
 
     URL = f'https://www.youtube.com/watch?v={id}'
     result = utils.parse_video_information(URL=URL, VIDEO=True)
