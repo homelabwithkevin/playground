@@ -50,6 +50,7 @@ class AwsStack(Stack):
             reader_function = _lambda.Function(
                 self,
                 "hlb-Lambda",
+                function_name = "hlb-Lambda",
                 timeout = Duration.minutes(5),
                 handler = "lambda.handler",
                 log_retention = logs.RetentionDays.FIVE_DAYS,
@@ -67,6 +68,7 @@ class AwsStack(Stack):
             queue_function = _lambda.Function(
                 self,
                 "hlb-Lambda-queue",
+                function_name = "hlb-Lambda-queue",
                 timeout = Duration.minutes(5),
                 handler = "func_queue.handler",
                 log_retention = logs.RetentionDays.FIVE_DAYS,
@@ -81,6 +83,7 @@ class AwsStack(Stack):
             )
 
             queue_function.add_event_source(eventsources.SqsEventSource(myqueue))
+            table.grant_read_write_data(queue_function.role)
 
             # Outputs
             CfnOutput(

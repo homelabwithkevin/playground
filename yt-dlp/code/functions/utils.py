@@ -1,5 +1,9 @@
 import yt_dlp
 import json
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def get_channel_entries(URL, LIMIT):
     """
@@ -24,12 +28,15 @@ def get_channel_entries(URL, LIMIT):
             'extract_flat': True,
         }
 
+    logger.info(f'Getting Channel Entries...')
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(URL, download=False)
 
         entries = info['entries']
         uploader_id = info['uploader_id']
         parsed_entries = parse_channel_entries(uploader_id=uploader_id, entries=entries, parse_video=False )
+
+        logger.info(f'Complete - Getting Channel Entries')
 
         return {
             'uploader_id': uploader_id,
@@ -52,6 +59,7 @@ def parse_channel_entries(uploader_id, entries, parse_video):
     """
     list_videos = []
 
+    logger.info(f'Parsing Channel Entries...')
     for entry in entries:
 
         url = entry['url']
@@ -72,6 +80,7 @@ def parse_channel_entries(uploader_id, entries, parse_video):
 
         list_videos.append(data)
 
+    logger.info(f'Complete - Parsing Channel Entries')
     return list_videos
 
 def parse_video_information(URL, VIDEO=False):
@@ -94,6 +103,7 @@ def parse_video_information(URL, VIDEO=False):
             'extract_flat': True,
         }
 
+    logger.info(f'Parsing Video Information...')
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(URL, download=False)
 
@@ -103,4 +113,31 @@ def parse_video_information(URL, VIDEO=False):
         thumbnail = info['thumbnail']
         upload_date = info['upload_date']
 
+        logger.info(f'Complete - Parsing Video Information')
         return thumbnail, upload_date
+
+def make_string_item(data, video=False):
+    """
+        Creates an item for usage with DynamoDB from the key-value pairs of the given data.
+
+        Args:
+            data: json data
+        
+        Returns:
+            dict: A dictionary for usage with DynamoDB (forces S(string) type)
+    """
+    item = {}
+
+    logger.info(f'Making String Items...video={video}')
+    for key, value in enumerate(data):
+        if video:
+            if value == 'id' or value == 'id' or value == 'uploader_id' or value == 'duration' \
+                or value == 'title' or value == 'url' or value == 'like_count' or value == 'view_count' \
+                or value == 'comment_count' or value == 'channel_follower_count' or value == 'upload_date':
+
+                item[value] = {
+                    'S': str(data[value])
+                }
+
+    logger.info(f'Complete - Making String Items')
+    return item

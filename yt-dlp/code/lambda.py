@@ -1,7 +1,7 @@
 import os
 from functions import db, sqs
 
-table = "hlb-yt-dlp-TableCD117FA1-1B6DOH7B3U9CE"
+table = os.getenv('TABLE_NAME')
 queue = os.getenv("QUEUE_URL")
 
 def handler(event, context):
