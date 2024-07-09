@@ -117,10 +117,9 @@ def make_string_item(data):
     """
     item = {}
 
-    for d in data:
-        for key, value in enumerate(d):
-            item[value] = {
-                'S': str(data[value])
-            }
+    for key, value in enumerate(data):
+        item[value] = {
+            'S': str(data[value])
+        }
 
     return item
