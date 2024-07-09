@@ -14,5 +14,5 @@ def handler(event, context):
     URL = f'https://www.youtube.com/watch?v={id}'
     video_info = utils.parse_video_information(URL=URL, VIDEO=True)
 
-    parsed_item = utils.make_string_item(video_info)
+    parsed_item = utils.make_string_item(data=video_info, video=True)
     db.put_item(table, parsed_item)
