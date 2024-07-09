@@ -105,7 +105,7 @@ def parse_video_information(URL, VIDEO=False):
 
         return thumbnail, upload_date
 
-def make_string_item(data):
+def make_string_item(data, video=False):
     """
         Creates an item for usage with DynamoDB from the key-value pairs of the given data.
 
@@ -118,6 +118,10 @@ def make_string_item(data):
     item = {}
 
     for key, value in enumerate(data):
+        if video:
+            if value == 'format' or value == 'requested_formats' or value == 'automatic_captions' or value == 'subtitles' or value == 'thumbnails':
+                pass
+
         item[value] = {
             'S': str(data[value])
         }
