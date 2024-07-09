@@ -104,3 +104,23 @@ def parse_video_information(URL, VIDEO=False):
         upload_date = info['upload_date']
 
         return thumbnail, upload_date
+
+def make_string_item(data):
+    """
+        Creates an item for usage with DynamoDB from the key-value pairs of the given data.
+
+        Args:
+            data: json data
+        
+        Returns:
+            dict: A dictionary for usage with DynamoDB (forces S(string) type)
+    """
+    item = {}
+
+    for d in data:
+        for key, value in enumerate(d):
+            item[value] = {
+                'S': str(entry[value])
+            }
+
+    return item
