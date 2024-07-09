@@ -83,6 +83,7 @@ class AwsStack(Stack):
             )
 
             queue_function.add_event_source(eventsources.SqsEventSource(myqueue))
+            table.grant_read_write_data(queue_function.role)
 
             # Outputs
             CfnOutput(
