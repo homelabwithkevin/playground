@@ -35,6 +35,17 @@ class AwsStack(Stack):
             # Queue
             myqueue = sqs.Queue(self, "hlb-Queue", visibility_timeout=Duration.minutes(5))
 
+            # Lambda Layer
+            layer_yt_dlp = _lambda.LayerVersion(
+                self,
+                "yt-dlp",
+                code = _lambda.Code.from_custom_command(
+                    command = ["pip", "install", "yt-dlp", "-t", "../layers/yt-dlp/python"],
+                    output = "../layers/yt-dlp"
+                ),
+                compatible_runtimes = [_lambda.Runtime.PYTHON_3_11]
+            )
+
             # Lambdas
             reader_function = _lambda.Function(
                 self,
@@ -61,6 +72,8 @@ class AwsStack(Stack):
                 log_retention = logs.RetentionDays.FIVE_DAYS,
                 runtime = _lambda.Runtime.PYTHON_3_11,
                 code = _lambda.Code.from_asset("../code"),
+                layers = [layer_yt_dlp],
+                memory_size = 1024,
                 environment = {
                     "TABLE_NAME": table.table_name,
                     "QUEUE_URL": myqueue.queue_url
