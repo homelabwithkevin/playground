@@ -25,7 +25,7 @@ Resources:
         - python3.10
         - python3.11
     Metadata:
-      BuildMethod: python3.10
+      BuildMethod: python3.11
 
   urllib:
     Type: AWS::Serverless::LayerVersion
@@ -37,7 +37,7 @@ Resources:
         - python3.10
         - python3.11
     Metadata:
-      BuildMethod: python3.10
+      BuildMethod: python3.11
 
   ytdlp:
     Type: AWS::Serverless::LayerVersion
@@ -49,7 +49,7 @@ Resources:
         - python3.10
         - python3.11
     Metadata:
-      BuildMethod: python3.10
+      BuildMethod: python3.11
 
   ApiGatewayApi:
     Type: AWS::Serverless::Api
