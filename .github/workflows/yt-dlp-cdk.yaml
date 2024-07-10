@@ -11,6 +11,10 @@ permissions:
   id-token: write
   contents: read
 
+default:
+  runs:
+    working_directory: yt-dlp/aws
+
 jobs:
   deploy:
     name: Deploy
