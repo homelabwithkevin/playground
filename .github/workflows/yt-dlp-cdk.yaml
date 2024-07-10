@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 defaults:
-  runs:
+  run:
     working_directory: yt-dlp/aws
 
 jobs:
