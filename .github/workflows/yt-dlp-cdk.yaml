@@ -28,7 +28,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: us-east-2
+        aws-region: ${{ env.AWS_REGION }}
         role-to-assume: arn:aws:iam::654654599343:role/github-oidc-Role-D3eCEyNBMTFo
 
     - name: Install CDK
