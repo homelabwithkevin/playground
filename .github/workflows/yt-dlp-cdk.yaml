@@ -43,6 +43,7 @@ jobs:
       run: pip install aws-cdk-lib
             
     - name: CDK Synth
+      if: false
       run: cdk synth
 
     - name: CDK Deploy
