@@ -3,6 +3,8 @@ name: yt-dlp - Deploy to AWS
 on:
   push:
     branches: [ "main", "yt-dlp/**" ]
+  schedule:
+    - cron: "0 */8 * * *"
 
 env:
   AWS_REGION: us-east-1
