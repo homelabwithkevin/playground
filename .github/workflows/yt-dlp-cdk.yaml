@@ -2,7 +2,7 @@ name: yt-dlp - Deploy to AWS
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "yt-dlp/**" ]
 
 env:
   AWS_REGION: us-east-1
