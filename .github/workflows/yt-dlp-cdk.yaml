@@ -34,5 +34,10 @@ jobs:
     - name: Install CDK
       run: npm install -g aws-cdk   
 
+    - name: Setup Python
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: python3.11
+            
     - name: CDK Synth
       run: cdk synth
