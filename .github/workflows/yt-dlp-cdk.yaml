@@ -11,7 +11,7 @@ permissions:
   id-token: write
   contents: read
 
-default:
+defaults:
   runs:
     working_directory: yt-dlp/aws
 
