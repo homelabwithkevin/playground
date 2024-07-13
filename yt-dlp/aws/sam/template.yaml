@@ -8,15 +8,26 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
-    MemorySize: 128
+    Timeout: 300
+    MemorySize: 256
+    Architectures:
+      - x86_64
 
 Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  ytdlp:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: hlb-yt-dlp
+      Description: hlb-yt-dlp
+      ContentUri: ../../layers/yt-dlp
+      CompatibleRuntimes:
+        - python3.11
+    Metadata:
+      BuildMethod: python3.11
+
+  Function:
+    Type: AWS::Serverless::Function 
     Properties:
       CodeUri: hello_world/
       Handler: app.lambda_handler
       Runtime: python3.11
-      Architectures:
-        - x86_64
