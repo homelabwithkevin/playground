@@ -1,11 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  sam
-
-  Sample SAM Template for sam
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Description: hlb-yt-dlp
 Globals:
   Function:
     Timeout: 300
@@ -14,6 +9,7 @@ Globals:
       - x86_64
 
 Resources:
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
   ytdlp:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -25,6 +21,7 @@ Resources:
     Metadata:
       BuildMethod: python3.11
 
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   Function:
     Type: AWS::Serverless::Function 
     Properties:
@@ -37,6 +34,7 @@ Resources:
       Layers:
         - !Ref ytdlp
 
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
   Table: 
     Type: AWS::DynamoDB::Table
     Properties: 
