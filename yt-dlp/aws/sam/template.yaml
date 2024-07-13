@@ -29,6 +29,11 @@ Resources:
       Handler: func_queue.handler
       Runtime: python3.11
       MemorySize: 1024
+      Events:
+        Queue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt Queue.Arn
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
@@ -38,6 +43,24 @@ Resources:
             TableName: !Ref Table
       Layers:
         - !Ref ytdlp
+
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  FunctionRead:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: ../../code/
+      Handler: func_read.handler
+      Runtime: python3.11
+      MemorySize: 128
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          QUEUE_URL: !Ref Queue
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt Queue.QueueName
 
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
   Table: 
@@ -65,3 +88,5 @@ Resources:
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
   Queue: 
     Type: AWS::SQS::Queue
+    Properties: 
+      VisibilityTimeout: 300
