@@ -22,12 +22,17 @@ Resources:
       BuildMethod: python3.11
 
   # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-  Function:
+  FunctionQueue:
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
+      CodeUri: ../../code/
+      Handler: func_queue.handler
       Runtime: python3.11
+      MemorySize: 1024
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          QUEUE_URL: !Ref Queue
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
