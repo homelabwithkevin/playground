@@ -56,3 +56,7 @@ Resources:
         - 
           AttributeName: "uploader_id"
           KeyType: "RANGE"
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
+  Queue: 
+    Type: AWS::SQS::Queue
