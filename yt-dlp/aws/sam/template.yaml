@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: hlb-yt-dlp
+Globals:
+  Function:
+    Timeout: 300
+    MemorySize: 256
+    Architectures:
+      - x86_64
+
+Resources:
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
+  ytdlp:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: hlb-yt-dlp
+      Description: hlb-yt-dlp
+      ContentUri: ../../layers/yt-dlp
+      CompatibleRuntimes:
+        - python3.11
+    Metadata:
+      BuildMethod: python3.11
+
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  FunctionQueue:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: ../../code/
+      Handler: func_queue.handler
+      Runtime: python3.11
+      MemorySize: 1024
+      Events:
+        Queue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt Queue.Arn
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          QUEUE_URL: !Ref Queue
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+      Layers:
+        - !Ref ytdlp
+
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  FunctionRead:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: ../../code/
+      Handler: func_read.handler
+      Runtime: python3.11
+      MemorySize: 128
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          QUEUE_URL: !Ref Queue
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref Table
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt Queue.QueueName
+
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+  Table: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      BillingMode: PAY_PER_REQUEST
+      DeletionProtectionEnabled: false
+      PointInTimeRecoverySpecification: 
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions: 
+        - 
+          AttributeName: "id"
+          AttributeType: "S"
+        - 
+          AttributeName: "uploader_id"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+        - 
+          AttributeName: "uploader_id"
+          KeyType: "RANGE"
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
+  Queue: 
+    Type: AWS::SQS::Queue
+    Properties: 
+      VisibilityTimeout: 300
