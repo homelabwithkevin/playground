@@ -4,7 +4,7 @@ version = 0.1
 
 [default]
 [default.global.parameters]
-stack_name = "block-igw"
+stack_name = "hlb-block-igw"
 
 [default.build.parameters]
 cached = true
@@ -15,7 +15,7 @@ lint = true
 
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
+confirm_changeset = false
 resolve_s3 = true
 stack_name = "hlb-block-igw"
 s3_prefix = "hlb-block-igw"
