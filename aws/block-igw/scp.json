@@ -12,7 +12,10 @@
       ],
       "Condition": {
         "ArnNotEquals": {
-          "aws:PrincipalArn": "arn:aws:iam::example"
+          "aws:PrincipalArn": "arn:aws:iam::accountId:role/roleName"
+        },
+        "StringNotEquals": {
+          "aws:SourceAccount": "accountId"
         }
       }
     }
