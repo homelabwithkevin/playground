@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "BlogIGW",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:CreateInternetGateway"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "ArnNotEquals": {
+          "aws:PrincipalArn": "arn:aws:iam::accountId:role/roleName"
+        },
+        "StringNotEquals": {
+          "aws:SourceAccount": "accountId"
+        }
+      }
+    }
+  ]
+}
