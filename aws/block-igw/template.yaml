@@ -20,3 +20,10 @@ Resources:
       Runtime: python3.11
       Architectures:
         - x86_64
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'ec2:Create*'
+              Resource: '*'
