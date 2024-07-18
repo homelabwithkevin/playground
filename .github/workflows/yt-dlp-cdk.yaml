@@ -1,10 +1,11 @@
 name: yt-dlp - Deploy to AWS
 
-# on:
+on:
   # push:
   #   branches: [ "main", "yt-dlp/**" ]
   # schedule:
   #   - cron: "0 16 * * *"
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
