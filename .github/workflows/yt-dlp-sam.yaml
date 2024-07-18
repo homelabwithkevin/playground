@@ -3,8 +3,8 @@ name: yt-dlp - Deploy to AWS via AWS SAM
 on:
   push:
     branches: [ "main", "**"]
-    paths:
-      - yt-dlp/sam
+    # paths:
+    #   - yt-dlp/sam
 
   schedule:
      - cron: "0 16 * * *"
