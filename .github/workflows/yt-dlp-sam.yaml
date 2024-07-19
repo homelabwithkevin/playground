@@ -20,7 +20,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: yt-dlp/sam
+    working-directory: ./yt-dlp/sam
 
 jobs:
   deploy:
