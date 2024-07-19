@@ -64,6 +64,6 @@ jobs:
         sam build
 
     - name: AWS SAM Deploy
-      if: false
+      if: true
       run: |
         sam deploy
