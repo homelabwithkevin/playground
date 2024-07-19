@@ -1,5 +1,7 @@
 # Read Me
 
+[![yt-dlp - Deploy to AWS via AWS SAM](https://github.com/homelabwithkevin/playground/actions/workflows/yt-dlp-sam.yaml/badge.svg)](https://github.com/homelabwithkevin/playground/actions/workflows/yt-dlp-sam.yaml)
+
 # Flow
 
 ```mermaid
