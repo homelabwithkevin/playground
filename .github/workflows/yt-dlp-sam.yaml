@@ -56,7 +56,7 @@ jobs:
       if: true
       with:
         aws-region: ${{ env.AWS_REGION }}
-        role-to-assume: ${{ env.AWS_IAM_ROLE }}
+        role-to-assume: ${{ var.AWS_IAM_ROLE }}
 
     - name: AWS SAM Build
       if: true
