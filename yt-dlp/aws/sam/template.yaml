@@ -23,7 +23,7 @@ Resources:
 
   # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   FunctionQueue:
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: ../../code/
       Handler: func_queue.handler
@@ -46,7 +46,7 @@ Resources:
 
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   FunctionRead:
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: ../../code/
       Handler: func_read.handler
@@ -62,31 +62,51 @@ Resources:
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
 
+  FunctionAPI:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../code/
+      Handler: api.lambda_handler
+      Runtime: python3.11
+      Layers:
+        - !Ref ytdlp
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
-  Table: 
+  Table:
     Type: AWS::DynamoDB::Table
-    Properties: 
+    Properties:
       BillingMode: PAY_PER_REQUEST
       DeletionProtectionEnabled: false
-      PointInTimeRecoverySpecification: 
+      PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
-      AttributeDefinitions: 
-        - 
+      AttributeDefinitions:
+        -
           AttributeName: "id"
           AttributeType: "S"
-        - 
+        -
           AttributeName: "uploader_id"
           AttributeType: "S"
-      KeySchema: 
-        - 
+      KeySchema:
+        -
           AttributeName: "id"
           KeyType: "HASH"
-        - 
+        -
           AttributeName: "uploader_id"
           KeyType: "RANGE"
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
-  Queue: 
+  Queue:
     Type: AWS::SQS::Queue
-    Properties: 
+    Properties:
       VisibilityTimeout: 300
+
+
+Outputs:
+  Api:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
