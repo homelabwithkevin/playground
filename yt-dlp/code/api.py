@@ -17,14 +17,11 @@ def lambda_handler(event, context):
             query_parameter_url = event['queryStringParameters']['url']
             url, _type = utils.handle_url(url=query_parameter_url)
 
-        print(url, _type)
-
         if _type == 'video':
             results = utils.parse_video_information(URL=url, VIDEO=True)
 
         elif _type == 'channel':
             results = utils.get_channel_entries(URL=url, LIMIT=limit)
-
 
     if not results:
         return {
