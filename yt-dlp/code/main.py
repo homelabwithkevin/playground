@@ -2,7 +2,7 @@
     Runs Flask app to get YouTube channel entries and video information.
 """
 from flask import Flask, request
-from functions.utils import get_channel_entries, parse_video_information
+from functions.utils import get_channel_entries, parse_video_information, parse_playlist
 
 LIMIT = 1
 CHANNEL_URL = 'https://www.youtube.com/@MrBeast/videos'
@@ -14,13 +14,18 @@ app = Flask(__name__)
 def index():
     video = False
     channel = False
+    playlist = False
 
     # Handle URL query parameter
     try:
         url = request.args.get('url')
 
+        # https://www.youtube.com/playlist?list=PLLGT0cEMIAzcgeiwgZSZ81S06WQQG4rFk
+        if 'playlist' in url:
+            playlist = True
+
         # https://youtu.be/4SNThp0YiU4
-        if 'youtu.be' in url:
+        elif 'youtu.be' in url:
             video = True
             id = url.split('/')[3]
             id = id.split('?')[0]
@@ -42,8 +47,12 @@ def index():
     except:
         pass
 
-    if video:
+    if playlist:
+        return parse_playlist(URL=url)
+
+    elif video:
         return parse_video_information(URL=url, VIDEO=True)
+
     elif channel:
         return get_channel_entries(URL=url, LIMIT=LIMIT)
     else:

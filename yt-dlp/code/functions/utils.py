@@ -144,7 +144,7 @@ def make_string_item(data, video=False):
 
 def handle_url(url):
     """
-        Handle incoing URL Query Parameter based on URL and string filters.
+        Handle incoming URL Query Parameter based on URL and string filters.
         Args:
             url: string
         Returns:
@@ -154,8 +154,12 @@ def handle_url(url):
 
     _type = None
 
+    # https://www.youtube.com/playlist?list=PLLGT0cEMIAzcgeiwgZSZ81S06WQQG4rFk
+    if 'playlist' in url:
+        _type = 'playlist'
+
     # https://youtu.be/4SNThp0YiU4
-    if 'youtu.be' in url:
+    elif 'youtu.be' in url:
         _type = 'video'
         id = url.split('/')[3]
         id = id.split('?')[0]
@@ -177,3 +181,50 @@ def handle_url(url):
         print(f'default: {url}')
     
     return url, _type
+
+def parse_playlist_info(info):
+    return {
+        "id": info['id'],
+        "modified_date": info['modified_date'],
+        "playlist_count": info['playlist_count'],
+        "title": info['title'],
+        "view_count": info['view_count'],
+        "thumbnail": info['thumbnails'][-1]['url'],
+    }
+
+def parse_playlist(URL):
+    """
+    Parses the playlist information for a given URL.
+
+    Args:
+        URL (str): The URL of the playlist.
+
+    Returns:
+        tuple: A tuple containing information about the playlist.
+            - entries: Information about the videos in the playlist
+            - playlist_info: Information about the playlist like play view count, thumbnail, etc.
+            - info: The raw information
+    """
+
+    ydl_opts = {
+            'outtmpl': '%(id)s/%(id)s.%(ext)s',
+            'ignoreerrors': True,
+            'format': 'bestvideo*+bestaudio/best',
+            'merge_output_format': 'mp4',
+            'quiet': True,
+            'cachedir': False,
+            'extract_flat': True,
+        }
+
+    logger.info(f'Parsing Playlist Information...')
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(URL, download=False)
+
+        logger.info(f'Complete - Parsing Playist Information')
+
+        return {
+            "entries": parse_channel_entries(uploader_id=info['uploader_id'], entries=info['entries'], parse_video=False),
+            "playlist_info": parse_playlist_info(info),
+            "info": info
+        }

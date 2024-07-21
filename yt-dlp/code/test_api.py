@@ -9,6 +9,7 @@ base_url = f'https://{api_id}.execute-api.us-east-1.amazonaws.com/Prod?url'
 
 video_id = '4SNThp0YiU4'
 channel_id = '@MrBeast'
+playlist_id = 'PLLGT0cEMIAzcgeiwgZSZ81S06WQQG4rFk'
 
 def test_share():
     test_url = f'{base_url}=https://youtu.be/{video_id}'
@@ -37,3 +38,10 @@ def test_channel_videos():
     response_id = response.json()['uploader_id']
     assert response.status_code == 200
     assert response_id == channel_id
+
+def test_playlist():
+    test_url = f'{base_url}=https://www.youtube.com/playlist?list={playlist_id}'
+    response = requests.get(test_url)
+    response_id = response.json()['playlist_info']['id']
+    assert response.status_code == 200
+    assert response_id == playlist_id
