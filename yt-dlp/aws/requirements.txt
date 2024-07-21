@@ -66,6 +66,7 @@ Pygments==2.18.0
 pyOpenSSL==24.1.0
 pytest==8.3.1
 python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
 python-slugify==8.0.4
 pytz==2024.1
 PyYAML==6.0.1
