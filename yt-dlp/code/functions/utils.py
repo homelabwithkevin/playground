@@ -141,3 +141,39 @@ def make_string_item(data, video=False):
 
     logger.info(f'Complete - Making String Items')
     return item
+
+def handle_url(url):
+    """
+        Handle incoing URL Query Parameter based on URL and string filters.
+        Args:
+            url: string
+        Returns:
+            url: As required, creates `/watch?v=` or `/videos` URL
+            _type: channel or video
+    """
+
+    _type = None
+
+    # https://youtu.be/4SNThp0YiU4
+    if 'youtu.be' in url:
+        _type = 'video'
+        id = url.split('/')[3]
+        id = id.split('?')[0]
+        url = f'https://www.youtube.com/watch?v={id}'
+        print(f'share: {url}')
+
+    # https://www.youtube.com/watch?v=4SNThp0YiU4
+    elif 'watch' in url:
+        _type = 'video'
+        id = url.split('=')[1]
+        url = f'https://www.youtube.com/watch?v={id}'
+        print(f'watch: {url}')
+
+    # https://www.youtube.com/@MrBeast
+    else:
+        _type = 'channel'
+        if '/videos' not in url:
+            url = url + '/videos'
+        print(f'default: {url}')
+    
+    return url, _type
