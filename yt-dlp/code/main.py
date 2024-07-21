@@ -12,7 +12,42 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return get_channel_entries(URL=CHANNEL_URL, LIMIT=LIMIT)
+    video = False
+    channel = False
+
+    # Handle URL query parameter
+    try:
+        url = request.args.get('url')
+
+        # https://youtu.be/4SNThp0YiU4
+        if 'youtu.be' in url:
+            video = True
+            id = url.split('/')[3]
+            id = id.split('?')[0]
+            url = f'https://www.youtube.com/watch?v={id}'
+
+        # https://www.youtube.com/watch?v=4SNThp0YiU4
+        elif 'watch' in url:
+            video = True
+            id = url.split('=')[1]
+            url = f'https://www.youtube.com/watch?v={id}'
+
+        # https://www.youtube.com/@MrBeast
+        # https://www.youtube.com/@MrBeast/videos
+        else:
+            channel = True
+            if '/videos' not in url:
+                url = url + '/videos'
+            print(f'default: {url}')
+    except:
+        pass
+
+    if video:
+        return parse_video_information(URL=url, VIDEO=True)
+    elif channel:
+        return get_channel_entries(URL=url, LIMIT=LIMIT)
+    else:
+        return get_channel_entries(URL=CHANNEL_URL, LIMIT=LIMIT)
 
 @app.route("/channel_id/<id>")
 def channel_id(id):
