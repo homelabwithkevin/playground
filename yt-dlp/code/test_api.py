@@ -1,5 +1,5 @@
 
-base_url = 'https://3mvh6tnzx3.execute-api.us-east-1.amazonaws.com/Prod?url'
+base_url = 'https://{replaceMe}.execute-api.us-east-1.amazonaws.com/Prod?url'
 
 import requests
 
