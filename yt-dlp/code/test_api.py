@@ -27,3 +27,10 @@ def test_video():
     response_id = response.json()['id']
     assert response.status_code == 200
     assert response_id == video_id
+
+def test_channel():
+    test_url = f'{base_url}=https://www.youtube.com/{channel_id}'
+    response = requests.get(test_url)
+    response_id = response.json()['uploader_id']
+    assert response.status_code == 200
+    assert response_id == channel_id
