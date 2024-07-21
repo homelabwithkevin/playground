@@ -1,7 +1,11 @@
-
-base_url = 'https://{replaceMe}.execute-api.us-east-1.amazonaws.com/Prod?url'
-
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_id = os.getenv('API_ID')
+base_url = f'https://{api_id}.execute-api.us-east-1.amazonaws.com/Prod?url'
 
 video_id = '4SNThp0YiU4'
 channel_id = '@MrBeast'
