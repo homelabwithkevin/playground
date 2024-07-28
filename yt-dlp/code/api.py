@@ -1,7 +1,10 @@
 import boto3
 import json
+import os
 
-from functions import utils
+from functions import utils, db, utils
+
+table_name = os.getenv('TABLE_NAME')
 
 def lambda_handler(event, context):
     print(event)
@@ -22,9 +25,17 @@ def lambda_handler(event, context):
 
         elif _type == 'video':
             results = utils.parse_video_information(URL=url, VIDEO=True)
+            db.put_item(
+                table_name,
+                utils.make_string_item(data=results, video=True)
+            )
 
         elif _type == 'channel':
             results = utils.get_channel_entries(URL=url, LIMIT=limit)
+            db.put_item(
+                table_name,
+                utils.make_string_item(data=results['entries'][0], video=True)
+            )
 
     if not results:
         return {

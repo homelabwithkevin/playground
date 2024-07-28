@@ -122,6 +122,7 @@ def make_string_item(data, video=False):
 
         Args:
             data: json data
+            video: boolean based on video entry or not
         
         Returns:
             dict: A dictionary for usage with DynamoDB (forces S(string) type)
@@ -131,7 +132,7 @@ def make_string_item(data, video=False):
     logger.info(f'Making String Items...video={video}')
     for key, value in enumerate(data):
         if video:
-            if value == 'id' or value == 'id' or value == 'uploader_id' or value == 'duration' \
+            if value == 'id' or value == 'uploader_id' or value == 'duration' \
                 or value == 'title' or value == 'url' or value == 'like_count' or value == 'view_count' \
                 or value == 'comment_count' or value == 'channel_follower_count' or value == 'upload_date':
 

@@ -71,6 +71,12 @@ Resources:
       Layers:
         - !Ref ytdlp
       MemorySize: 1024
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
       Events:
         Api:
           Type: Api
