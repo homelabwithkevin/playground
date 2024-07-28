@@ -87,6 +87,23 @@ Resources:
             Path: /
             Method: get
 
+  FunctionWebsite:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../code/
+      Handler: website.lambda_handler
+      Runtime: python3.11
+      MemorySize: 1024
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /website
+            Method: get
+
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
   Table:
     Type: AWS::DynamoDB::Table
