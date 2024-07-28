@@ -228,3 +228,22 @@ def parse_playlist(URL):
             "playlist_info": parse_playlist_info(info),
             "info": info
         }
+
+def download(url):
+    logger.info(f'Downloading {url}...')
+
+    ydl_opts = {
+        'outtmpl': '%(id)s/%(id)s.%(ext)s',
+        'playlistend': 1,
+        'ignoreerrors': True,
+        'format': 'bestvideo*+bestaudio/best',
+        'merge_output_format': 'mp4',
+        'quiet': True,
+        'cachedir': False,
+        'extract_flat': True,
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=True)
+        logger.info(f'Complete downloading')
+        return info
