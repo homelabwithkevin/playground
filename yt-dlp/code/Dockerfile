@@ -1,7 +1,7 @@
 FROM python:3-alpine
 
 # Update installed packages and install Apache
-RUN pip install yt-dlp boto3
+RUN pip install yt-dlp boto3 ffmpeg
 
 COPY . .
 
