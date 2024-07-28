@@ -11,7 +11,7 @@ from functions import sqs, utils
 
 queue_url = "https://sqs.us-east-1.amazonaws.com/654654599343/hlb-yt-dlp-QueueEC2-0H6PML5o97qd"
 
-temp = False
+temp = True
 
 if temp:
     youtube_video = 'https://youtube.com/watch?v=4SNThp0YiU4'
@@ -33,6 +33,6 @@ ydl_opts = {
 
 if url:
     print(url)
-    # utils.download(url, ydl_opts)
+    utils.download(json.loads(url))
 else:
     print('No messages.')
