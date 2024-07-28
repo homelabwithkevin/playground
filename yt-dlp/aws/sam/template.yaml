@@ -107,6 +107,11 @@ Resources:
     Properties:
       VisibilityTimeout: 300
 
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
+  QueueEC2:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 10
 
 Outputs:
   Api:
