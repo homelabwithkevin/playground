@@ -74,9 +74,12 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
+          TABLE_CHANNELS: !Ref TableChannels
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableChannels
       Events:
         Api:
           Type: Api
@@ -84,7 +87,7 @@ Resources:
             Path: /
             Method: get
 
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -106,6 +109,23 @@ Resources:
         -
           AttributeName: "uploader_id"
           KeyType: "RANGE"
+
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+  TableChannels:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      DeletionProtectionEnabled: false
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "id"
+          KeyType: "HASH"
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
   Queue:

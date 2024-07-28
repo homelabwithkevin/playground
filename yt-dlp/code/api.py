@@ -5,6 +5,7 @@ import os
 from functions import utils, db, utils
 
 table_name = os.getenv('TABLE_NAME')
+table_channels = os.getenv('TABLE_CHANNELS')
 
 def lambda_handler(event, context):
     print(event)
@@ -35,6 +36,11 @@ def lambda_handler(event, context):
             db.put_item(
                 table_name,
                 utils.make_string_item(data=results['entries'][0], video=True)
+            )
+
+            db.put_item(
+                table_channels,
+                utils.make_string_item(data=results['info'], channel=True)
             )
 
     if not results:
