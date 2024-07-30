@@ -9,6 +9,16 @@ Globals:
       - x86_64
 
 Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: hlb-yt-dlp
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
   ytdlp:
     Type: AWS::Serverless::LayerVersion
