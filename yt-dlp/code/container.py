@@ -14,25 +14,15 @@ queue_url = "https://sqs.us-east-1.amazonaws.com/654654599343/hlb-yt-dlp-QueueEC
 temp = True
 
 if temp:
-    youtube_video = 'https://youtube.com/watch?v=4SNThp0YiU4'
+    youtube_video = 'https://www.youtube.com/watch?v=I7-hxTbpscU'
 
     sqs.publish(queue_url, youtube_video)
 
-url = sqs.receive_message(queue_url=queue_url)
-
-ydl_opts = {
-        'outtmpl': '%(id)s/%(id)s.%(ext)s',
-        'playlistend': 1,
-        'ignoreerrors': True,
-        'format': 'bestvideo*+bestaudio/best',
-        'merge_output_format': 'mp4',
-        'quiet': True,
-        'cachedir': False,
-        'extract_flat': True,
-    }
+url = json.loads(sqs.receive_message(queue_url=queue_url))
 
 if url:
     print(url)
-    utils.download(json.loads(url))
+    video_id = url.split('=')[1]
+    # utils.download(json.loads(url), '/media/')
 else:
     print('No messages.')
