@@ -242,11 +242,11 @@ def parse_playlist(URL):
             "info": info
         }
 
-def download(url):
+def download(url, path):
     logger.info(f'Downloading {url}...')
 
     ydl_opts = {
-        'outtmpl': '%(id)s/%(id)s.%(ext)s',
+        'outtmpl': f'{path}%(id)s/%(id)s.%(ext)s',
         'playlistend': 1,
         'ignoreerrors': True,
         'format': 'bestvideo*+bestaudio/best',
