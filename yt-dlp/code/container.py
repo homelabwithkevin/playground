@@ -24,7 +24,7 @@ url = json.loads(sqs.receive_message(queue_url=queue_url))
 if url:
     print(url)
     video_id = url.split('=')[1]
-    utils.download(json.loads(url), '/media/')
+    utils.download(url, '/media/')
     s3.upload_file(f'/media/{video_id}/{video_id}.mp4', bucket, f'{video_id}/{video_id}.mp4')
 else:
     print('No messages.')
