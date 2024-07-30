@@ -19,10 +19,11 @@ if temp:
 
     sqs.publish(queue_url, youtube_video)
 
-url = json.loads(sqs.receive_message(queue_url=queue_url))
+url = sqs.receive_message(queue_url=queue_url)
 
 if url:
     print(url)
+    url = json.loads(url)
     video_id = url.split('=')[1]
     utils.download(url, '/media/')
     s3.upload_file(f'/media/{video_id}/{video_id}.mp4', bucket, f'{video_id}/{video_id}.mp4')
