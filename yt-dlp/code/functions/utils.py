@@ -1,9 +1,13 @@
 import yt_dlp
 import json
 import logging
+from datetime import datetime
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+def today():
+    return datetime.strftime(datetime.now(), '%Y-%m-%d-%H-%M-%S')
 
 def get_channel_entries(URL, LIMIT):
     """

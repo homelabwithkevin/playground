@@ -9,10 +9,10 @@ logger.setLevel(logging.INFO)
 
 from functions import sqs, utils, s3
 
-queue_url = "https://sqs.us-east-1.amazonaws.com/654654599343/hlb-yt-dlp-QueueEC2-0H6PML5o97qd"
+queue_url = "https://sqs.us-east-1.amazonaws.com/654654599343/hlb-yt-dlp-QueueContainer-109Cpmlivp0o"
 bucket = 'hlb-yt-dlp'
 
-temp = True
+temp = False
 
 if temp:
     youtube_video = 'https://www.youtube.com/watch?v=I7-hxTbpscU'

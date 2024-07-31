@@ -66,11 +66,21 @@ Resources:
         Variables:
           TABLE_NAME: !Ref Table
           QUEUE_URL: !Ref Queue
+          QUEUE_URL_CONTAINER: !Ref QueueContainer
+      Layers:
+        - !Ref ytdlp
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref Table
         - SQSSendMessagePolicy:
             QueueName: !GetAtt Queue.QueueName
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt QueueContainer.QueueName
+        - Statement:
+            - Effect: Allow
+              Action:
+                - batch:SubmitJob
+              Resource: '*'
 
   FunctionAPI:
     Type: AWS::Serverless::Function
@@ -161,10 +171,10 @@ Resources:
       VisibilityTimeout: 300
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
-  QueueEC2:
+  QueueContainer:
     Type: AWS::SQS::Queue
     Properties:
-      VisibilityTimeout: 10
+      VisibilityTimeout: 300
 
 Outputs:
   Api:
