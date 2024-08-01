@@ -106,6 +106,11 @@ Resources:
           Properties:
             Path: /
             Method: get
+        Post:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
 
   FunctionWebsite:
     Type: AWS::Serverless::Function
@@ -117,6 +122,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
+          API_URL: 22k49ujfr7
       Events:
         Api:
           Type: Api
