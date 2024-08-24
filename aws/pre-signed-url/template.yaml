@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment name
+
+Resources:
+  S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Sub hlb-presigned-url-${Environment}
+        VersioningConfiguration:
+          Status: Enabled
+        LifecycleConfiguration:
+          Rules:
+            - Id: DeleteOldVersions
+              Status: Enabled
+              NoncurrentVersionExpirationInDays: 1
+              ExpirationInDays: 4
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub hlb-presigned-url-${Environment}
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      CodeUri: code
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref S3Bucket
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref S3Bucket
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+
+Outputs:
+  ApiURL:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
