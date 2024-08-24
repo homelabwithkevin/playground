@@ -2,9 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Resources:
   S3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: hlb-presigned-url-testing
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: hlb-presigned-url-testing
+        LifecycleConfiguration:
+          Rules:
+            - Id: DeleteOldVersions
+              Status: Enabled
+              NoncurrentVersionExpirationInDays: 1
+              ExpirationInDays: 4
+
   Function:
     Type: AWS::Serverless::Function
     Properties:
