@@ -41,11 +41,16 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
       Events:
-        Api:
+        Get:
           Type: Api 
           Properties:
             Path: /
             Method: get
+        Post:
+          Type: Api 
+          Properties:
+            Path: /
+            Method: Post
 
 Outputs:
   Api:
