@@ -19,6 +19,12 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.10
       CodeUri: code
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref S3Bucket
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref S3Bucket
       Events:
         Api:
           Type: Api
