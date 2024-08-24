@@ -1,10 +1,17 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment name
+
 Resources:
   S3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: hlb-presigned-url-testing
+        BucketName: !Sub hlb-presigned-url-${Environment}
+        VersioningConfiguration:
+          Status: Enabled
         LifecycleConfiguration:
           Rules:
             - Id: DeleteOldVersions
@@ -15,7 +22,7 @@ Resources:
   Function:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: hlb-presigned-url-testing
+      FunctionName: !Sub hlb-presigned-url-${Environment}
       Handler: app.lambda_handler
       Runtime: python3.10
       CodeUri: code
