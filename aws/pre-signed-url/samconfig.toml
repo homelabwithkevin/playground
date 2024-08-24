@@ -1,0 +1,8 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "hlb-presigned-url-testing"
+resolve_s3 = true
+s3_prefix = "hlb-presigned-url-testing"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

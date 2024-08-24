@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: hlb-presigned-url-testing
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: hlb-presigned-url-testing
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      CodeUri: code
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
