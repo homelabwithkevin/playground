@@ -1,8 +1,21 @@
 version = 0.1
+
 [default.deploy.parameters]
+stack_name = "hlb-presigned-url"
+resolve_s3 = true
+s3_prefix = "hlb-presigned-url"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "Environment=\"default\""
+image_repositories = []
+
+[testing.deploy.parameters]
 stack_name = "hlb-presigned-url-testing"
 resolve_s3 = true
 s3_prefix = "hlb-presigned-url-testing"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "Environment=\"testing\""
 image_repositories = []
