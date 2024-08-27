@@ -35,7 +35,7 @@ def lambda_handler(event, context):
             }
 
     elif http_method == 'GET':
-        if 'queryStringParameters' in event:
+        if event['queryStringParameters']:
             if 'url' in event['queryStringParameters']:
                 query_parameter_url = event['queryStringParameters']['url']
                 url, _type = utils.handle_url(url=query_parameter_url)

@@ -27,7 +27,7 @@ Resources:
           KeyType: HASH
 
   Function:
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: hello_world/
       Handler: app.lambda_handler
@@ -37,21 +37,52 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
+          BUCKET_NAME: !Ref S3Bucket
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - S3CrudPolicy:
+            BucketName: !Ref S3Bucket
       Events:
         Get:
-          Type: Api 
+          Type: Api
           Properties:
             Path: /
             Method: get
         Post:
-          Type: Api 
+          Type: Api
           Properties:
             Path: /
             Method: Post
 
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub htmx-dynamodb-${Environment}
+      CorsConfiguration:
+        CorsRules:
+          - AllowedOrigins:
+              - "*"
+            AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - HEAD
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 1
+            ExpirationInDays: 4
+
+Outputs:
+  ApiURL:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
 Outputs:
   Api:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"

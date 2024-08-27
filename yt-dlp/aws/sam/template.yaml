@@ -1,35 +1,98 @@
 AWSTemplateFormatVersion: '2010-09-09'
+
 Transform: AWS::Serverless-2016-10-31
+
 Description: hlb-yt-dlp
+
 Globals:
   Function:
     Timeout: 300
-    MemorySize: 256
+    MemorySize: 128
+    Runtime: python3.10
     Architectures:
       - x86_64
+    Layers:
+      - !Ref Layerytdlp
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
 
 Resources:
   Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: hlb-yt-dlp
+      BucketName: !Sub hlb-yt-dlp-${Environment}
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         IgnorePublicAcls: true
         BlockPublicPolicy: true
         RestrictPublicBuckets: true
 
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 300
+
+  QueueContainer:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 300
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      DeletionProtectionEnabled: false
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+        -
+          AttributeName: "uploader_id"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "id"
+          KeyType: "HASH"
+        -
+          AttributeName: "uploader_id"
+          KeyType: "RANGE"
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+  TableChannels:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      DeletionProtectionEnabled: false
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "id"
+          KeyType: "HASH"
+
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
-  ytdlp:
+  Layerytdlp:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: hlb-yt-dlp
       Description: hlb-yt-dlp
       ContentUri: ../../layers/yt-dlp
       CompatibleRuntimes:
+        - python3.10
         - python3.11
     Metadata:
-      BuildMethod: python3.11
+      BuildMethod: python3.10
 
   # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   FunctionQueue:
@@ -37,7 +100,6 @@ Resources:
     Properties:
       CodeUri: ../../code/
       Handler: func_queue.handler
-      Runtime: python3.11
       MemorySize: 1024
       Events:
         Queue:
@@ -51,8 +113,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
-      Layers:
-        - !Ref ytdlp
 
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   FunctionRead:
@@ -60,15 +120,11 @@ Resources:
     Properties:
       CodeUri: ../../code/
       Handler: func_read.handler
-      Runtime: python3.11
-      MemorySize: 128
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
           QUEUE_URL: !Ref Queue
           QUEUE_URL_CONTAINER: !Ref QueueContainer
-      Layers:
-        - !Ref ytdlp
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref Table
@@ -87,9 +143,6 @@ Resources:
     Properties:
       CodeUri: ../../code/
       Handler: api.lambda_handler
-      Runtime: python3.11
-      Layers:
-        - !Ref ytdlp
       MemorySize: 1024
       Environment:
         Variables:
@@ -117,70 +170,17 @@ Resources:
     Properties:
       CodeUri: ../../code/
       Handler: website.lambda_handler
-      Runtime: python3.11
       MemorySize: 1024
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
-          API_URL: 22k49ujfr7
+          API_URL: dc7n6ou61h
       Events:
         Api:
           Type: Api
           Properties:
             Path: /website
             Method: get
-
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
-  Table:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      BillingMode: PAY_PER_REQUEST
-      DeletionProtectionEnabled: false
-      PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: true
-      AttributeDefinitions:
-        -
-          AttributeName: "id"
-          AttributeType: "S"
-        -
-          AttributeName: "uploader_id"
-          AttributeType: "S"
-      KeySchema:
-        -
-          AttributeName: "id"
-          KeyType: "HASH"
-        -
-          AttributeName: "uploader_id"
-          KeyType: "RANGE"
-
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
-  TableChannels:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      BillingMode: PAY_PER_REQUEST
-      DeletionProtectionEnabled: false
-      PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: true
-      AttributeDefinitions:
-        -
-          AttributeName: "id"
-          AttributeType: "S"
-      KeySchema:
-        -
-          AttributeName: "id"
-          KeyType: "HASH"
-
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
-  Queue:
-    Type: AWS::SQS::Queue
-    Properties:
-      VisibilityTimeout: 300
-
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
-  QueueContainer:
-    Type: AWS::SQS::Queue
-    Properties:
-      VisibilityTimeout: 300
 
 Outputs:
   Api:

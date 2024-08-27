@@ -45,3 +45,17 @@ def test_playlist():
     response_id = response.json()['playlist_info']['id']
     assert response.status_code == 200
     assert response_id == playlist_id
+
+def urls():
+    test_urls = [
+        f'{base_url}=https://youtu.be/{video_id}',
+        f'{base_url}=https://youtube.com/watch?={video_id}',
+        f'{base_url}=https://www.youtube.com/{channel_id}',
+        f'{base_url}=https://www.youtube.com/{channel_id}/videos',
+        f'{base_url}=https://www.youtube.com/playlist?list={playlist_id}'
+    ]
+    for url in test_urls:
+        print(url)
+
+if __name__ == '__main__':
+    urls()

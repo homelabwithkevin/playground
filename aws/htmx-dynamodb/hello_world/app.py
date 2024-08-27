@@ -9,6 +9,13 @@ def lambda_handler(event, context):
     print(event)
     method = event["httpMethod"]
 
+    bucket_name = os.environ["BUCKET_NAME"]
+
+    object_name = f'{utils.random_string(10)}.txt'
+
+    s3_url = utils.generate_presigned_url("put_object", bucket_name, object_name, expiration=3600)
+    type_s3 = type(s3_url)
+
     message = None
 
     if method == "POST":
@@ -48,7 +55,7 @@ def lambda_handler(event, context):
                             <p>
                                 Leave a message!
                             </p>
-                            {forms.form()}
+                            {forms.form('')}
                             <p id="content"></p>
                         </div>
                     </div>
