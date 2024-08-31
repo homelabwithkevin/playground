@@ -19,6 +19,9 @@ Parameters:
     Type: String
     Default: https://8nmnj907o2.execute-api.us-east-1.amazonaws.com/Prod/
 
+  ClientSecret:
+    Type: String
+
 Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
@@ -95,6 +98,12 @@ Resources:
       Handler: app.lambda_handler
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
       Events:
         Api:
           Type: Api
@@ -105,7 +114,7 @@ Resources:
 Outputs:
   Api:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   URL:
     Description: "Cognito Hosted URL"
     Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2F8nmnj907o2.execute-api.us-east-1.amazonaws.com%2FProd%2F
