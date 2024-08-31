@@ -19,7 +19,7 @@ confirm_changeset = false
 resolve_s3 = true
 s3_prefix = "hlb-cognito-develop"
 region = "us-east-1"
-parameter_overrides = "Domain=\"homelabwithkevin-develop\" ClientName=\"hlb-develop\""
+parameter_overrides = "Domain=\"homelabwithkevin-develop\" ClientName=\"homelabwithkevin-develop\""
 image_repositories = []
 
 [default.package.parameters]
