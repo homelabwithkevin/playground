@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Cognito - homelabwithkevin
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.10
+
+Parameters:
+  Domain:
+    Type: String
+
+  ClientName:
+    Type: String
+
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      AliasAttributes:
+        - email
+        - preferred_username
+      UserPoolName: !Sub ${AWS::StackName}-UserPool
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: true
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+          TemporaryPasswordValidityDays: 7
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      Domain: !Ref Domain
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Ref ClientName
+
+      # AuthSessionValidity: 3
+      # AccessTokenValidity: 1
+      # RefreshTokenValidity: 30
+      # IdTokenValidity: 60
+
+      AllowedOAuthFlows:
+        - code
+        - implicit
+
+      AllowedOAuthFlowsUserPoolClient: true
+
+      AllowedOAuthScopes:
+        - openid
+        - email
+
+      DefaultRedirectURI: https://google.com
+      CallbackURLs:
+        - https://google.com
+      LogoutURLs:
+        - https://google.com
+
+      EnablePropagateAdditionalUserContextData: false
+      EnableTokenRevocation: true
+      GenerateSecret: true
+      PreventUserExistenceErrors: ENABLED
+
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+      SupportedIdentityProviders:
+        - COGNITO
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+
+Outputs:
+  Api:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  URL:
+    Description: "Cognito Hosted URL"
+    Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fgoogle.com
