@@ -1,42 +1,23 @@
 import json
 
-# import requests
-
-
 def lambda_handler(event, context):
-    """Sample pure Lambda function
-
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
+    print(event)
+    code = None
+    query_parameters = event['queryStringParameters']
+    if 'code' in query_parameters:
+        code = query_parameters['code']
     return {
         "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
+        "headers": {
+            "Content-Type": "text/html",
+        },
+        "body": f"""
+        <html>
+            <a href="https://homelabwithkevin-develop.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=528tgs3mlke1d36fsu4pduplna&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2F8nmnj907o2.execute-api.us-east-1.amazonaws.com%2FProd%2F">
+            Login
+            </a>
+            <p>{query_parameters}</p>
+            <p>Code: {code}</p>
+        </html>
+        """
     }

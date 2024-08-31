@@ -15,6 +15,10 @@ Parameters:
   ClientName:
     Type: String
 
+  RedirectURL:
+    Type: String
+    Default: https://8nmnj907o2.execute-api.us-east-1.amazonaws.com/Prod/
+
 Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
@@ -63,11 +67,11 @@ Resources:
         - openid
         - email
 
-      DefaultRedirectURI: https://google.com
+      DefaultRedirectURI: !Ref RedirectURL
       CallbackURLs:
-        - https://google.com
+        - !Ref RedirectURL
       LogoutURLs:
-        - https://google.com
+        - !Ref RedirectURL
 
       EnablePropagateAdditionalUserContextData: false
       EnableTokenRevocation: true
@@ -104,4 +108,4 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   URL:
     Description: "Cognito Hosted URL"
-    Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fgoogle.com
+    Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2F8nmnj907o2.execute-api.us-east-1.amazonaws.com%2FProd%2F
