@@ -12,6 +12,9 @@ Parameters:
   Domain:
     Type: String
 
+  ClientName:
+    Type: String
+
 Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
@@ -32,11 +35,54 @@ Resources:
           RequireSymbols: false
           RequireUppercase: false
           TemporaryPasswordValidityDays: 7
+
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       UserPoolId: !Ref UserPool
       Domain: !Ref Domain
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Ref ClientName
+
+      # AuthSessionValidity: 3
+      # AccessTokenValidity: 1
+      # RefreshTokenValidity: 30
+      # IdTokenValidity: 60
+
+      AllowedOAuthFlows:
+        - code
+        - implicit
+
+      AllowedOAuthFlowsUserPoolClient: true
+
+      AllowedOAuthScopes:
+        - openid
+        - email
+
+      DefaultRedirectURI: https://google.com
+      CallbackURLs:
+        - https://google.com
+      LogoutURLs:
+        - https://google.com
+
+      EnablePropagateAdditionalUserContextData: false
+      EnableTokenRevocation: true
+      GenerateSecret: true
+      PreventUserExistenceErrors: ENABLED
+
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+      SupportedIdentityProviders:
+        - COGNITO
 
   HelloWorldFunction:
     Type: AWS::Serverless::Function
@@ -58,4 +104,4 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   URL:
     Description: "Cognito Hosted URL"
-    Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=1earjt7155ptgi78hlj2b5883r&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fgoogle.com
+    Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fgoogle.com
