@@ -9,24 +9,41 @@ Globals:
     Runtime: python3.10
 
 Parameters:
+  Placeholder:
+    Type: String
+    Description: Used for minor updates.
+
   Domain:
     Type: String
 
   ClientName:
     Type: String
 
+  RedirectURL:
+    Type: String
+
+  CognitoHostedURL:
+    Type: String
+
+  ClientSecret:
+    Type: String
+
+# https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
-      AliasAttributes:
-        - email
-        - preferred_username
       UserPoolName: !Sub ${AWS::StackName}-UserPool
+      EmailConfiguration: 
+        EmailSendingAccount: COGNITO_DEFAULT
       AutoVerifiedAttributes:
         - email
+      UsernameAttributes:
+        - email
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_LINK
       Policies:
         PasswordPolicy:
           MinimumLength: 6
@@ -63,11 +80,11 @@ Resources:
         - openid
         - email
 
-      DefaultRedirectURI: https://google.com
+      DefaultRedirectURI: !Ref RedirectURL
       CallbackURLs:
-        - https://google.com
+        - !Ref RedirectURL
       LogoutURLs:
-        - https://google.com
+        - !Ref RedirectURL
 
       EnablePropagateAdditionalUserContextData: false
       EnableTokenRevocation: true
@@ -91,6 +108,13 @@ Resources:
       Handler: app.lambda_handler
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+          COGNITO_HOSTED_URI: !Ref CognitoHostedURL
       Events:
         Api:
           Type: Api
@@ -99,9 +123,26 @@ Resources:
             Method: get
 
 Outputs:
+  Placeholder:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Ref Placeholder
   Api:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  ClientId:
+    Description: "ClientId"
+    Value: !Sub ${UserPoolClient.ClientId}
+
+  UserPool:
+    Description: "User Pool Information"
+    Value: !Sub ${UserPool.ProviderURL}
+
+  UserPoolClientAppURL:
+    Description: "User Pool Client App URL"
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/cognito/v2/idp/user-pools/${UserPool}/app-integration/clients/${UserPoolClient.ClientId}?region=us-east-1"
   URL:
     Description: "Cognito Hosted URL"
-    Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fgoogle.com
+    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+
+
