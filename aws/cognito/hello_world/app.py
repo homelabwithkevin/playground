@@ -1,6 +1,6 @@
 import json
 
-from functions import utils
+from functions import utils, handler
 from views import view
 
 def lambda_handler(event, context):
@@ -9,8 +9,13 @@ def lambda_handler(event, context):
     code = None
 
     query_parameters = event['queryStringParameters']
+    method = event['httpMethod']
     request_path = event['path']
     request_headers = event['headers'].get('Cookie')
+
+    if method == 'POST':
+        result_post = handler.post(event['body'])
+        return result_post 
 
     if query_parameters:
         if query_parameters.get('code'):
