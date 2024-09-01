@@ -54,8 +54,8 @@ def dashboard(request_headers):
 
     return f"""
         {utils.load_tailwind()}
-        <div class="max-w-sm">
-            <div class="flex justify-center text-center">
+        <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
+            <div>
                 <div class="mt-4">
                     <div>
                         {logout()}
