@@ -19,7 +19,6 @@ confirm_changeset = false
 resolve_s3 = true
 s3_prefix = "hlb-cognito-develop"
 region = "us-east-1"
-parameter_overrides = "Domain=\"homelabwithkevin-develop\" ClientName=\"homelabwithkevin-develop\" RedirectURL=\"https://8nmnj907o2.execute-api.us-east-1.amazonaws.com/Prod/\""
 image_repositories = []
 disable_rollback = true
 
