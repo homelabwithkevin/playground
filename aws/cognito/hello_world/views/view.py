@@ -16,7 +16,7 @@ def navigation():
 
 def logout():
     return f"""
-    <div><a href='/Prod'>Logout</a></div>
+    <div><a href='/Prod/logout'>Logout</a></div>
     """
 
 def index():

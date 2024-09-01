@@ -17,6 +17,21 @@ def lambda_handler(event, context):
             code = event['queryStringParameters']['code']
             print(code)
 
+    if '/logout' in request_path:
+        cookies = utils.clear_cookies(request_headers)
+
+        return {
+            "statusCode": 301,
+            "headers": {
+                "Content-Type": "text/html",
+                "Location": "/Prod",
+            },
+            "multiValueHeaders": {
+                "Set-Cookie": cookies,
+            },
+            "body": view.logout()
+        }
+
     if '/dashboard' in request_path:
         return {
 

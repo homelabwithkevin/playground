@@ -83,6 +83,14 @@ def parse_request_headers(request_headers):
 
     return new_headers
 
+def clear_cookies(request_headers):
+    parsed_headers = parse_request_headers(request_headers)
+    new_cookies = []
+
+    for key, value in parsed_headers.items():
+        new_cookies.append(f"{key.strip()}=deleted; Max-Age=-1")
+
+    return new_cookies 
 
 def handle_login(query_parameters, code):
     headers = {

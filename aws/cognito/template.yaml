@@ -161,6 +161,27 @@ Resources:
             Path: /dashboard
             Method: get
 
+  FunctionLogout:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /logout
+            Method: get
+
 Outputs:
   Placeholder:
     Description: "API Gateway endpoint URL for Prod stage for function"
