@@ -19,7 +19,9 @@ def create_cognito_hosted_uri():
 def load_tailwind():
     return """
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
     """
+
 #https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 def cognito_login(code):
     response = requests.post(
