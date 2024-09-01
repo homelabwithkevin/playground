@@ -34,7 +34,7 @@ Resources:
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub htmx-dynamodb-${Environment}
+      TableName: !Sub hlb-cognito-${Environment}
       BillingMode: PAY_PER_REQUEST
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
