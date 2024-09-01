@@ -110,11 +110,11 @@ Resources:
         - x86_64
       Environment:
         Variables:
+          DOMAIN: !Ref Domain
           USER_POOL_ID: !Ref UserPool
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
-          COGNITO_HOSTED_URI: !Ref CognitoHostedURL
       Events:
         Api:
           Type: Api
@@ -126,21 +126,24 @@ Outputs:
   Placeholder:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Ref Placeholder
-  Api:
+
+  RedirectURI:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
   ClientId:
     Description: "ClientId"
     Value: !Sub ${UserPoolClient.ClientId}
 
-  UserPool:
+  ClientSecret:
     Description: "User Pool Information"
     Value: !Sub ${UserPool.ProviderURL}
 
   UserPoolClientAppURL:
     Description: "User Pool Client App URL"
     Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/cognito/v2/idp/user-pools/${UserPool}/app-integration/clients/${UserPoolClient.ClientId}?region=us-east-1"
-  URL:
+
+  CognitoHostedURL:
     Description: "Cognito Hosted URL"
     Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
 
