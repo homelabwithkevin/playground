@@ -5,13 +5,14 @@ import json
 
 cognito = boto3.client("cognito-idp")
 
+user_pool_id = os.environ["USER_POOL_ID"]
+client_id = os.environ["CLIENT_ID"]
+client_secret = os.environ["CLIENT_SECRET"]
+redirect_uri = os.environ["REDIRECT_URI"]
+cognito_hosted_uri = os.environ["COGNITO_HOSTED_URI"]
+
 #https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 def cognito_login(code):
-    user_pool_id = os.environ["USER_POOL_ID"]
-    client_id = os.environ["CLIENT_ID"]
-    client_secret = os.environ["CLIENT_SECRET"]
-    redirect_uri = os.environ["REDIRECT_URI"]
-
     response = requests.post(
         f"https://homelabwithkevin-develop.auth.us-east-1.amazoncognito.com/oauth2/token",
         data={
@@ -63,7 +64,7 @@ def handle_login(query_parameters, code):
         },
         "body": f"""
         <html>
-            <a href="https://homelabwithkevin-develop.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=528tgs3mlke1d36fsu4pduplna&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2F8nmnj907o2.execute-api.us-east-1.amazonaws.com%2FProd%2F">
+            <a href="{cognito_hosted_uri}">
             Login
             </a>
             <p>{query_parameters}</p>
