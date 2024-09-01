@@ -9,6 +9,11 @@ Basic AWS Cognito Login with Email using Python boto3.
 4. Use `sam deploy --guided` and replace with your own values
 5. Delete the `parameter_overrides` in the `samconfig.toml` file
 
+# Authorization Flow
+1. `/login`
+2. `/callback`
+3. `/dashboard`
+
 # Docs
 - https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 - https://repost.aws/questions/QU4VpxEkw_Q6yQotN5JhkBEA/lambda-function-url-not-returning-multiple-cookies
