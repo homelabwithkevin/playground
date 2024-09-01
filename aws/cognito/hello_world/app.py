@@ -14,7 +14,10 @@ def lambda_handler(event, context):
     request_headers = event['headers'].get('Cookie')
 
     if method == 'POST':
-        result_post = handler.post(event['body'])
+        access_token = utils.get_access_token(request_headers)
+        sub, email_verified, email, username = utils.get_user_info(access_token)
+        print(access_token)
+        result_post = handler.post(event['body'], username)
         return result_post 
 
     if query_parameters:
