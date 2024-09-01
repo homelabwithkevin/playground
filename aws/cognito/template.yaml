@@ -16,9 +16,6 @@ Parameters:
   Domain:
     Type: String
 
-  ClientName:
-    Type: String
-
   RedirectURL:
     Type: String
 
@@ -63,7 +60,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       UserPoolId: !Ref UserPool
-      ClientName: !Ref ClientName
+      ClientName: !Ref Domain
 
       # AuthSessionValidity: 3
       # AccessTokenValidity: 1
@@ -191,7 +188,4 @@ Outputs:
 
   CognitoHostedURL:
     Description: "Cognito Hosted URL"
-    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-
-
-
+    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/callback"
