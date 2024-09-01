@@ -23,7 +23,7 @@ def load_tailwind():
 #https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 def cognito_login(code):
     response = requests.post(
-        f"https://homelabwithkevin-develop.auth.us-east-1.amazoncognito.com/oauth2/token",
+        f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/token",
         data={
             "grant_type": "authorization_code",
             "client_id": client_id,
@@ -32,15 +32,35 @@ def cognito_login(code):
             "redirect_uri": redirect_uri,
         },
     )
-    print(response.status_code)
-    print(response.content)
 
     if response.status_code == 200:
         response_json = json.loads(response.content)
-        print(response_json) 
-        return response_json 
+        id_token = response_json.get("id_token")
+        access_token = response_json.get("access_token")
+        refresh_token = response_json.get("refresh_token")
+        return id_token, access_token, refresh_token
 
     return None
+
+def handle_callback(code):
+    id_token, access_token, refresh_token = None, None, None
+    id_token, access_token, refresh_token = cognito_login(code)
+
+    cookies = [
+        f"id_token={id_token}",
+        f"access_token={access_token}",
+        f"refresh_token={refresh_token}",
+    ]
+    return cookies
+
+def parse_request_headers(request_headers):
+    headers = request_headers.split(";")
+    new_headers = {}
+    for header in headers:
+        key, value = header.split("=")
+        new_headers[key] = value
+
+    return new_headers
 
 def handle_login(query_parameters, code):
     headers = {
@@ -84,5 +104,6 @@ def handle_login(query_parameters, code):
                 <p>Refresh Token: {refresh_token}</p>
             </p>
         </html>
+
         """
     }

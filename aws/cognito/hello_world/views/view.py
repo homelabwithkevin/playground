@@ -33,10 +33,17 @@ def callback(code=None):
         </div>
     """
 
-def dashboard():
+def dashboard(request_headers):
+    parse_request_headers = utils.parse_request_headers(request_headers)
     return f"""
         <div class="text-center mt-4">
             {utils.load_tailwind()}
             <p>Dashboard</p>
+            <p>
+                <p>Request Headers</p>
+                <p>
+                    {parse_request_headers}
+                </p>
+            </p>
         </div>
     """
