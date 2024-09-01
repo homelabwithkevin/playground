@@ -1,4 +1,5 @@
 from functions import utils
+from views import forms
 
 def example():
     return """
@@ -44,14 +45,17 @@ def dashboard(request_headers):
         sub, email_verified, email, username = utils.get_user_info(access_token)
 
     return f"""
-        <div class="text-center mt-4">
-            {utils.load_tailwind()}
-            {logout()}
-            <p>Dashboard</p>
-            <p>
+        {utils.load_tailwind()}
+        <div class="flex justify-center text-center mt-4">
+            <div class="max-w-[500px]">
+                {logout()}
+                <p>Dashboard</p>
                 <p>
-                    Welcome {email}
+                    <p>
+                        Welcome {username}!
+                    </p>
+                    {forms.form_message()}
                 </p>
-            </p>
+            </div>
         </div>
     """
