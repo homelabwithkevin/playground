@@ -42,14 +42,35 @@ def cognito_login(code):
 
     return None
 
+def get_user_info(access_token):
+    response = requests.get(
+        f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/userInfo",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+        },
+    )
+
+    if response.status_code == 200:
+        response_json = json.loads(response.content)
+        sub = response_json.get("sub")
+        email_verified = response_json.get("email_verified")
+        email = response_json.get("email")
+        username = response_json.get("username")
+        return sub, email_verified, email, username
+
+    return None
+
 def handle_callback(code):
     id_token, access_token, refresh_token = None, None, None
     id_token, access_token, refresh_token = cognito_login(code)
+    sub, email_verified, email, username = get_user_info(access_token)
 
     cookies = [
         f"id_token={id_token}",
         f"access_token={access_token}",
         f"refresh_token={refresh_token}",
+        f"email={email}",
+        f"username={username}",
     ]
     return cookies
 
@@ -61,6 +82,7 @@ def parse_request_headers(request_headers):
         new_headers[key] = value
 
     return new_headers
+
 
 def handle_login(query_parameters, code):
     headers = {
