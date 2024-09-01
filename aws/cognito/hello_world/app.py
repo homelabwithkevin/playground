@@ -1,6 +1,7 @@
 import json
 
 from functions import utils
+from views import view
 
 def lambda_handler(event, context):
     print(event)
@@ -8,9 +9,16 @@ def lambda_handler(event, context):
     code = None
 
     query_parameters = event['queryStringParameters']
+    request_path = event['path']
 
     if query_parameters:
         if query_parameters.get('code'):
             code = event['queryStringParameters']['code']
 
-    return utils.handle_login(query_parameters, code)
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "text/html",
+        },
+        "body": view.index()
+    }

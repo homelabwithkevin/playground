@@ -11,8 +11,15 @@ def navigation():
     login = utils.create_cognito_hosted_uri()
 
     return f"""
-    <ul>
-        <li><a href='{login}'>Login</a></li>
-        <li><a>Logout</a></li>
-    </ul>
+    <div class="grid grid-cols-3">
+        <div><a href='{login}'>Login</a></div>
+    </div>
+    """
+
+def index():
+    return f"""
+        <div class="text-center mt-4">
+            {utils.load_tailwind()}
+            {navigation()}
+        </div>
     """

@@ -16,6 +16,10 @@ domain = os.environ["DOMAIN"]
 def create_cognito_hosted_uri():
     return f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=email+openid&redirect_uri={redirect_uri}"
 
+def load_tailwind():
+    return """
+    <script src="https://cdn.tailwindcss.com"></script>
+    """
 #https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 def cognito_login(code):
     response = requests.post(
