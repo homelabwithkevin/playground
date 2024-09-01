@@ -3,13 +3,18 @@ import requests
 import os
 import json
 
+from views import view
+
 cognito = boto3.client("cognito-idp")
 
 user_pool_id = os.environ["USER_POOL_ID"]
 client_id = os.environ["CLIENT_ID"]
 client_secret = os.environ["CLIENT_SECRET"]
 redirect_uri = os.environ["REDIRECT_URI"]
-cognito_hosted_uri = os.environ["COGNITO_HOSTED_URI"]
+domain = os.environ["DOMAIN"]
+
+def create_cognito_hosted_uri():
+    return f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=email+openid&redirect_uri={redirect_uri}"
 
 #https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 def cognito_login(code):
@@ -64,10 +69,9 @@ def handle_login(query_parameters, code):
         },
         "body": f"""
         <html>
-            <a href="{cognito_hosted_uri}">
-            Login
-            </a>
+            {view.navigation()}
             <p>{query_parameters}</p>
+            {view.example()}
             <p>Code: {code}</p>
             <p>
                 <p>Cognito</p>
