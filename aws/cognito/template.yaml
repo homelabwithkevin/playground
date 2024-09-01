@@ -22,6 +22,8 @@ Parameters:
   ClientSecret:
     Type: String
 
+
+# https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
   UserPool:
     Type: AWS::Cognito::UserPool
