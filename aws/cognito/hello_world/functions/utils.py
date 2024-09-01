@@ -29,6 +29,15 @@ def load_tailwind():
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
     """
 
+def get_user_info_from_cookies(cookies):
+    return_cookie = {}
+
+    for cookie in cookies:
+        key, value = cookie.split("=")
+        return_cookie[key] = value
+
+    return return_cookie
+
 #https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 def cognito_login(code):
     response = requests.post(
@@ -80,6 +89,7 @@ def handle_callback(code):
         f"refresh_token={refresh_token}",
         f"email={email}",
         f"username={username}",
+        f"sub={sub}",
     ]
     return cookies
 
@@ -96,14 +106,14 @@ def get_access_token(request_headers):
     parsed_headers = parse_request_headers(request_headers)
     return parsed_headers.get("access_token")
 
-def clear_cookies(request_headers):
-    parsed_headers = parse_request_headers(request_headers)
-    new_cookies = []
+def clear_cookies(cookies):
+    return_cookie = []
 
-    for key, value in parsed_headers.items():
-        new_cookies.append(f"{key.strip()}=deleted; Max-Age=-1")
+    for cookie in cookies:
+        key, value = cookie.split("=")
+        return_cookie.append(f'{key}=deleted; Max-Age=-1')
 
-    return new_cookies 
+    return return_cookie
 
 def handle_login(query_parameters, code):
     headers = {

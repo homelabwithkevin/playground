@@ -7,35 +7,45 @@ def lambda_handler(event, context):
     print(event)
 
     code = None
+    query_parameters = None
+    cookies = None
 
-    query_parameters = event['queryStringParameters']
-    method = event['httpMethod']
-    request_path = event['path']
-    request_headers = event['headers'].get('Cookie')
+    request_context = event['requestContext']
+    method = request_context['http']['method']
+    request_path = request_context['http']['path']
+
+    # User Information
+    source_ip = request_context['http']['sourceIp']
+    user_agent = request_context['http']['userAgent']
+
+    try:
+        cookies = event['cookies']
+        user_info = utils.get_user_info_from_cookies(cookies)
+    except Exception as e:
+        print(f'No cookies found: {e}')
 
     if method == 'POST':
-        access_token = utils.get_access_token(request_headers)
-        sub, email_verified, email, username = utils.get_user_info(access_token)
-        result_post = handler.post(event['body'], sub)
+        result_post = handler.post(event['body'], user_info, source_ip, user_agent)
         return result_post 
 
+    try:
+        query_parameters = event['queryStringParameters']
+    except Exception as e:
+        print(f'No query string parameters found: {e}')
+            
     if query_parameters:
         if query_parameters.get('code'):
-            code = event['queryStringParameters']['code']
-            print(code)
+            code = query_parameters.get('code')
 
     if '/logout' in request_path:
-        cookies = utils.clear_cookies(request_headers)
-
         return {
+            "isBase64Encoded": False,
             "statusCode": 301,
             "headers": {
                 "Content-Type": "text/html",
-                "Location": "/Prod",
+                "Location": "/",
             },
-            "multiValueHeaders": {
-                "Set-Cookie": cookies,
-            },
+            "cookies": utils.clear_cookies(cookies),
             "body": view.logout()
         }
 
@@ -46,7 +56,7 @@ def lambda_handler(event, context):
             "headers": {
                 "Content-Type": "text/html",
             },
-            "body": view.dashboard(request_headers)
+            "body": view.dashboard(user_info)
         }
 
     if 'callback' in request_path:
@@ -56,14 +66,13 @@ def lambda_handler(event, context):
             "statusCode": 301,
             "headers": {
                 "Content-Type": "text/html",
-                "Location": "/Prod/dashboard",
+                "Location": "/dashboard",
             },
-            "multiValueHeaders": {
-                "Set-Cookie": cookies,
-            },
+            "cookies": cookies,
             "body": view.callback(code)
         }
 
+    # Index
     return {
         "isBase64Encoded": False,
         "statusCode": 200,

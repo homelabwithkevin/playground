@@ -1,6 +1,6 @@
 def form_message(sub=None):
     return f"""
-    <form hx-post="/Prod/post" hx-target="#result" hx-on::after-request="this.reset()" hx-indicator="#spinner">
+    <form hx-post="/post" hx-target="#result" hx-on::after-request="this.reset()" hx-indicator="#spinner">
         <div class="col-span-full">
             <div class="mt-4 p-4">
                 <input id="user_id" value="{sub}" class="hidden">

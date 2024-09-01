@@ -23,7 +23,7 @@ def navigation():
 
 def logout():
     return f"""
-    <div><a href='/Prod/logout'>Logout</a></div>
+    <div><a href='/logout'>Logout</a></div>
     """
 
 def index():
@@ -45,13 +45,7 @@ def callback(code=None):
         </div>
     """
 
-def dashboard(request_headers):
-    parse_request_headers = utils.parse_request_headers(request_headers)
-    access_token = parse_request_headers['access_token']
-
-    if access_token: 
-        sub, email_verified, email, username = utils.get_user_info(access_token)
-
+def dashboard(user_info):
     return f"""
         {utils.load_tailwind()}
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
@@ -62,9 +56,9 @@ def dashboard(request_headers):
                         <p>Dashboard</p>
                         <p>
                             <p>
-                                Welcome {username}!
+                                Welcome {user_info.get('username')}!
                             </p>
-                            {forms.form_message(sub)}
+                            {forms.form_message(user_info.get('sub'))}
                         </p>
                     </div>
                 </div>

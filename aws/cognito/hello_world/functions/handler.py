@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+import base64
 
 from functions import utils
 
@@ -8,8 +9,9 @@ table = os.environ["TABLE"]
 
 client = boto3.client('dynamodb')
 
-def post(body=None, sub=None):
-    data = body.split('=')[1]
+def post(body=None, user_info=None, source_ip=None, user_agent=None):
+    decoded_body = base64.b64decode(body).decode('utf-8')
+    data = decoded_body.split('=')[1]
 
     body = f"""
     <div>
@@ -28,7 +30,13 @@ def post(body=None, sub=None):
                     'S': str(utils.utc_now())
                 },
                 'user_id': {
-                    'S': sub
+                    'S': user_info.get('sub')
+                },
+                'source_ip': {
+                    'S': source_ip
+                },
+                'user_agent': {
+                    'S': user_agent
                 },
                 'message': {
                     'S': data

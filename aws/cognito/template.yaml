@@ -161,8 +161,8 @@ Resources:
           REDIRECT_URI: !Ref RedirectURL
           TABLE: !Ref Table
       Events:
-        Api:
-          Type: Api
+        HttpApi:
+          Type: HttpApi
           Properties:
             Path: /callback
             Method: get
@@ -205,8 +205,8 @@ Resources:
           REDIRECT_URI: !Ref RedirectURL
           TABLE: !Ref Table
       Events:
-        Api:
-          Type: Api
+        HttpApi:
+          Type: HttpApi
           Properties:
             Path: /logout
             Method: get
@@ -230,8 +230,8 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
       Events:
-        Api:
-          Type: Api
+        HttpApi:
+          Type: HttpApi
           Properties:
             Path: /post
             Method: post
@@ -243,15 +243,11 @@ Outputs:
 
   Main:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-
-  Main2:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
 
   RedirectURI:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/callback"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/callback"
 
   ClientId:
     Description: "ClientId"
@@ -267,4 +263,4 @@ Outputs:
 
   CognitoHostedURL:
     Description: "Cognito Hosted URL"
-    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/callback"
+    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/callback"
