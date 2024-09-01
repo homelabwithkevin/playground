@@ -101,7 +101,7 @@ Resources:
       SupportedIdentityProviders:
         - COGNITO
 
-  HelloWorldFunction:
+  Function:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: hello_world/
@@ -122,14 +122,60 @@ Resources:
             Path: /
             Method: get
 
+  FunctionCallback:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /callback
+            Method: get
+
+  FunctionDashboard:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /dashboard
+            Method: get
+
 Outputs:
   Placeholder:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Description: "API Gateway endpoint URL for Prod stage for function"
     Value: !Ref Placeholder
+
+  Main:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
 
   RedirectURI:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/callback"
 
   ClientId:
     Description: "ClientId"
