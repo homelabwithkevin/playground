@@ -40,7 +40,7 @@ def lambda_handler(event, context):
     if '/logout' in request_path:
         return {
             "isBase64Encoded": False,
-            "statusCode": 301,
+            "statusCode": 302,
             "headers": {
                 "Content-Type": "text/html",
                 "Location": "/",
@@ -63,7 +63,7 @@ def lambda_handler(event, context):
         cookies = utils.handle_callback(code)
 
         return {
-            "statusCode": 301,
+            "statusCode": 302,
             "headers": {
                 "Content-Type": "text/html",
                 "Location": "/dashboard",
