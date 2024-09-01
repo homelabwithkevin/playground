@@ -16,9 +16,6 @@ Parameters:
   Domain:
     Type: String
 
-  ClientName:
-    Type: String
-
   RedirectURL:
     Type: String
 
@@ -28,8 +25,30 @@ Parameters:
   ClientSecret:
     Type: String
 
+  Environment:
+    Type: String
+    Default: develop
+
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub hlb-cognito-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: user_id
+          KeyType: RANGE
+
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -40,10 +59,13 @@ Resources:
         EmailSendingAccount: COGNITO_DEFAULT
       AutoVerifiedAttributes:
         - email
-      UsernameAttributes:
+      AliasAttributes:
         - email
+        - preferred_username
       VerificationMessageTemplate:
         DefaultEmailOption: CONFIRM_WITH_LINK
+      UsernameConfiguration:
+        CaseSensitive: false
       Policies:
         PasswordPolicy:
           MinimumLength: 6
@@ -63,7 +85,7 @@ Resources:
     Type: AWS::Cognito::UserPoolClient
     Properties:
       UserPoolId: !Ref UserPool
-      ClientName: !Ref ClientName
+      ClientName: !Ref Domain
 
       # AuthSessionValidity: 3
       # AccessTokenValidity: 1
@@ -101,7 +123,7 @@ Resources:
       SupportedIdentityProviders:
         - COGNITO
 
-  HelloWorldFunction:
+  FunctionMain:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: hello_world/
@@ -110,39 +132,135 @@ Resources:
         - x86_64
       Environment:
         Variables:
+          DOMAIN: !Ref Domain
           USER_POOL_ID: !Ref UserPool
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
-          COGNITO_HOSTED_URI: !Ref CognitoHostedURL
+          TABLE: !Ref Table
       Events:
-        Api:
-          Type: Api
+        HttpApi:
+          Type: HttpApi
           Properties:
             Path: /
             Method: get
 
+  FunctionCallback:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /callback
+            Method: get
+
+  FunctionDashboard:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /dashboard
+            Method: get
+
+  FunctionLogout:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /logout
+            Method: get
+
+  FunctionPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /post
+            Method: post
+
 Outputs:
   Placeholder:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Description: "API Gateway endpoint URL for Prod stage for function"
     Value: !Ref Placeholder
-  Api:
+
+  Main:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+
+  RedirectURI:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/callback"
+
   ClientId:
     Description: "ClientId"
     Value: !Sub ${UserPoolClient.ClientId}
 
-  UserPool:
+  ClientSecret:
     Description: "User Pool Information"
     Value: !Sub ${UserPool.ProviderURL}
 
   UserPoolClientAppURL:
     Description: "User Pool Client App URL"
     Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/cognito/v2/idp/user-pools/${UserPool}/app-integration/clients/${UserPoolClient.ClientId}?region=us-east-1"
-  URL:
+
+  CognitoHostedURL:
     Description: "Cognito Hosted URL"
-    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-
-
-
+    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/callback"

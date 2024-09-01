@@ -2,6 +2,9 @@ import boto3
 import requests
 import os
 import json
+from datetime import datetime
+
+from views import view
 
 cognito = boto3.client("cognito-idp")
 
@@ -9,12 +12,36 @@ user_pool_id = os.environ["USER_POOL_ID"]
 client_id = os.environ["CLIENT_ID"]
 client_secret = os.environ["CLIENT_SECRET"]
 redirect_uri = os.environ["REDIRECT_URI"]
-cognito_hosted_uri = os.environ["COGNITO_HOSTED_URI"]
+domain = os.environ["DOMAIN"]
+
+def today():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def utc_now():
+    return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
+def create_cognito_hosted_uri():
+    return f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=email+openid&redirect_uri={redirect_uri}"
+
+def load_tailwind():
+    return """
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+    """
+
+def get_user_info_from_cookies(cookies):
+    return_cookie = {}
+
+    for cookie in cookies:
+        key, value = cookie.split("=")
+        return_cookie[key] = value
+
+    return return_cookie
 
 #https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
 def cognito_login(code):
     response = requests.post(
-        f"https://homelabwithkevin-develop.auth.us-east-1.amazoncognito.com/oauth2/token",
+        f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/token",
         data={
             "grant_type": "authorization_code",
             "client_id": client_id,
@@ -23,15 +50,70 @@ def cognito_login(code):
             "redirect_uri": redirect_uri,
         },
     )
-    print(response.status_code)
-    print(response.content)
 
     if response.status_code == 200:
         response_json = json.loads(response.content)
-        print(response_json) 
-        return response_json 
+        id_token = response_json.get("id_token")
+        access_token = response_json.get("access_token")
+        refresh_token = response_json.get("refresh_token")
+        return id_token, access_token, refresh_token
 
     return None
+
+def get_user_info(access_token):
+    response = requests.get(
+        f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/userInfo",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+        },
+    )
+
+    if response.status_code == 200:
+        response_json = json.loads(response.content)
+        sub = response_json.get("sub")
+        email_verified = response_json.get("email_verified")
+        email = response_json.get("email")
+        username = response_json.get("username")
+        return sub, email_verified, email, username
+
+    return None
+
+def handle_callback(code):
+    id_token, access_token, refresh_token = None, None, None
+    id_token, access_token, refresh_token = cognito_login(code)
+    sub, email_verified, email, username = get_user_info(access_token)
+
+    cookies = [
+        f"id_token={id_token}",
+        f"access_token={access_token}",
+        f"refresh_token={refresh_token}",
+        f"email={email}",
+        f"username={username}",
+        f"sub={sub}",
+    ]
+    return cookies
+
+def parse_request_headers(request_headers):
+    headers = request_headers.split(";")
+    new_headers = {}
+    for header in headers:
+        key, value = header.split("=")
+        new_headers[key] = value
+
+    return new_headers
+
+def get_access_token(request_headers):
+    parsed_headers = parse_request_headers(request_headers)
+    return parsed_headers.get("access_token")
+
+def clear_cookies(cookies):
+    return_cookie = []
+
+    for cookie in cookies:
+        key, value = cookie.split("=")
+        return_cookie.append(f'{key}=deleted; Max-Age=-1')
+
+    return return_cookie
 
 def handle_login(query_parameters, code):
     headers = {
@@ -64,10 +146,9 @@ def handle_login(query_parameters, code):
         },
         "body": f"""
         <html>
-            <a href="{cognito_hosted_uri}">
-            Login
-            </a>
+            {view.navigation()}
             <p>{query_parameters}</p>
+            {view.example()}
             <p>Code: {code}</p>
             <p>
                 <p>Cognito</p>
@@ -76,5 +157,6 @@ def handle_login(query_parameters, code):
                 <p>Refresh Token: {refresh_token}</p>
             </p>
         </html>
+
         """
     }
