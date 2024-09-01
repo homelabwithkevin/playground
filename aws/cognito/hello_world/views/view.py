@@ -23,3 +23,20 @@ def index():
             {navigation()}
         </div>
     """
+
+def callback(code=None):
+    return f"""
+        <div class="text-center mt-4">
+            {utils.load_tailwind()}
+            <p>Callback</p>
+            <p>Code: {code}</p>
+        </div>
+    """
+
+def dashboard():
+    return f"""
+        <div class="text-center mt-4">
+            {utils.load_tailwind()}
+            <p>Dashboard</p>
+        </div>
+    """

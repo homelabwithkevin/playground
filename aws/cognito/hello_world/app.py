@@ -15,6 +15,24 @@ def lambda_handler(event, context):
         if query_parameters.get('code'):
             code = event['queryStringParameters']['code']
 
+    if 'dashboard' in request_path:
+        view.dashboard()
+
+    if 'callback' in request_path:
+        return {
+            "statusCode": 301,
+            "headers": {
+                "Content-Type": "text/html",
+                "Location": "/Prod/dashboard",
+            },
+            "multiValueHeaders": {
+                "Set-Cookie": [
+                    "testing=testing",
+                ]
+            },
+            "body": view.callback(code)
+        }
+
     return {
         "statusCode": 200,
         "headers": {
