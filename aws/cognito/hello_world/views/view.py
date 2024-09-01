@@ -11,9 +11,12 @@ def navigation():
     login = utils.create_cognito_hosted_uri()
 
     return f"""
-    <div class="grid grid-cols-3">
-        <div><a href='{login}'>Login</a></div>
-    </div>
+    <div><a href='{login}'>Login</a></div>
+    """
+
+def logout():
+    return f"""
+    <div><a href='/Prod'>Logout</a></div>
     """
 
 def index():
@@ -35,14 +38,19 @@ def callback(code=None):
 
 def dashboard(request_headers):
     parse_request_headers = utils.parse_request_headers(request_headers)
+    access_token = parse_request_headers['access_token']
+
+    if access_token: 
+        sub, email_verified, email, username = utils.get_user_info(access_token)
+
     return f"""
         <div class="text-center mt-4">
             {utils.load_tailwind()}
+            {logout()}
             <p>Dashboard</p>
             <p>
-                <p>Request Headers</p>
                 <p>
-                    {parse_request_headers}
+                    Welcome {email}
                 </p>
             </p>
         </div>
