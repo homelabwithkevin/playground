@@ -1,5 +1,7 @@
 # ReadMe
 
+Basic AWS Cognito Login with Email using Python boto3.
+
 ## Deployment
 1. sam build; sam deploy
 2. Get outputs
