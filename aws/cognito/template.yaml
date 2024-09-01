@@ -25,8 +25,30 @@ Parameters:
   ClientSecret:
     Type: String
 
+  Environment:
+    Type: String
+    Default: develop
+
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub htmx-dynamodb-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: user_id
+          KeyType: RANGE
+
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -115,6 +137,7 @@ Resources:
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
       Events:
         Api:
           Type: Api
@@ -136,6 +159,7 @@ Resources:
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
       Events:
         Api:
           Type: Api
@@ -157,6 +181,7 @@ Resources:
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
       Events:
         Api:
           Type: Api
@@ -178,6 +203,7 @@ Resources:
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
       Events:
         Api:
           Type: Api
@@ -199,6 +225,10 @@ Resources:
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
       Events:
         Api:
           Type: Api
