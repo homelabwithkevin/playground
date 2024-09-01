@@ -16,8 +16,7 @@ def lambda_handler(event, context):
     if method == 'POST':
         access_token = utils.get_access_token(request_headers)
         sub, email_verified, email, username = utils.get_user_info(access_token)
-        print(access_token)
-        result_post = handler.post(event['body'], username)
+        result_post = handler.post(event['body'], sub)
         return result_post 
 
     if query_parameters:

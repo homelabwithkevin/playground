@@ -8,7 +8,7 @@ table = os.environ["TABLE"]
 
 client = boto3.client('dynamodb')
 
-def post(body=None, username=None):
+def post(body=None, sub=None):
     data = body.split('=')[1]
 
     body = f"""
@@ -28,7 +28,7 @@ def post(body=None, username=None):
                     'S': str(utils.utc_now())
                 },
                 'user_id': {
-                    'S': data
+                    'S': sub
                 },
                 'message': {
                     'S': data
