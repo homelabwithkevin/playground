@@ -123,7 +123,7 @@ Resources:
       SupportedIdentityProviders:
         - COGNITO
 
-  Function:
+  FunctionMain:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: hello_world/
@@ -139,8 +139,8 @@ Resources:
           REDIRECT_URI: !Ref RedirectURL
           TABLE: !Ref Table
       Events:
-        Api:
-          Type: Api
+        HttpApi:
+          Type: HttpApi
           Properties:
             Path: /
             Method: get
@@ -183,8 +183,8 @@ Resources:
           REDIRECT_URI: !Ref RedirectURL
           TABLE: !Ref Table
       Events:
-        Api:
-          Type: Api
+        HttpApi:
+          Type: HttpApi
           Properties:
             Path: /dashboard
             Method: get
@@ -244,6 +244,10 @@ Outputs:
   Main:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+  Main2:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
 
   RedirectURI:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
