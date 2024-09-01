@@ -9,6 +9,10 @@ Globals:
     Runtime: python3.10
 
 Parameters:
+  Placeholder:
+    Type: String
+    Description: Used for minor updates.
+
   Domain:
     Type: String
 
@@ -17,11 +21,12 @@ Parameters:
 
   RedirectURL:
     Type: String
-    Default: https://8nmnj907o2.execute-api.us-east-1.amazonaws.com/Prod/
+
+  CognitoHostedURL:
+    Type: String
 
   ClientSecret:
     Type: String
-
 
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
@@ -109,6 +114,7 @@ Resources:
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
+          COGNITO_HOSTED_URI: !Ref CognitoHostedURL
       Events:
         Api:
           Type: Api
@@ -117,12 +123,26 @@ Resources:
             Method: get
 
 Outputs:
+  Placeholder:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Ref Placeholder
   Api:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   ClientId:
     Description: "ClientId"
     Value: !Sub ${UserPoolClient.ClientId}
+
+  UserPool:
+    Description: "User Pool Information"
+    Value: !Sub ${UserPool.ProviderURL}
+
+  UserPoolClientAppURL:
+    Description: "User Pool Client App URL"
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/cognito/v2/idp/user-pools/${UserPool}/app-integration/clients/${UserPoolClient.ClientId}?region=us-east-1"
   URL:
     Description: "Cognito Hosted URL"
-    Value: !Sub https://${Domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid
+    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+
+
