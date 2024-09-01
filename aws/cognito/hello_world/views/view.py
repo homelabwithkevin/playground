@@ -54,7 +54,7 @@ def dashboard(request_headers):
                     <p>
                         Welcome {username}!
                     </p>
-                    {forms.form_message()}
+                    {forms.form_message(sub)}
                 </p>
             </div>
         </div>
