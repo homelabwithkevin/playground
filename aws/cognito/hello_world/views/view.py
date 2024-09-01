@@ -46,16 +46,20 @@ def dashboard(request_headers):
 
     return f"""
         {utils.load_tailwind()}
-        <div class="flex justify-center text-center mt-4">
-            <div class="max-w-[500px]">
-                {logout()}
-                <p>Dashboard</p>
-                <p>
-                    <p>
-                        Welcome {username}!
-                    </p>
-                    {forms.form_message(sub)}
-                </p>
+        <div class="max-w-sm">
+            <div class="flex justify-center text-center">
+                <div class="mt-4">
+                    <div>
+                        {logout()}
+                        <p>Dashboard</p>
+                        <p>
+                            <p>
+                                Welcome {username}!
+                            </p>
+                            {forms.form_message(sub)}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     """
