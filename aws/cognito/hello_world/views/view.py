@@ -12,7 +12,13 @@ def navigation():
     login = utils.create_cognito_hosted_uri()
 
     return f"""
-    <div><a href='{login}'>Login</a></div>
+    <div>
+        <a href='{login}'>
+            <button type="submit" class="min-w-[200px] rounded-md bg-indigo-600 px-3 py-6 text-3xl font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Login
+            </button>
+        </a>
+    </div>
     """
 
 def logout():
@@ -22,9 +28,11 @@ def logout():
 
 def index():
     return f"""
-        <div class="text-center mt-4">
-            {utils.load_tailwind()}
-            {navigation()}
+        <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+            <div>
+                {utils.load_tailwind()}
+                {navigation()}
+            </div>
         </div>
     """
 
