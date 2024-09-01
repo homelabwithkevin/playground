@@ -37,10 +37,13 @@ Resources:
         EmailSendingAccount: COGNITO_DEFAULT
       AutoVerifiedAttributes:
         - email
-      UsernameAttributes:
+      AliasAttributes:
         - email
+        - preferred_username
       VerificationMessageTemplate:
         DefaultEmailOption: CONFIRM_WITH_LINK
+      UsernameConfiguration:
+        CaseSensitive: false
       Policies:
         PasswordPolicy:
           MinimumLength: 6
@@ -181,6 +184,27 @@ Resources:
           Properties:
             Path: /logout
             Method: get
+
+  FunctionPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /post
+            Method: post
 
 Outputs:
   Placeholder:
