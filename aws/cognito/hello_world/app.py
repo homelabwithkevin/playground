@@ -10,15 +10,27 @@ def lambda_handler(event, context):
 
     query_parameters = event['queryStringParameters']
     request_path = event['path']
+    request_headers = event['headers']['Cookie']
 
     if query_parameters:
         if query_parameters.get('code'):
             code = event['queryStringParameters']['code']
+            print(code)
 
-    if 'dashboard' in request_path:
-        view.dashboard()
+    if '/dashboard' in request_path:
+        return {
+
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "text/html",
+            },
+            "body": view.dashboard(request_headers)
+        }
 
     if 'callback' in request_path:
+        cookies = utils.handle_callback(code)
+        print(cookies)
+
         return {
             "statusCode": 301,
             "headers": {
@@ -26,9 +38,7 @@ def lambda_handler(event, context):
                 "Location": "/Prod/dashboard",
             },
             "multiValueHeaders": {
-                "Set-Cookie": [
-                    "testing=testing",
-                ]
+                "Set-Cookie": cookies,
             },
             "body": view.callback(code)
         }
