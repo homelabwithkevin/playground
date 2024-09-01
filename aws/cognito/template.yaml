@@ -30,8 +30,6 @@ Resources:
     Properties:
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
-      AliasAttributes:
-        - email
       UserPoolName: !Sub ${AWS::StackName}-UserPool
       EmailConfiguration: 
         EmailSendingAccount: COGNITO_DEFAULT
