@@ -2,6 +2,7 @@ import boto3
 import requests
 import os
 import json
+from datetime import datetime
 
 from views import view
 
@@ -12,6 +13,12 @@ client_id = os.environ["CLIENT_ID"]
 client_secret = os.environ["CLIENT_SECRET"]
 redirect_uri = os.environ["REDIRECT_URI"]
 domain = os.environ["DOMAIN"]
+
+def today():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def utc_now():
+    return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 def create_cognito_hosted_uri():
     return f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=email+openid&redirect_uri={redirect_uri}"
@@ -84,6 +91,10 @@ def parse_request_headers(request_headers):
         new_headers[key] = value
 
     return new_headers
+
+def get_access_token(request_headers):
+    parsed_headers = parse_request_headers(request_headers)
+    return parsed_headers.get("access_token")
 
 def clear_cookies(request_headers):
     parsed_headers = parse_request_headers(request_headers)
