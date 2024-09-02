@@ -55,7 +55,7 @@ Resources:
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
       UserPoolName: !Sub ${AWS::StackName}-UserPool
-      EmailConfiguration: 
+      EmailConfiguration:
         EmailSendingAccount: COGNITO_DEFAULT
       AutoVerifiedAttributes:
         - email
@@ -138,12 +138,15 @@ Resources:
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
           TABLE: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
       Events:
         HttpApi:
           Type: HttpApi
           Properties:
-            Path: /
-            Method: get
+            Path: /{proxy+}
+            Method: ANY
 
 Outputs:
   Placeholder:
