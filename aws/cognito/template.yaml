@@ -29,6 +29,12 @@ Parameters:
     Type: String
     Default: develop
 
+  Email:
+    Type: String
+
+  Username:
+    Type: String
+
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
   Table:
@@ -123,6 +129,18 @@ Resources:
       SupportedIdentityProviders:
         - COGNITO
 
+
+  UserPoolUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref UserPool
+      Username: kevin
+      DesiredDeliveryMediums:
+        - EMAIL
+      UserAttributes:
+        - Name: email
+          Value: !Ref Email
+
   FunctionMain:
     Type: AWS::Serverless::Function
     Properties:
@@ -164,10 +182,6 @@ Outputs:
   ClientId:
     Description: "ClientId"
     Value: !Sub ${UserPoolClient.ClientId}
-
-  ClientSecret:
-    Description: "User Pool Information"
-    Value: !Sub ${UserPool.ProviderURL}
 
   UserPoolClientAppURL:
     Description: "User Pool Client App URL"
