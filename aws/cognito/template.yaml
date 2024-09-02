@@ -8,6 +8,14 @@ Globals:
     MemorySize: 256
     Runtime: python3.10
 
+
+Conditions:
+  IsExample:
+    Fn::Not:
+      - Fn::Equals:
+          - !Ref Username
+          - hello
+
 Parameters:
   Placeholder:
     Type: String
@@ -131,6 +139,7 @@ Resources:
 
 
   UserPoolUser:
+    Condition: IsExample
     Type: AWS::Cognito::UserPoolUser
     Properties:
       UserPoolId: !Ref UserPool
