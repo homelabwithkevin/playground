@@ -24,6 +24,9 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
             TableName=table,
             Item={
                 'id': {
+                    'S': utils.random_string(10)
+                },
+                'date': {
                     'S': str(utils.today())
                 },
                 'utc_now': {
