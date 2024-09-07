@@ -1,4 +1,4 @@
-from functions import utils
+from functions import utils, db
 from views import forms
 
 def example():
@@ -60,6 +60,51 @@ def dashboard(user_info):
                             </p>
                             {forms.form_message(user_info.get('sub'))}
                         </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    """
+
+def parse_post_details(post_details):
+    data = f"""
+    <table class="table-fixed">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{post_details['date']['S']}</td>
+                <td>{post_details['message']['S']}</td>
+            </tr>
+        </tbody>
+    </table>
+    """
+    return data
+
+def post(path, user_info):
+    result_path = path.split('/post/')[1]
+    result_post_details = None
+    parsed_details = None
+
+    try:
+        result_post_details = db.get_item(result_path, user_info)
+        parsed_details = parse_post_details(result_post_details)
+    except Exception as e:
+        print(f'Failed to get item: {e}')
+
+    return f"""
+        {utils.load_tailwind()}
+        <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
+            <div>
+                <div class="mt-4">
+                    <div>
+                        {logout()}
+                        <div class="mt-4">Post by {user_info.get('username')}</div>
+                        <div class="mt-4"> {parsed_details} </div>
                     </div>
                 </div>
             </div>
