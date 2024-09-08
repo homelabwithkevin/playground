@@ -137,6 +137,7 @@ Resources:
       SupportedIdentityProviders:
         - COGNITO
 
+
   UserPoolUser:
     Condition: IsExample
     Type: AWS::Cognito::UserPoolUser
@@ -174,97 +175,6 @@ Resources:
             Path: /{proxy+}
             Method: ANY
 
-  FunctionCallback:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          DOMAIN: !Ref Domain
-          USER_POOL_ID: !Ref UserPool
-          CLIENT_ID: !GetAtt UserPoolClient.ClientId
-          CLIENT_SECRET: !Ref ClientSecret
-          REDIRECT_URI: !Ref RedirectURL
-          TABLE: !Ref Table
-      Events:
-        HttpApi:
-          Type: HttpApi
-          Properties:
-            Path: /callback
-            Method: get
-
-  FunctionDashboard:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          DOMAIN: !Ref Domain
-          USER_POOL_ID: !Ref UserPool
-          CLIENT_ID: !GetAtt UserPoolClient.ClientId
-          CLIENT_SECRET: !Ref ClientSecret
-          REDIRECT_URI: !Ref RedirectURL
-          TABLE: !Ref Table
-      Events:
-        HttpApi:
-          Type: HttpApi
-          Properties:
-            Path: /dashboard
-            Method: get
-
-  FunctionLogout:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          DOMAIN: !Ref Domain
-          USER_POOL_ID: !Ref UserPool
-          CLIENT_ID: !GetAtt UserPoolClient.ClientId
-          CLIENT_SECRET: !Ref ClientSecret
-          REDIRECT_URI: !Ref RedirectURL
-          TABLE: !Ref Table
-      Events:
-        HttpApi:
-          Type: HttpApi
-          Properties:
-            Path: /logout
-            Method: get
-
-  FunctionPost:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          DOMAIN: !Ref Domain
-          USER_POOL_ID: !Ref UserPool
-          CLIENT_ID: !GetAtt UserPoolClient.ClientId
-          CLIENT_SECRET: !Ref ClientSecret
-          REDIRECT_URI: !Ref RedirectURL
-          TABLE: !Ref Table
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref Table
-      Events:
-        HttpApi:
-          Type: HttpApi
-          Properties:
-            Path: /post
-            Method: post
-
 Outputs:
   Placeholder:
     Description: "API Gateway endpoint URL for Prod stage for function"
@@ -281,10 +191,6 @@ Outputs:
   ClientId:
     Description: "ClientId"
     Value: !Sub ${UserPoolClient.ClientId}
-
-  ClientSecret:
-    Description: "User Pool Information"
-    Value: !Sub ${UserPool.ProviderURL}
 
   UserPoolClientAppURL:
     Description: "User Pool Client App URL"
