@@ -65,7 +65,7 @@ def dashboard(user_info):
             </div>
         </div>
     """
-
+ 
 def parse_post_details(post_details):
     data = f"""
     <table class="table-fixed">

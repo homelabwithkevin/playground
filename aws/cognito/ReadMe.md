@@ -1,6 +1,13 @@
 # ReadMe
 
-Basic AWS Cognito Login with Email using Python boto3.
+Simple implementation of login/logout with
+- Cognito Hosted UI
+- htmx
+- AWS Lambda
+- AWS HTTP API Gateway
+
+# Notes
+If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
 
 # Notes
 If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.

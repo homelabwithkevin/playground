@@ -46,7 +46,6 @@ def lambda_handler(event, context):
             },
             "body": view.post(request_path, user_info)
         }
-
     if '/logout' in request_path:
         return {
             "isBase64Encoded": False,
