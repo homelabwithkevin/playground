@@ -8,6 +8,14 @@ Globals:
     MemorySize: 256
     Runtime: python3.10
 
+
+Conditions:
+  IsExample:
+    Fn::Not:
+      - Fn::Equals:
+          - !Ref Username
+          - hello
+
 Parameters:
   Placeholder:
     Type: String
@@ -28,6 +36,12 @@ Parameters:
   Environment:
     Type: String
     Default: develop
+
+  Email:
+    Type: String
+
+  Username:
+    Type: String
 
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
@@ -55,7 +69,7 @@ Resources:
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: false
       UserPoolName: !Sub ${AWS::StackName}-UserPool
-      EmailConfiguration: 
+      EmailConfiguration:
         EmailSendingAccount: COGNITO_DEFAULT
       AutoVerifiedAttributes:
         - email
@@ -123,6 +137,18 @@ Resources:
       SupportedIdentityProviders:
         - COGNITO
 
+  UserPoolUser:
+    Condition: IsExample
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref UserPool
+      Username: kevin
+      DesiredDeliveryMediums:
+        - EMAIL
+      UserAttributes:
+        - Name: email
+          Value: !Ref Email
+
   FunctionMain:
     Type: AWS::Serverless::Function
     Properties:
@@ -138,12 +164,15 @@ Resources:
           CLIENT_SECRET: !Ref ClientSecret
           REDIRECT_URI: !Ref RedirectURL
           TABLE: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
       Events:
         HttpApi:
           Type: HttpApi
           Properties:
-            Path: /
-            Method: get
+            Path: /{proxy+}
+            Method: ANY
 
   FunctionCallback:
     Type: AWS::Serverless::Function

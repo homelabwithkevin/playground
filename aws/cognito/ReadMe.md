@@ -9,6 +9,9 @@ Simple implementation of login/logout with
 # Notes
 If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
 
+# Notes
+If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
+
 ## Deployment
 1. sam build; sam deploy
 2. Get outputs

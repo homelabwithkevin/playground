@@ -2,6 +2,9 @@ import boto3
 import requests
 import os
 import json
+import random
+import string
+
 from datetime import datetime
 
 from views import view
@@ -19,6 +22,9 @@ def today():
 
 def utc_now():
     return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
+def random_string(length=10):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 def create_cognito_hosted_uri():
     return f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=email+openid&redirect_uri={redirect_uri}"
