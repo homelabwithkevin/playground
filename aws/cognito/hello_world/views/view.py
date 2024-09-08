@@ -8,6 +8,18 @@ def example():
     </p>
     """
 
+def view_login():
+    login = utils.create_cognito_hosted_uri()
+
+    return f"""
+    <div>
+        <a href='{login}'>
+            <button type="submit" class="min-w-[200px] rounded-md bg-indigo-600 px-3 py-6 text-3xl font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Login
+            </button>
+        </a>
+    </div>
+    """
 def navigation():
     login = utils.create_cognito_hosted_uri()
 
@@ -23,7 +35,9 @@ def navigation():
 
 def logout():
     return f"""
-    <div><a href='/logout'>Logout</a></div>
+    <div class="m-4">
+        <a href='/logout'>Logout</a>
+    </div>
     """
 
 def index():
@@ -105,6 +119,28 @@ def post(path, user_info):
                         {logout()}
                         <div class="mt-4">Post by {user_info.get('username')}</div>
                         <div class="mt-4"> {parsed_details} </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    """
+
+def view_journal(user_info):
+    return f"""
+        {utils.load_tailwind()}
+        <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
+            <div>
+                <div class="mt-4">
+                    <div class="space-y-4">
+                        {logout()}
+                        <div>Journal</div>
+                        <div>Today: {utils.today_journal()}</div>
+                        <p>
+                            <p>
+                                Welcome {user_info.get('username')}!
+                            </p>
+                            {forms.form_message(user_info.get('sub'), 'journal')}
+                        </p>
                     </div>
                 </div>
             </div>

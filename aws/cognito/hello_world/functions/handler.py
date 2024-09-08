@@ -11,11 +11,28 @@ client = boto3.client('dynamodb')
 
 def post(body=None, user_info=None, source_ip=None, user_agent=None):
     decoded_body = base64.b64decode(body).decode('utf-8')
-    data = decoded_body.split('=')[1]
+
+    # form_type=message&message=example
+    # Not the best way to parse this, but it works for now
+    try:
+        split_decoded = decoded_body.split('&')
+
+        for s in split_decoded:
+            key, value = s.split('=')
+
+            if key == 'form_type':
+                form_type = value
+
+            if key == 'message':
+                data = value
+
+    except:
+        pass
+
 
     body = f"""
     <div>
-        Success: {data}
+        Success: {decoded_body}
     </div>
     """
 
@@ -43,6 +60,9 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
                 },
                 'message': {
                     'S': data
+                },
+                'form_type': {
+                    'S': form_type
                 },
             }
         )

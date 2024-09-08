@@ -8,7 +8,6 @@ Globals:
     MemorySize: 256
     Runtime: python3.10
 
-
 Conditions:
   IsExample:
     Fn::Not:
@@ -136,7 +135,6 @@ Resources:
 
       SupportedIdentityProviders:
         - COGNITO
-
 
   UserPoolUser:
     Condition: IsExample
