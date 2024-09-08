@@ -20,6 +20,9 @@ domain = os.environ["DOMAIN"]
 def today():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+def today_journal():
+    return datetime.now().strftime("%A, %Y-%m-%d %H:%M")
+
 def utc_now():
     return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
