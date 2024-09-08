@@ -1,10 +1,18 @@
-def form_message(sub=None):
+def form_message(sub=None, form_type=None):
+    welcome_message = "Write a message"
+
+    if form_type:
+        welcome_message = f'Write a {form_type} entry'
+    else:
+        form_type = 'message'
+
     return f"""
     <form hx-post="/post" hx-target="#result" hx-on::after-request="this.reset()" hx-indicator="#spinner">
         <div class="col-span-full">
             <div class="mt-4 p-4">
                 <input id="user_id" value="{sub}" class="hidden">
-                <p class="mt-3 mb-6 text-2xl leading-6 text-gray-600">Write a message</p>
+                <input id="form_type" value="{form_type}" class="hidden">
+                <p class="mt-3 mb-6 text-2xl leading-6 text-gray-600">{welcome_message}</p>
                 <textarea id="message" name="message" rows="3" class="min-w-[300px] block w-full rounded-md border-0 p-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
             </div>
         </div>
