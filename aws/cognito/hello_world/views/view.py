@@ -8,6 +8,18 @@ def example():
     </p>
     """
 
+def view_login():
+    login = utils.create_cognito_hosted_uri()
+
+    return f"""
+    <div>
+        <a href='{login}'>
+            <button type="submit" class="min-w-[200px] rounded-md bg-indigo-600 px-3 py-6 text-3xl font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Login
+            </button>
+        </a>
+    </div>
+    """
 def navigation():
     login = utils.create_cognito_hosted_uri()
 
