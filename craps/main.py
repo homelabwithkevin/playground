@@ -1,7 +1,7 @@
 import random
 
 def roll_dice():
-    return random.randint(1, 12), random.randint(1, 12)
+    return random.randint(1, 6), random.randint(1, 6)
 
 def calculate_sum_of_dice(dice_1, dice_2):
     return dice_1 + dice_2
