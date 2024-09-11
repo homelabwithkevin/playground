@@ -3,6 +3,12 @@ import random
 def roll_dice():
     return random.randint(1, 12), random.randint(1, 12)
 
+def calculate_sum_of_dice(dice_1, dice_2):
+    return dice_1 + dice_2
+
 dice_1, dice_2 = roll_dice()
 
-print(dice_1, dice_2)
+sum_of_dice = calculate_sum_of_dice(dice_1, dice_2)
+
+print(sum_of_dice)
+
