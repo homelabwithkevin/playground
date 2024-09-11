@@ -30,11 +30,10 @@ def quit(bank_roll, total_rolls):
 
 def calculate_odds(number, amount):
     if number in [6, 8]:
-        return amount * 1.5
+        return amount * 2 
 
     if number in [5, 9]:
-        return amount * 1.75
+        return amount * 2.25
 
     if number in [4, 10]:
-        return amount * 2.5
-
+        return amount * 3
