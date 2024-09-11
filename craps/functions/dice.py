@@ -1,8 +1,8 @@
 import random
 
 def roll():
-    magic_number = random.randint(1, 100)
-    result_magic = magic_number % 2
+    magic_number = random.randint(1, 10000)
+    result_magic = magic_number % 3
     sum_of_dice = 0
 
     if result_magic == 0:
