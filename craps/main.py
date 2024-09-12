@@ -14,7 +14,7 @@ record_game = True
 
 # Intial Values
 bank_roll = 500
-board_type = 'craps' # crapless or craps
+board_type = 'crapless' # crapless or craps
 amount_per_roll = 10
 across = 'y'
 
