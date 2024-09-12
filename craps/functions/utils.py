@@ -29,11 +29,17 @@ def quit(bank_roll, total_rolls):
     print(f'Final Total Roll Count: {total_rolls}')
 
 def calculate_odds(number, amount):
-    if number in [6, 8]:
-        return amount * 2 
+    if number in [6, 8]: # 7:6
+        return amount * 2.2
 
-    if number in [5, 9]:
-        return amount * 2.25
+    if number in [5, 9]: # 7:5
+        return amount * 2.4
 
-    if number in [4, 10]:
-        return amount * 3
+    if number in [4, 10]: # 9:5
+        return amount * 2.8
+
+    if number in [2, 12]: # 11:2
+        return amount * 6.5
+
+    if number in [3, 11]: # 11:4
+        return amount * 3.75
