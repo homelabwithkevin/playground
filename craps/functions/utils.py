@@ -25,7 +25,8 @@ def calculate_point(sum_of_dice):
     return 'point'
 
 def quit(bank_roll, total_rolls):
-    print(f'\n\nFinal Bankroll: {bank_roll}')
+    rounded_bank_roll = round(bank_roll, 2)
+    print(f'\n\nFinal Bankroll: {rounded_bank_roll}')
     print(f'Final Total Roll Count: {total_rolls}')
 
 def calculate_odds(number, amount):
