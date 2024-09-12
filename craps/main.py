@@ -110,7 +110,15 @@ while True:
                     utils.quit(bank_roll, total_rolls)
                     break
                 else:
-                    board, total_bet = initialize.update_board(board, 'press', amount_per_roll, sum_of_dice, total_bet)
+                    print(press)
+                    # If enter key pressed
+                    if not press:
+                        board, total_bet = initialize.update_board(board, 'press', amount_per_roll, sum_of_dice, total_bet)
+                    else:
+                        amount_per_roll = int(press)
+                        bank_roll -= amount_per_roll
+                        print(f'New bet: {amount_per_roll}')
+                        board, total_bet = initialize.update_board(board, 'press_custom', amount_per_roll, sum_of_dice, total_bet)
 
             if not record_game:
                 print(f'| {dice_1} | {dice_2} | {sum_of_dice} | {result} |')

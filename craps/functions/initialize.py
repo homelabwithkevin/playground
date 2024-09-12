@@ -33,7 +33,18 @@ def update_board(board, bet_type, amount_per_roll, sum_of_dice=0, total_bet=0):
                 amount_on_number = board[number] 
 
                 result_amount = utils.calculate_odds(number, amount_on_number)
-                print(f'Result amonut: {result_amount}')
+                print(f'Result amount: {result_amount}')
+                board[number] = amount_on_number + result_amount
+                total_bet += amount_per_roll
+
+    if bet_type == 'press_custom':
+        print(f'\nSum of dice for press: {sum_of_dice}')
+        for number, bet in board.items():
+            if number == sum_of_dice:
+                amount_on_number = board[number] 
+
+                result_amount = amount_per_roll
+                print(f'Result amount: {result_amount}')
                 board[number] = amount_on_number + result_amount
                 total_bet += amount_per_roll
 
