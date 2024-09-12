@@ -51,7 +51,7 @@ while True:
                 if bank_roll == 'q':
                     utils.quit(bank_roll, total_rolls)
                     break
-                elif type(bank_roll) == int:
+                elif type(bank_roll) == str:
                     bank_roll = int(bank_roll)
                 else:
                     utils.quit(bank_roll, total_rolls)
