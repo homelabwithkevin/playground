@@ -25,10 +25,10 @@ while True:
 
     if current_roll == 0:
         # bank_roll = input('Bank roll: ')
-        utils.save_to_csv(output_file, data=f'Initial bank roll: {bank_roll}')
-        utils.save_to_csv(output_file, data=f'Setting amount per roll: {amount_per_roll}')
+        utils.save_to_csv(output_file, data=f'\nInitial bank roll: {bank_roll}')
+        utils.save_to_csv(output_file, data=f'\nSetting amount per roll: {amount_per_roll}')
 
-        utils.save_to_csv(output_file, data=f'Setting game version to {board_type}\n')
+        utils.save_to_csv(output_file, data=f'\nSetting game version to {board_type}\n')
         board = initialize.board(board_type=board_type)
 
         # across = input('Bet across (y/n): ')
