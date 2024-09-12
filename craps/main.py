@@ -49,15 +49,15 @@ while True:
             if bank_roll < 0:
                 bank_roll = input(f'Deposit more money or q to quit: ')
                 if bank_roll == 'q':
-                    utils.quit(bank_roll, total_rolls)
-                    break
-                elif not bank_roll:
-                    utils.quit(bank_roll, total_rolls)
+                    utils.quit(0, total_rolls)
                     break
                 elif bank_roll:
                     bank_roll = int(bank_roll)
+                elif not bank_roll:
+                    utils.quit(0, total_rolls)
+                    break
                 else:
-                    utils.quit(bank_roll, total_rolls)
+                    utils.quit(0, total_rolls)
                     break
 
             print(f'------------------------------')
@@ -116,15 +116,17 @@ while True:
                     utils.quit(bank_roll, total_rolls)
                     break
                 else:
-                    print(press)
                     # If enter key pressed
                     if not press:
                         board, total_bet = initialize.update_board(board, 'press', amount_per_roll, sum_of_dice, total_bet)
                     else:
                         if press == 'c':
                             sum_of_dice = int(input('What number to press?: '))
+                        elif press == 'r':
+                            amount_per_roll = 0
+                        else:
+                            amount_per_roll = int(input('New bet: '))
 
-                        amount_per_roll = int(input('New bet: '))
                         bank_roll -= amount_per_roll
                         print(f'New bet: {amount_per_roll}')
                         board, total_bet = initialize.update_board(board, 'press_custom', amount_per_roll, sum_of_dice, total_bet)
