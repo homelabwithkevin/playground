@@ -61,6 +61,9 @@ while True:
             print(f'Bet: {total_bet}')
             print(f'Bankroll: {bank_roll}')
             dice_1, dice_2, sum_of_dice = dice.roll(False)
+            print(f'------------------------------')
+            print(f'{sum_of_dice} out!')
+            print(f'------------------------------')
 
             if sum_of_dice == 7:
                 result = 'loss'
