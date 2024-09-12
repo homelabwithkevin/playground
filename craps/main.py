@@ -75,6 +75,7 @@ while True:
             if sum_of_dice == 7:
                 continue_game = input('loss, 7 out, (r)oll, (w)ithdraw, (q)uit: ')
                 if continue_game == 'q':
+                    board, total_bet = initialize.update_board(board, 'quit', 0, sum_of_dice, total_bet)
                     utils.quit(bank_roll, total_rolls)
                     break
                 else:
@@ -90,6 +91,7 @@ while True:
             elif sum_of_dice in [1, 2, 3, 11, 12]:
                 continue_game = input(f'tie, {sum_of_dice}, (r)oll, (w)ithdraw, (q)uit: ')
                 if continue_game == 'q':
+                    board, total_bet = initialize.update_board(board, 'quit', 0, sum_of_dice, total_bet)
                     utils.quit(bank_roll, total_rolls)
                     break
                 continue
