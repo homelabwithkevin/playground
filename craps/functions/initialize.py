@@ -55,5 +55,6 @@ def update_board(board, bet_type, amount_per_roll, sum_of_dice=0, total_bet=0):
             board[number] = 0
         print(f'Resetting board')
 
-    print(board)
+    if bet_type != 'quit':
+        print(board)
     return board, total_bet
