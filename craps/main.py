@@ -67,7 +67,7 @@ while True:
             print(f'\n------------------------------\n')
             print(f'Bet: {total_bet}')
             print(f'Bankroll: {bank_roll}\n')
-            dice_1, dice_2, sum_of_dice = dice.roll()
+            dice_1, dice_2, sum_of_dice = dice.roll(False)
 
             if sum_of_dice == 7:
                 result = 'loss'
@@ -80,7 +80,6 @@ while True:
             utils.save_to_csv(output_file, data=data)
 
             if sum_of_dice == 7:
-
                 continue_game = input('loss, 7 out, (r)oll, (w)ithdraw, (q)uit: ')
                 if continue_game == 'q':
                     utils.quit(bank_roll, total_rolls)
@@ -100,7 +99,6 @@ while True:
                 if continue_game == 'q':
                     utils.quit(bank_roll, total_rolls)
                     break
-
                 continue
             else:
                 try:
