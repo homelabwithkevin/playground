@@ -121,7 +121,10 @@ while True:
                     if not press:
                         board, total_bet = initialize.update_board(board, 'press', amount_per_roll, sum_of_dice, total_bet)
                     else:
-                        amount_per_roll = int(press)
+                        if press == 'c':
+                            sum_of_dice = int(input('What number to press?: '))
+
+                        amount_per_roll = int(input('New bet: '))
                         bank_roll -= amount_per_roll
                         print(f'New bet: {amount_per_roll}')
                         board, total_bet = initialize.update_board(board, 'press_custom', amount_per_roll, sum_of_dice, total_bet)
