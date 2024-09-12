@@ -11,6 +11,7 @@ current_roll = 0
 winnings = 0
 total_out = 0
 record_game = True
+win, tie, loss = 0, 0, 0 
 
 # Intial Values
 bank_roll = 500
@@ -70,10 +71,13 @@ while True:
 
             if sum_of_dice == 7:
                 result = 'loss'
+                loss += 1
             elif sum_of_dice in [1, 2, 3, 11, 12]:
                 result = 'tie'
+                tie += 1
             else:
                 result = 'win'
+                win += 1
 
             data = f'\n{dice_1},{dice_2},{sum_of_dice},{result},{bank_roll},{total_bet},{total_rolls}'
             utils.save_to_csv(output_file, data=data, print_out=False)
@@ -136,5 +140,8 @@ while True:
 
         if record_game:
             print(f'\nGame Record: {output_file}')
+            utils.save_to_csv(output_file, data=f'\nLoss: {loss}')
+            utils.save_to_csv(output_file, data=f'\nWin: {win}')
+            utils.save_to_csv(output_file, data=f'\nTie: {tie}')
 
         break
