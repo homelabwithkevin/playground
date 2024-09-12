@@ -21,7 +21,6 @@ def board(board_type):
     return board 
 
 def update_board(board, bet_type, amount_per_roll, sum_of_dice=0, total_bet=0):
-    print(f'\n')
     if bet_type == 'across':
         for number, bet in board.items():
             board[number] = amount_per_roll + board[number] 

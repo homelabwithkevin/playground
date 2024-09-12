@@ -4,13 +4,13 @@ from datetime import datetime
 def today():
     return datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
-def save_to_csv(output_file, headers=None, data=None):
+def save_to_csv(output_file, print_out=True, data=None):
     # Write actual data
     with open(f'{output_file}', 'a') as f:
             f.write(f'{data}')
 
-    print(data)
-    print('\n')
+    if print_out:
+        print(data)
 
 def calculate_roll_sum(existing_rolls):
     return sum([v for k, v in existing_rolls.items()])
@@ -30,16 +30,16 @@ def quit(bank_roll, total_rolls):
 
 def calculate_odds(number, amount):
     if number in [6, 8]: # 7:6
-        return amount * 2.2
+        return round(amount * 2.2, 2)
 
     if number in [5, 9]: # 7:5
-        return amount * 2.4
+        return round(amount * 2.4, 2)
 
     if number in [4, 10]: # 9:5
-        return amount * 2.8
+        return round(amount * 2.8, 2)
 
     if number in [2, 12]: # 11:2
-        return amount * 6.5
+        return round(amount * 6.5, 2)
 
     if number in [3, 11]: # 11:4
-        return amount * 3.75
+        return round(amount * 3.75, 2)
