@@ -103,6 +103,7 @@ while True:
 
                 press = input(f'win, {sum_of_dice}, (r)oll, (w)ithdraw, (q)uit: ')
                 if press == 'q':
+                    board, total_bet = initialize.update_board(board, 'quit', 0, sum_of_dice, total_bet)
                     bank_roll += total_bet
                     utils.quit(bank_roll, total_rolls)
                     break
