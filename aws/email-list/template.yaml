@@ -19,17 +19,6 @@ Resources:
     Properties:
       EmailIdentity: !Ref Email
 
-  ContactList:
-    Type: AWS::SES::ContactList
-    Properties:
-      ContactListName: !Ref EmailListName
-      Description: !Ref EmailListName
-      Topics:
-        - DefaultSubscriptionStatus: OPT_OUT 
-          DisplayName: !Ref EmailListName
-          TopicName: !Ref EmailListName
-          Description: !Ref EmailListName
-
   HelloWorldFunction:
     Type: AWS::Serverless::Function 
     Properties:
