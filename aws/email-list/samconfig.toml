@@ -5,5 +5,5 @@ resolve_s3 = true
 s3_prefix = "hlb-email-list"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = "Email=\"kevin@homelabwithkevin.com\" EmailListName=\"hlb-email-list\""
+parameter_overrides = "Email=\"kevin@homelabwithkevin.com\""
 image_repositories = []

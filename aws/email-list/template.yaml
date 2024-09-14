@@ -10,31 +10,9 @@ Globals:
 Parameters:
   Email:
     Type: String
-  EmailListName:
-    Type: String
 
 Resources:
   EmailIdentity:
     Type: AWS::SES::EmailIdentity
     Properties:
       EmailIdentity: !Ref Email
-
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function 
-    Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
-      Runtime: python3.10
-      Architectures:
-        - x86_64
-      Events:
-        Api:
-          Type: HttpApi
-          Properties:
-            Path: /
-            Method: get
-
-Outputs:
-  Api:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
