@@ -21,3 +21,18 @@ def put_item(first_name, email):
             },
         }
     )
+
+def scan():
+    response = client.scan(TableName=table)
+    html_code = "<html>"
+    html_code += """
+    email,first_name<br>
+    """
+    for item in response['Items']:
+        email = item['email']['S']
+        first_name = item['first_name']['S']
+        html_code += f"""
+        {email},{first_name}<br>
+        """
+    html_code += "</html>"
+    return html_code
