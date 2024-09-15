@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: hlb-mailtrap-s3-develop
+
+Parameters:
+  Environment:
+    Description: Environment to deploy to
+    Type: String
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "hlb-mailtrap-s3-${Environment}"
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
