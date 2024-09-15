@@ -4,6 +4,7 @@ import base64
 from functions import db
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
+form_image = os.getenv('FORM_IMAGE')
 
 def post(body, source_ip):
     decoded_body = base64.b64decode(body).decode('utf-8')
@@ -34,7 +35,7 @@ def post(body, source_ip):
                             </div>
                         </div>
                         <div class="mt-6">
-                            <img src="https://{cloudfront_url}/cdn/ymyyuodjzl.jpg">
+                            <img src="https://{cloudfront_url}/cdn/{form_image}">
                         </div>
                     </div>
                 </div>
