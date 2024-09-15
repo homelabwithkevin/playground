@@ -61,7 +61,7 @@ Resources:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
-          ProtectedIP: !Ref ProtectedIP
+          PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
         - S3CrudPolicy:
@@ -90,7 +90,7 @@ Resources:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
-          ProtectedIP: !Ref ProtectedIP
+          PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
         - DynamoDBCrudPolicy:
