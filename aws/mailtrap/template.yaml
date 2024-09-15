@@ -26,6 +26,24 @@ Resources:
             NoncurrentVersionExpirationInDays: 30
             Prefix: input/
 
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "hlb-mailtrap-s3-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: email
+          KeyType: RANGE
+
   Function:
     Type: AWS::Serverless::Function 
     Properties:
@@ -38,6 +56,7 @@ Resources:
         Variables:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
           CLOUDFRONT_URL: !Ref CloudfrontDomain
+          TABLE: !Ref Table
       Policies:
         - S3CrudPolicy:
             BucketName: !Sub "hlb-mailtrap-s3-${Environment}"
@@ -64,6 +83,10 @@ Resources:
         Variables:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
           CLOUDFRONT_URL: !Ref CloudfrontDomain
+          TABLE: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
       Events:
         Api:
           Type: HttpApi

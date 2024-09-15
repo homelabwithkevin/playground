@@ -1,6 +1,8 @@
 import os
 import base64
 
+from functions import db
+
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 
 def post(body, source_ip):
@@ -9,6 +11,9 @@ def post(body, source_ip):
     first_name = body_split[0].split('=')[1]
     split_email = body_split[1].split('=')[1]
     email = split_email.replace('%40', '@')
+
+    db.put_item(first_name, email)
+
     return {
             'statusCode': 200,
             'headers': {
