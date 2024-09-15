@@ -27,7 +27,7 @@ def post(body, source_ip):
                 <head>
                     <title>Ginger Kitty Newsletter</title>
                 </head>
-                <div class="flex justify-center mt-8">
+                <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
                     <div>
                         <div>
                             <div>
