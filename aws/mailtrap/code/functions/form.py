@@ -1,6 +1,6 @@
 def newsletter():
     return """
-    <form hx-post="/" hx-target="#success">
+    <form hx-post="/" hx-swap="innerHTML" hx-on::after-request="this.reset()">
         <div>
             <div class="border-b border-gray-900/10 pb-12">
             <h2 class="text-base font-semibold leading-7 text-gray-900">Ginger Kitty Newsletter</h2>
