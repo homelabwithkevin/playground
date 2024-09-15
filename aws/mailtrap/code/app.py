@@ -15,7 +15,11 @@ def randomword(length=10):
 def copy_object(key):
     extension = key.split('.')[-1]
     folder = key.split('/')[1]
-    new_key = f'cdn/{folder}/{randomword()}.{extension}'
+    if '.jpg' in folder:
+        new_key = f'cdn/{randomword()}.{extension}'
+    else:
+        new_key = f'cdn/{folder}/{randomword()}.{extension}'
+
     print(f'Copying {key} to {new_key}')
     client.copy_object(Bucket=bucket, CopySource=f'{bucket}/{key}', Key=new_key)
     print(f'Successful copy')
