@@ -48,3 +48,27 @@ Resources:
                 Rules:
                   - Name: prefix
                     Value: input/
+
+  Cloudfront:
+    Type: AWS::CloudFront::Distribution
+    Properties: 
+      DistributionConfig: 
+        Origins: 
+          - DomainName: !GetAtt Bucket.RegionalDomainName
+            Id: S3Origin
+            S3OriginConfig: 
+              OriginAccessIdentity: ''
+        Enabled: 'true'
+        DefaultCacheBehavior: 
+          TargetOriginId: S3Origin
+          ForwardedValues: 
+            QueryString: 'false'
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Comment: Cloudfront distribution for hlb-mailtrap-s3
+        PriceClass: PriceClass_100
+
+Outputs:
+  CloudfrontDomain:
+    Value: !GetAtt Cloudfront.DomainName
+    Description: The domain name of the Cloudfront distribution
