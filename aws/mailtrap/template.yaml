@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: hlb-mailtrap-s3-develop
+
+Parameters:
+  Environment:
+    Description: Environment to deploy to
+    Type: String
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "hlb-mailtrap-s3-${Environment}"
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireOldObjects
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
+            Prefix: input/
+
+  Function:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: code
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Sub "hlb-mailtrap-s3-${Environment}"
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: input/
+
+  Cloudfront:
+    Type: AWS::CloudFront::Distribution
+    Properties: 
+      DistributionConfig: 
+        Origins: 
+          - DomainName: !GetAtt Bucket.RegionalDomainName
+            Id: S3Origin
+            S3OriginConfig: 
+              OriginAccessIdentity: ''
+        Enabled: 'true'
+        DefaultCacheBehavior: 
+          TargetOriginId: S3Origin
+          ForwardedValues: 
+            QueryString: 'false'
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Comment: Cloudfront distribution for hlb-mailtrap-s3
+        PriceClass: PriceClass_100
+
+Outputs:
+  CloudfrontDomain:
+    Value: !GetAtt Cloudfront.DomainName
+    Description: The domain name of the Cloudfront distribution
