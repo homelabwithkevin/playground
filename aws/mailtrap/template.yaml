@@ -19,7 +19,6 @@ Resources:
         Rules:
           - Id: ExpireOldObjects
             Status: Enabled
-            ExpirationInDays: 30
             NoncurrentVersionExpirationInDays: 30
             Prefix: input/
 
