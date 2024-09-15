@@ -15,3 +15,36 @@ Resources:
       AccessControl: Private
       VersioningConfiguration:
         Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireOldObjects
+            Status: Enabled
+            ExpirationInDays: 30
+            NoncurrentVersionExpirationInDays: 30
+            Prefix: input/
+
+  Function:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: code
+      Handler: app.lambda_handler
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Sub "hlb-mailtrap-s3-${Environment}"
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: input/
