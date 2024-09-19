@@ -161,5 +161,6 @@ newsletter_html_content = create(opening_entry)
 complete_newsletter = "newsletter.html"
 # upload_file(complete_newsletter)
 
+# Have to convert tailwind to inline styles
 # Email
 send_email(newsletter_html_content, "September 8th", "kevin@homelabwithkevin.com")
