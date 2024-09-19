@@ -112,14 +112,41 @@ def create_newsletter(entries, date, first_entry):
     </html>
     """
 
+    content_newsletter = header + intro + posts + end
     with open('newsletter.html', 'w') as f:
-        f.write(header + intro + posts + end)
+        f.write(content_newsletter)
 
     print(f'Created newsletter!')
+    return content_newsletter
 
 def create(first_entry):
     newsletter_entries = parse_newsletter_csv("2024-09-18.csv")
-    create_newsletter(newsletter_entries, "September 8th", first_entry)
+    content = create_newsletter(newsletter_entries, "September 8th", first_entry)
+    return content
+
+def send_email(newsletter, date, to):
+    client = boto3.client('ses')
+    print(f"Sending email to: {to}")
+    try:
+        client.send_email(
+            Source='kevin@homelabwithkevin.com',
+            Destination={
+                'ToAddresses': [to],
+            },
+            Message={
+                'Subject': {
+                    'Data': f'Ginger Pictures - Week of {date}',
+                },
+                'Body': {
+                    'Html': {
+                        'Data': newsletter,
+                    },
+                },
+            },
+        )
+        print(f'Email Sent!')
+    except Exception as e:
+        print(f'Error sending email: {e}')
 
 # create_initial_newsletter("draft")
 
@@ -127,8 +154,12 @@ opening_entry = f"""
 Hello! Here's my first attempt at a "newsletter" with weekly pictures of Ginger.
 """
 
-create(opening_entry)
+# Create
+newsletter_html_content = create(opening_entry)
 
 # Upload
 complete_newsletter = "newsletter.html"
-upload_file(complete_newsletter)
+# upload_file(complete_newsletter)
+
+# Email
+send_email(newsletter_html_content, "September 8th", "kevin@homelabwithkevin.com")
