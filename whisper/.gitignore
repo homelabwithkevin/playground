@@ -2,6 +2,7 @@
 env
 **/env/**
 *.txt
+!requirements.txt
 *.ipynb
 *.md
 !ReadMe.md
