@@ -144,7 +144,7 @@ def send_email(newsletter, date, to):
 # create_initial_newsletter("newsletter")
 
 opening_entry = f"""
-Welcome to the 3rd week of random photos of Ginger (and a lake photo)!
+Welcome to the 4th week of random photos of Ginger. We took plenty of naps and watched the Indianapolis 8-hour race on YouTube.
 """
 
 word_date = "October 6th, 2024"
