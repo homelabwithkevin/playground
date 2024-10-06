@@ -95,6 +95,7 @@ def create_newsletter(entries, date, first_entry):
         <div class="mb-6">
             <div>
                 <div class="font-bold">{entry['title']}</div>
+                <div>{entry['description']}</div>
                 <img src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
             </div>
         </div>
@@ -146,8 +147,8 @@ opening_entry = f"""
 Welcome to the 3rd week of random photos of Ginger (and a lake photo)!
 """
 
-word_date = "September - 28th"
-source_csv = "2024-09-28.csv"
+word_date = "October 6th, 2024"
+source_csv = "2024-10-06.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
