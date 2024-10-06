@@ -116,6 +116,9 @@ __pycache__/
 # C extensions
 *.so
 
+# HTML Extensions
+*.html
+
 # Distribution / packaging
 .Python
 build/

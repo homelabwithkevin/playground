@@ -1,20 +1,13 @@
 import boto3
 
-from functions import utils
+from functions import utils, parser
 
 client = boto3.client('s3')
 
 bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
-newsletter = "cdn/2024-09-15-newsletter/"
+newsletter = "cdn/2024-09-28-newsletter/"
 newsletter_date = utils.today_newsletter()
-
-def upload_file(file):
-    try:
-        client.upload_file(file, bucket_name, f'{newsletter}{file}', ExtraArgs={'ContentType': 'text/html'})
-        print('File uploaded to S3')
-    except Exception as e:
-        print(f'Error uploading {file} to S3: {e}')
 
 def get_files():
     list_of_files = []
@@ -30,6 +23,7 @@ def get_files():
 def create_initial_newsletter(file_name):
     with open(f'{file_name}.html', 'w') as f:
         for file in get_files():
+            print(file)
             f.write(file)
             f.write(f"</br>")
             f.write(f"<img src={file} height='300'>")
@@ -100,9 +94,8 @@ def create_newsletter(entries, date, first_entry):
         posts += f"""
         <div class="mb-6">
             <div>
-                <div class="font-bold">{entry['caption']}</div>
-                <div class="mb-2">{entry['description']}</div>
-                <img src="{entry['file']}" class="max-h-[600px]">
+                <div class="font-bold">{entry['title']}</div>
+                <img src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
             </div>
         </div>
         """
@@ -119,9 +112,8 @@ def create_newsletter(entries, date, first_entry):
     print(f'Created newsletter!')
     return content_newsletter
 
-def create(first_entry):
-    newsletter_entries = parse_newsletter_csv("2024-09-18.csv")
-    content = create_newsletter(newsletter_entries, "September 8th", first_entry)
+def create(first_entry, entries, date):
+    content = create_newsletter(entries, date, first_entry)
     return content
 
 def send_email(newsletter, date, to):
@@ -148,19 +140,26 @@ def send_email(newsletter, date, to):
     except Exception as e:
         print(f'Error sending email: {e}')
 
-# create_initial_newsletter("draft")
+# create_initial_newsletter("newsletter")
 
 opening_entry = f"""
-Hello! Here's my first attempt at a "newsletter" with weekly pictures of Ginger.
+Welcome to the 3rd week of random photos of Ginger (and a lake photo)!
 """
 
+word_date = "September - 28th"
+source_csv = "2024-09-28.csv"
+
+# Parse CSV and upload to CDN
+entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
+
 # Create
-newsletter_html_content = create(opening_entry)
+newsletter_html_content = create(opening_entry, entries, word_date)
 
 # Upload
 complete_newsletter = "newsletter.html"
-# upload_file(complete_newsletter)
+cdn_complete_newsletter = f"{newsletter}newsletter.html"
+utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
 
 # Have to convert tailwind to inline styles
 # Email
-send_email(newsletter_html_content, "September 8th", "kevin@homelabwithkevin.com")
+# send_email(newsletter_html_content, word_date, "kevin@homelabwithkevin.com")
