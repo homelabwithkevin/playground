@@ -9,14 +9,16 @@ def parse_newsletter_csv_pandas(file, bucket):
     df = pd.read_csv(file)
 
     for index, row in df.iterrows():
-        photo = row['photo']
+        photo = row['file']
         cdn_photo = row['cdn_photo']
         title = row['title']
+        description = row['description']
 
         entries.append({
             'photo': photo,
             'cdn_photo': cdn_photo,
-            'title': title
+            'title': title,
+            'description': description
         })
 
         if not isinstance(cdn_photo, str):

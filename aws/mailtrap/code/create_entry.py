@@ -6,8 +6,8 @@ client = boto3.client('s3')
 
 bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
-newsletter = "cdn/2024-09-28-newsletter/"
 newsletter_date = utils.today_newsletter()
+newsletter = f"cdn/{newsletter_date}"
 
 def get_files():
     list_of_files = []
@@ -76,7 +76,7 @@ def create_newsletter(entries, date, first_entry):
     <div class="mb-4 mt-4">
         <div class="text-center content-center justify-center m-4">
             <div class="text-3xl font-bold mb-8">Ginger Pictures - Week of {date}</div>
-            <a href="{cloudfront}/{newsletter}newsletter.html" target="_blank">View in Browser</a>
+            <a href="{cloudfront}/{newsletter}/newsletter.html" target="_blank">View in Browser</a>
         </div>
         <div class="font-bold">Intro</div>
         <div>
@@ -95,6 +95,7 @@ def create_newsletter(entries, date, first_entry):
         <div class="mb-6">
             <div>
                 <div class="font-bold">{entry['title']}</div>
+                <div>{entry['description']}</div>
                 <img src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
             </div>
         </div>
@@ -143,11 +144,11 @@ def send_email(newsletter, date, to):
 # create_initial_newsletter("newsletter")
 
 opening_entry = f"""
-Welcome to the 3rd week of random photos of Ginger (and a lake photo)!
+Welcome to the 4th week of random photos of Ginger. We took plenty of naps and watched the Indianapolis 8-hour race on YouTube.
 """
 
-word_date = "September - 28th"
-source_csv = "2024-09-28.csv"
+word_date = "October 6th, 2024"
+source_csv = "2024-10-06.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
@@ -157,7 +158,7 @@ newsletter_html_content = create(opening_entry, entries, word_date)
 
 # Upload
 complete_newsletter = "newsletter.html"
-cdn_complete_newsletter = f"{newsletter}newsletter.html"
+cdn_complete_newsletter = f"{newsletter}/newsletter.html"
 utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
 
 # Have to convert tailwind to inline styles
