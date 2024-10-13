@@ -29,10 +29,15 @@ Resources:
         Status: Enabled
       LifecycleConfiguration:
         Rules:
-          - Id: ExpireOldObjects
+          - Id: ExpireOldInput
             Status: Enabled
             NoncurrentVersionExpirationInDays: 30
             Prefix: input/
+        Rules:
+          - Id: ExpireOldCDN
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
+            Prefix: cdn/
 
   Table:
     Type: AWS::DynamoDB::Table
