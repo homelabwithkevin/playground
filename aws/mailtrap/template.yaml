@@ -115,6 +115,13 @@ Resources:
     Properties: 
       DistributionConfig: 
         Enabled: 'true'
+
+        CacheBehaviors:
+          - CachePolicyId: !Ref CloudfrontCachePolicy
+            PathPattern: '*'
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: redirect-to-https
+
         Origins: 
           - DomainName: !GetAtt Bucket.RegionalDomainName
             Id: S3Origin
