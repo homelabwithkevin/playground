@@ -114,12 +114,12 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties: 
       DistributionConfig: 
+        Enabled: 'true'
         Origins: 
           - DomainName: !GetAtt Bucket.RegionalDomainName
             Id: S3Origin
             S3OriginConfig: 
               OriginAccessIdentity: ''
-        Enabled: 'true'
         DefaultCacheBehavior: 
           TargetOriginId: S3Origin
           ForwardedValues: 
@@ -128,6 +128,23 @@ Resources:
         DefaultRootObject: index.html
         Comment: Cloudfront distribution for hlb-mailtrap-s3
         PriceClass: PriceClass_100
+
+  CloudfrontCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        Name: !Sub "hlb-mailtrap-s3-${Environment}"
+        DefaultTTL: 30
+        MinTTL: 0
+        MaxTTL: 31536000
+        ParametersInCacheKeyAndForwardedToOrigin:
+          CookiesConfig:
+            CookieBehavior: none
+          EnableAcceptEncodingGzip: true
+          HeadersConfig: 
+            HeaderBehavior: none
+          QueryStringsConfig: 
+            QueryStringBehavior: none
 
 Outputs:
   CloudfrontDomain:
