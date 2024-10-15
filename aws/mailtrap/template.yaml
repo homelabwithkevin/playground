@@ -23,7 +23,7 @@ Parameters:
     Description: Days to Expire S3
     Type: String
 
-  CloudfrontCachePolicy:
+  CachePolicy:
     Description: Days to Cache in Cloudfront
     Type: Number
     Default: 2592000 # 30 days
@@ -146,7 +146,7 @@ Resources:
     Properties:
       CachePolicyConfig:
         Name: !Sub "hlb-mailtrap-s3-${Environment}"
-        DefaultTTL: !Ref CloudfrontCachePolicy
+        DefaultTTL: !Ref CachePolicy
         MinTTL: 0
         MaxTTL: 31536000
         ParametersInCacheKeyAndForwardedToOrigin:
