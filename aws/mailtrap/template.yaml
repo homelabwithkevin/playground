@@ -19,6 +19,10 @@ Parameters:
     Description: Environment to deploy to
     Type: String
 
+  ExpireS3:
+    Description: Days to Expire S3
+    Type: String
+
 Resources:
   Bucket:
     Type: AWS::S3::Bucket
@@ -31,12 +35,11 @@ Resources:
         Rules:
           - Id: ExpireOldInput
             Status: Enabled
-            NoncurrentVersionExpirationInDays: 30
+            NoncurrentVersionExpirationInDays: !Ref ExpireS3
             Prefix: input/
-        Rules:
           - Id: ExpireOldCDN
             Status: Enabled
-            NoncurrentVersionExpirationInDays: 30
+            NoncurrentVersionExpirationInDays: !Ref ExpireS3
             Prefix: cdn/
 
   Table:
