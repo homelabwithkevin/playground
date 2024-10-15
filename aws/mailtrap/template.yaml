@@ -49,6 +49,7 @@ Resources:
 
   Table:
     Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
     Properties:
       TableName: !Sub "hlb-mailtrap-s3-${Environment}"
       BillingMode: PAY_PER_REQUEST
