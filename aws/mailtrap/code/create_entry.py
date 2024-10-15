@@ -144,11 +144,13 @@ def send_email(newsletter, date, to):
 # create_initial_newsletter("newsletter")
 
 opening_entry = f"""
-Welcome to the 4th week of random photos of Ginger. We took plenty of naps and watched the Indianapolis 8-hour race on YouTube.
+The 5th week of Ginger photos! She's been enjoying when I'm in my living room watching TV because the couch is quite comfortable.
+
+This week I'm on PTO/vacation. So, I'm sure plenty of naps will be had!
 """
 
-word_date = "October 6th, 2024"
-source_csv = "2024-10-06.csv"
+word_date = "October 13th, 2024"
+source_csv = "2024-10-13.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
