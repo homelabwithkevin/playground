@@ -134,13 +134,14 @@ Resources:
     Properties:
       CachePolicyConfig:
         Name: !Sub "hlb-mailtrap-s3-${Environment}"
-        DefaultTTL: 30
+        DefaultTTL: 2592000 # 30 days
         MinTTL: 0
         MaxTTL: 31536000
         ParametersInCacheKeyAndForwardedToOrigin:
           CookiesConfig:
             CookieBehavior: none
           EnableAcceptEncodingGzip: true
+          EnableAcceptEncodingBrotli: true
           HeadersConfig: 
             HeaderBehavior: none
           QueryStringsConfig: 
