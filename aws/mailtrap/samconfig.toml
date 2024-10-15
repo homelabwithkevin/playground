@@ -20,7 +20,7 @@ resolve_s3 = true
 s3_prefix = "hlb-mailtrap-s3-develop"
 region = "us-east-1"
 disable_rollback = true
-parameter_overrides = "Environment=\"develop\" CloudfrontDomain=\".cloudfront.net\" ProtectedIP=\"\" FormImage=\".jpg\""
+parameter_overrides = "Environment=\"develop\" CloudfrontDomain=\".cloudfront.net\" ProtectedIP=\"\" FormImage=\".jpg\" ExpireS3=\"3\""
 image_repositories = []
 
 [default.package.parameters]
@@ -41,5 +41,5 @@ resolve_s3 = true
 s3_prefix = "hlb-mailtrap-s3-prod"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = "Environment=\"prod\" CloudfrontDomain=\".cloudfront.net\" ProtectedIP=\"\" FormImage=\".jpg\""
+parameter_overrides = "Environment=\"prod\" CloudfrontDomain=\".cloudfront.net\" ProtectedIP=\"\" FormImage=\".jpg\" ExpireS3=\"15\""
 image_repositories = []
