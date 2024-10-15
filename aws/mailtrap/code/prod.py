@@ -1,4 +1,6 @@
 import boto3
+import pandas as pd
+
 from functions import utils
 
 keys = [
@@ -13,8 +15,7 @@ total = {}
 
 for key in keys:
     files = utils.list_bucket('hlb-mailtrap-s3-prod', key)
-    total[key] = {
-        'files': files
-    }
+    df = pd.DataFrame(files)
+    df.to_csv(f'prod.csv', index=False, mode='a', header=False)
 
-print(total)
+print(f'Saved to prod.csv')
