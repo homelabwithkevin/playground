@@ -9,6 +9,12 @@ keys = [
     '2024-10-13-newsletter',
 ]
 
+total = {}
+
 for key in keys:
-    utils.list_bucket('hlb-mailtrap-s3-prod', key)
-    break
+    files = utils.list_bucket('hlb-mailtrap-s3-prod', key)
+    total[key] = {
+        'files': files
+    }
+
+print(total)
