@@ -21,3 +21,10 @@ def upload_file(bucket_name, file, cdn_path, content_type="image/jpeg"):
 def randomword(length=10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
+
+def list_bucket(bucket, prefix):
+    client = boto3.client('s3')
+    prefix = f'cdn/{prefix}/'
+    response = client.list_objects_v2(Bucket=bucket, Prefix=prefix)
+    for content in response.get('Contents', []):
+        print(content['Key'])
