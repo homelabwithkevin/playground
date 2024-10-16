@@ -116,6 +116,15 @@ Resources:
             Path: /{proxy+}
             Method: ANY
 
+  CloudfrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "hlb-mailtrap-s3-${Environment}"
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
   Cloudfront:
     Type: AWS::CloudFront::Distribution
     Properties: 
@@ -133,6 +142,8 @@ Resources:
             Id: S3Origin
             S3OriginConfig: 
               OriginAccessIdentity: ''
+            OriginAccessControlId: !Ref CloudfrontOriginAccessControl
+
         DefaultCacheBehavior: 
           TargetOriginId: S3Origin
           ForwardedValues: 
