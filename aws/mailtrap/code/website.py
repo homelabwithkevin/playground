@@ -17,7 +17,10 @@ def lambda_handler(event,context):
     source_ip = request_context['http']['sourceIp']
 
     if method == 'GET':
-        if request_path == '/emails':
+        if request_path == '/privacy-policy':
+            return handler.privacy_policy()
+
+        elif request_path == '/emails':
             if source_ip == protected_ip:
                 emails =  db.scan()
                 return {
