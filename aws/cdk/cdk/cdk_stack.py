@@ -1,19 +1,20 @@
 from aws_cdk import (
-    # Duration,
     Stack,
-    # aws_sqs as sqs,
+    aws_dynamodb as dynamodb,
 )
 from constructs import Construct
 
 class CdkStack(Stack):
-
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # The code that defines your stack goes here
+        table = dynamodb.Table(self, "Table",
+            partition_key=dynamodb.Attribute(
+                name="id",
+                type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            point_in_time_recovery=True,
+            deletion_protection=False,
+        )
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "CdkQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
