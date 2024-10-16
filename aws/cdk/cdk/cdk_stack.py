@@ -13,6 +13,7 @@ class CdkStack(Stack):
                 name="id",
                 type=dynamodb.AttributeType.STRING
             ),
+            table_name="hlb-cdk-2024-10-develop",
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
             point_in_time_recovery=True,
             deletion_protection=False,
