@@ -133,7 +133,7 @@ Resources:
             Id: S3Origin
             S3OriginConfig: 
               OriginAccessIdentity: ''
-              OriginAccessControlId: EPVXFKJZGSO2D
+            OriginAccessControlId: EPVXFKJZGSO2D
 
         DefaultCacheBehavior: 
           TargetOriginId: S3Origin
