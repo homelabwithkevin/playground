@@ -6,3 +6,4 @@ photos/.env
 **/env/**
 **/.env
 aws/mailtrap/samconfig.toml.private
+aws/mailtrap/tmp
