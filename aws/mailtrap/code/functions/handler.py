@@ -42,3 +42,30 @@ def post(body, source_ip):
             </html>
             """
     }
+
+def privacy_policy():
+    return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'text/html',
+            },
+            'body': f"""
+            <html>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+                <head>
+                    <title>Ginger Kitty Newsletter</title>
+                </head>
+                <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                    <div>
+                        <div>
+                            <div>
+                                I won't sell your data.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </html>
+            """
+    }
+
