@@ -59,6 +59,9 @@ def privacy_policy():
                 <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
                     <div>
                         <div>
+                            <div class="mb-4">
+                                <a href="/">Home</a>
+                            </div>
                             <div>
                                 I won't sell your data.
                             </div>
