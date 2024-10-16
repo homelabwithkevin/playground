@@ -1,6 +1,7 @@
 from aws_cdk import (
     Stack,
     aws_dynamodb as dynamodb,
+    RemovalPolicy,
 )
 from constructs import Construct
 
