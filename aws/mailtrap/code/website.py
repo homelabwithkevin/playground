@@ -64,6 +64,11 @@ def lambda_handler(event,context):
                         {form.newsletter()}
                     </div>
                 </div>
+                <div>
+                    <ul>
+                        <a href="/privacy-policy">Privacy Policy</a>
+                    </ul>
+                </div>
             </div>
         </html>
         """
