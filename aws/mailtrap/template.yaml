@@ -142,7 +142,7 @@ Resources:
             Id: S3Origin
             S3OriginConfig: 
               OriginAccessIdentity: ''
-            OriginAccessControlId: EPVXFKJZGSO2D
+            OriginAccessControlId: !Ref CloudfrontOriginAccessControl
 
         DefaultCacheBehavior: 
           TargetOriginId: S3Origin
