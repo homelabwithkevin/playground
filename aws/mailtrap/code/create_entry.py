@@ -6,6 +6,7 @@ client = boto3.client('s3')
 
 bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
+base_url = "https://ginger.homelabwithkevin.com"
 newsletter_date = utils.today_newsletter()
 newsletter = f"cdn/{newsletter_date}"
 
@@ -94,8 +95,9 @@ def create_newsletter(entries, date, first_entry):
         posts += f"""
         <div class="mb-6">
             <div>
-                <div class="font-bold">{entry['title']}</div>
+                <div class="font-bold">{entry['title']} </div>
                 <div>{entry['description']}</div>
+                <a href="{base_url}/vote?newsletter={newsletter_date}&file={entry['cdn_photo']}" target='_blank'>Vote!</a>
                 <img src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
             </div>
         </div>
@@ -161,7 +163,7 @@ newsletter_html_content = create(opening_entry, entries, word_date)
 # Upload
 complete_newsletter = "newsletter.html"
 cdn_complete_newsletter = f"{newsletter}/newsletter.html"
-utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
+# utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
 
 # Have to convert tailwind to inline styles
 # Email
