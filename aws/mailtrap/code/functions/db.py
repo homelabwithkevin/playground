@@ -124,7 +124,3 @@ def get_votes(table, newsletter):
         results[file] = results.get(file, 0) + 1
 
     return results
-
-
-
-
