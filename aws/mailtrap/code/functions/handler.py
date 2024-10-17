@@ -136,3 +136,66 @@ def privacy_policy():
             """
     }
 
+def vote(table, query_string_parameters, source_ip):
+    vote_file = None 
+    vote_newsletter = None 
+    vote_user = None
+    html_results = ""
+    vote_results = ""
+    vote_message = ""
+
+    if query_string_parameters:
+        # Future implementation to track votes
+        if query_string_parameters.get('user'):
+            vote_user = query_string_parameters['user']
+            if vote_user == 'newsletter':
+                vote_user = source_ip
+
+        if query_string_parameters.get('file'):
+            vote_file = (query_string_parameters['file']).split('/')[2]
+
+        # Handle only newsletter results
+        if query_string_parameters.get('newsletter'):
+            q_newsletter = query_string_parameters['newsletter']
+            if '/' in q_newsletter:
+                vote_newsletter = (query_string_parameters['newsletter']).split('/')[1]
+            else:
+                vote_newsletter = q_newsletter
+
+        # Require file, newsletter, and user to vote
+        if vote_file and vote_newsletter and vote_user:
+            vote_message = f'Thanks for voting!'
+
+            vote_information = {
+                'file': vote_file,
+                'newsletter': vote_newsletter,
+                'ip': source_ip,
+                'user' : vote_user
+            }
+
+            db.put_vote(table, vote_information, vote_user)
+
+        if vote_newsletter:
+            vote_results = f"Here are the results!"
+
+            db_vote_results = db.get_votes(table, vote_newsletter)
+            html_results = "<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"
+            html_results += "<thead>"
+            html_results += "<tr>"
+            html_results += "<th class='border border-slate-600'>Photo</th>"
+            html_results += "<th class='border border-slate-600'>Votes</th>"
+            html_results += "</tr>"
+            html_results += "</thead>"
+            html_results += "<tbody>"
+
+            for key, value in db_vote_results.items():
+                photo_url = f"<img height='400' width='400' src='https://d5m8h4cywoih5.cloudfront.net/cdn/{vote_newsletter}-newsletter/{key}'/>"
+                html_results += "<tr>"
+                html_results += f"<td class='border border-slate-700 p-2'>{photo_url}</td>"
+                html_results += f"<td class='border border-slate-700 p-2'>{value}</td>"
+                html_results += "</tr>"
+
+            html_results += "</tbody>"
+            html_results += "</table>"
+
+        return vote_message, vote_results, html_results

@@ -5,13 +5,17 @@ from functions import form, handler, db, archive
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 protected_ip = os.getenv('PROTECTED_IP') 
+table_vote = os.getenv('TABLE_VOTE')
 
 def lambda_handler(event,context):
+    query_string_parameters = None
+
     request_context = event['requestContext']
     method = request_context['http']['method']
     request_path = request_context['http']['path']
 
-    print(request_path)
+    if event.get('queryStringParameters'):
+        query_string_parameters = event['queryStringParameters']
 
     # User Information
     source_ip = request_context['http']['sourceIp']
@@ -20,6 +24,39 @@ def lambda_handler(event,context):
         if request_path == '/privacy-policy':
             return handler.privacy_policy()
 
+        elif request_path == '/vote':
+            vote_message, vote_results, html_results = handler.vote(table_vote, query_string_parameters, source_ip)
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'text/html',
+                },
+                'body': f"""
+                <html>
+                    <script src="https://cdn.tailwindcss.com"></script>
+                    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+                    <head>
+                        <title>Ginger Kitty Newsletter</title>
+                    </head>
+                    <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                        <div class="grid-rows space-y-4">
+                            <div class="mb-4">
+                                <a href="/">Home</a>
+                            </div>
+                            <div>
+                                {vote_message}
+                            </div>
+                            <div>
+                                {vote_results}
+                            </div>
+                            <div>
+                                {html_results}
+                            </div>
+                        </div>
+                    </div>
+                </html>
+                """
+            }
         elif request_path == '/archive':
             return {
                 'statusCode': 200,

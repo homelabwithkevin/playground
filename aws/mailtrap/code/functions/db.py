@@ -19,7 +19,48 @@ def put_item(first_name, email):
             'email': {
                 'S': email
             },
+            'guid': {
+                'S': utils.randomword(6)
+            },
         }
+    )
+
+def put_vote(table, vote_information, vote_user):
+    response = client.put_item(
+        TableName=table,
+        Item={
+            'timestamp': {
+                'S': str(utils.today())
+            },
+            'file': {
+                'S': vote_information['file']
+            },
+            'newsletter': {
+                'S': vote_information['newsletter']
+            },
+            'ip': {
+                'S': vote_information['ip']
+            },
+            'user': {
+                'S': str(vote_information['user'])
+            },
+        }
+    )
+
+def update_item(table, email, guid):
+    response = client.update_item(
+            TableName=table,
+            Key={
+                'email': {
+                    'S': email
+                }
+            },
+            UpdateExpression='SET guid = :guid',
+            ExpressionAttributeValues={
+                ':guid': {
+                    'S': guid
+                }
+            }
     )
 
 def scan():
@@ -61,3 +102,25 @@ def get_archive_items(table):
         list_items.append(item['id']['S'])
 
     return list_items
+
+def get_votes(table, newsletter):
+    response = client.query(
+            TableName=table,
+            IndexName='newsletter-index',
+            Select='ALL_ATTRIBUTES',
+            KeyConditionExpression='newsletter = :newsletter',
+            ExpressionAttributeValues={
+                ':newsletter': {
+                    'S': newsletter
+                }
+            }
+    )
+
+    results = {}
+
+    votes = 0
+    for item in response['Items']:
+        file = item['file']['S']
+        results[file] = results.get(file, 0) + 1
+
+    return results
