@@ -26,6 +26,8 @@ def lambda_handler(event,context):
 
         elif request_path == '/vote':
             vote_file, vote_newsletter, vote_user = None, None, None
+            html_results = ""
+            vote_results = ""
             vote_message = 'No vote or incorrect vote'
 
             if query_string_parameters:
@@ -43,8 +45,10 @@ def lambda_handler(event,context):
                         'ip': source_ip
                     }
                     db.put_vote(table_vote, vote_information)
-                    db_vote_results = db.get_votes(table_vote, vote_newsletter)
 
+                if vote_newsletter:
+                    vote_message = ""
+                    db_vote_results = db.get_votes(table_vote, vote_newsletter)
                     html_results = "<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"
                     html_results += "<thead>"
                     html_results += "<tr>"
@@ -53,11 +57,13 @@ def lambda_handler(event,context):
                     html_results += "</tr>"
                     html_results += "</thead>"
                     html_results += "<tbody>"
+
                     for key, value in db_vote_results.items():
                         html_results += "<tr>"
                         html_results += f"<td class='border border-slate-700 p-2'>{key}</td>"
                         html_results += f"<td class='border border-slate-700 p-2'>{value}</td>"
                         html_results += "</tr>"
+
                     html_results += "</tbody>"
                     html_results += "</table>"
 
