@@ -44,12 +44,6 @@ def lambda_handler(event,context):
                                 {archive.create_archive()}
                             </div>
 
-                            <div class="mt-4">
-                                <ul>
-                                    <a href="/privacy-policy">Privacy Policy</a>
-                                    <a href="/archive">Archive</a>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </html>
