@@ -87,10 +87,22 @@ Resources:
     Properties:
       TableName: !Sub "hlb-mailtrap-vote-${Environment}"
       BillingMode: PAY_PER_REQUEST
+
+      GlobalSecondaryIndexes:
+        - IndexName: newsletter-index
+          KeySchema:
+            - AttributeName: newsletter
+              KeyType: HASH
+          Projection: 
+            ProjectionType: ALL
+
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
+
       AttributeDefinitions:
         - AttributeName: timestamp
+          AttributeType: S
+        - AttributeName: newsletter
           AttributeType: S
       KeySchema:
         - AttributeName: timestamp
