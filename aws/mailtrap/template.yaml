@@ -79,7 +79,7 @@ Resources:
         - AttributeName: id
           KeyType: HASH
         - AttributeName: order
-          KeyType: SORT
+          KeyType: RANGE
 
   Function:
     Type: AWS::Serverless::Function 
