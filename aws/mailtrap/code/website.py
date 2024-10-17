@@ -43,6 +43,25 @@ def lambda_handler(event,context):
                         'ip': source_ip
                     }
                     db.put_vote(table_vote, vote_information)
+                    db_vote_results = db.get_votes(table_vote, vote_newsletter)
+
+                    html_results = "<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"
+                    html_results += "<thead>"
+                    html_results += "<tr>"
+                    html_results += "<th class='border border-slate-600'>File</th>"
+                    html_results += "<th class='border border-slate-600'>Votes</th>"
+                    html_results += "</tr>"
+                    html_results += "</thead>"
+                    html_results += "<tbody>"
+                    for key, value in db_vote_results.items():
+                        html_results += "<tr>"
+                        html_results += f"<td class='border border-slate-700 p-2'>{key}</td>"
+                        html_results += f"<td class='border border-slate-700 p-2'>{value}</td>"
+                        html_results += "</tr>"
+                    html_results += "</tbody>"
+                    html_results += "</table>"
+
+                    vote_results = f"Here are the results!"
 
                 # Future implementation to track votes
                 if query_string_parameters.get('user'):
@@ -61,12 +80,18 @@ def lambda_handler(event,context):
                         <title>Ginger Kitty Newsletter</title>
                     </head>
                     <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
-                        <div class="grid-rows">
+                        <div class="grid-rows space-y-4">
                             <div class="mb-4">
                                 <a href="/">Home</a>
                             </div>
                             <div>
                                 {vote_message}
+                            </div>
+                            <div>
+                                {vote_results}
+                            </div>
+                            <div>
+                                {html_results}
                             </div>
                         </div>
                     </div>
