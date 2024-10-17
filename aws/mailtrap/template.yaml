@@ -73,9 +73,13 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+        - AttributeName: order
+          AttributeType: S
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+        - AttributeName: order
+          KeyType: SORT
 
   Function:
     Type: AWS::Serverless::Function 
