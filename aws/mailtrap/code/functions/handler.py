@@ -142,21 +142,27 @@ def vote(table, query_string_parameters, source_ip):
     vote_user = None
     html_results = ""
     vote_results = ""
-    vote_message = 'No vote or incorrect vote'
+    vote_message = ""
 
     if query_string_parameters:
         # Future implementation to track votes
         if query_string_parameters.get('user'):
             vote_user = query_string_parameters['user']
+            if vote_user == 'newsletter':
+                vote_user = source_ip
 
         if query_string_parameters.get('file'):
             vote_file = query_string_parameters['file']
 
+        # Handle only newsletter results
         if query_string_parameters.get('newsletter'):
-            vote_newsletter = (query_string_parameters['newsletter']).split('/')[1]
+            q_newsletter = query_string_parameters['newsletter']
+            if '/' in q_newsletter:
+                vote_newsletter = (query_string_parameters['newsletter']).split('/')[1]
+            else:
+                vote_newsletter = q_newsletter
 
-        # Catch no user, require user to vote
-
+        # Require file, newsletter, and user to vote
         if vote_file and vote_newsletter and vote_user:
             vote_message = f'Thanks for voting!'
 
@@ -170,11 +176,6 @@ def vote(table, query_string_parameters, source_ip):
             db.put_vote(table, vote_information, vote_user)
 
         if vote_newsletter:
-            if not vote_user:
-                vote_message = f"Invalid user. Please vote via the link in email or register for the next newsletter."
-            else:
-                vote_message = ""
-
             vote_results = f"Here are the results!"
 
             db_vote_results = db.get_votes(table, vote_newsletter)
