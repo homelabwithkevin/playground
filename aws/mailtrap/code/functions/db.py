@@ -25,6 +25,25 @@ def put_item(first_name, email):
         }
     )
 
+def put_vote(table, vote_information):
+    response = client.put_item(
+        TableName=table,
+        Item={
+            'timestamp': {
+                'S': str(utils.today())
+            },
+            'file': {
+                'S': vote_information['file']
+            },
+            'newsletter': {
+                'S': vote_information['newsletter']
+            },
+            'ip': {
+                'S': vote_information['ip']
+            }
+        }
+    )
+
 def update_item(table, email, guid):
     response = client.update_item(
             TableName=table,
