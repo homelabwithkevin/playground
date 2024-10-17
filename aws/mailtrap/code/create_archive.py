@@ -22,6 +22,8 @@ archived_items = db.get_archive_items(table)
 html_code = "<html>"
 html_code += "<ul>"
 
+archived_items.sort()
+
 for item in archived_items:
     print(item)
     html_code += f"""
@@ -30,7 +32,4 @@ for item in archived_items:
 
 html_code += "</html>"
 
-with open(f'archive.html', 'w') as f:
-    f.write(html_code)
-    print(f'Archive created')
-
+return html_code
