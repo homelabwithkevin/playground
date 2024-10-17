@@ -25,54 +25,7 @@ def lambda_handler(event,context):
             return handler.privacy_policy()
 
         elif request_path == '/vote':
-            vote_file, vote_newsletter, vote_user = None, None, None
-            html_results = ""
-            vote_results = ""
-            vote_message = 'No vote or incorrect vote'
-
-            if query_string_parameters:
-                if query_string_parameters.get('file'):
-                    vote_file = query_string_parameters['file']
-
-                if query_string_parameters.get('newsletter'):
-                    vote_newsletter = query_string_parameters['newsletter']
-
-                if vote_file and vote_newsletter:
-                    vote_message = f'Thanks for voting!'
-                    vote_information = {
-                        'file': vote_file,
-                        'newsletter': vote_newsletter,
-                        'ip': source_ip
-                    }
-                    db.put_vote(table_vote, vote_information)
-
-                if vote_newsletter:
-                    vote_message = ""
-                    db_vote_results = db.get_votes(table_vote, vote_newsletter)
-                    html_results = "<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"
-                    html_results += "<thead>"
-                    html_results += "<tr>"
-                    html_results += "<th class='border border-slate-600'>File</th>"
-                    html_results += "<th class='border border-slate-600'>Votes</th>"
-                    html_results += "</tr>"
-                    html_results += "</thead>"
-                    html_results += "<tbody>"
-
-                    for key, value in db_vote_results.items():
-                        html_results += "<tr>"
-                        html_results += f"<td class='border border-slate-700 p-2'>{key}</td>"
-                        html_results += f"<td class='border border-slate-700 p-2'>{value}</td>"
-                        html_results += "</tr>"
-
-                    html_results += "</tbody>"
-                    html_results += "</table>"
-
-                    vote_results = f"Here are the results!"
-
-                # Future implementation to track votes
-                if query_string_parameters.get('user'):
-                    vote_user = query_string_parameters['user']
-
+            vote_message, vote_results, html_results = handler.vote(table_vote, query_string_parameters, source_ip)
             return {
                 'statusCode': 200,
                 'headers': {
