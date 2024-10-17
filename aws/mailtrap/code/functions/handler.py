@@ -1,7 +1,8 @@
 import os
 import base64
+import boto3
 
-from functions import db
+from functions import db, utils
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 form_image = os.getenv('FORM_IMAGE')
@@ -201,4 +202,23 @@ def vote(table, query_string_parameters, source_ip):
         return vote_message, vote_results, html_results
 
 def utm_source(query_string_parameters, source_ip):
-    return query_string_parameters
+    table = os.getenv('TABLE_UTM')
+
+    item =  {
+        'timestamp': {
+            'S': str(utils.today())
+        },
+        'source_ip': {
+            'S': source_ip
+        },
+        'utm_source': {
+            'S': query_string_parameters['utm_source']
+        }
+    }
+
+    for key, value in query_string_parameters.items():
+        item[key] = {
+            'S': value
+        }
+
+    db.put_item_v2(table, item)
