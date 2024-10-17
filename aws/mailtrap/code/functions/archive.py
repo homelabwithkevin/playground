@@ -1,7 +1,7 @@
 import os
 from functions import db
 
-def initial_archive():
+def initial_archive(table):
     previous = [
         '2024-09-15-newsletter',
         '2024-09-21-newsletter',
@@ -28,7 +28,7 @@ def create_archive():
         print(item)
         html_code += f"""
         <li>
-            <a href={'https://' + cloudfront + '/cdn/' + item + '/newsletter.html'}>{item}</a>
+            <a href={'https://' + cloudfront + '/cdn/' + item + '/newsletter.html'} target='_blank'>{item}</a>
         </li>
         """
 
