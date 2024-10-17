@@ -102,12 +102,12 @@ Resources:
       AttributeDefinitions:
         - AttributeName: newsletter
           AttributeType: S
-        - AttributeName: user
+        - AttributeName: timestamp
           AttributeType: S
       KeySchema:
-        - AttributeName: newsletter
+        - AttributeName: timestamp
           KeyType: HASH
-        - AttributeName: user
+        - AttributeName: newsletter
           KeyType: RANGE
 
   Function:
