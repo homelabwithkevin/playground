@@ -7,11 +7,14 @@ cloudfront_url = os.getenv('CLOUDFRONT_URL')
 protected_ip = os.getenv('PROTECTED_IP') 
 
 def lambda_handler(event,context):
+    query_string_parameters = None
+
     request_context = event['requestContext']
     method = request_context['http']['method']
     request_path = request_context['http']['path']
 
-    print(request_path)
+    if event.get('queryStringParameters'):
+        query_string_parameters = event['queryStringParameters']
 
     # User Information
     source_ip = request_context['http']['sourceIp']
@@ -20,6 +23,41 @@ def lambda_handler(event,context):
         if request_path == '/privacy-policy':
             return handler.privacy_policy()
 
+        elif request_path == '/vote':
+            vote_result = 'No vote'
+
+            if query_string_parameters:
+                if query_string_parameters.get('file'):
+                    vote_result = query_string_parameters['file']
+
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'text/html',
+                },
+                'body': f"""
+                <html>
+                    <script src="https://cdn.tailwindcss.com"></script>
+                    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+                    <head>
+                        <title>Ginger Kitty Newsletter</title>
+                    </head>
+                    <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                        <div class="grid-rows">
+                            <div class="mb-4">
+                                <a href="/">Home</a>
+                            </div>
+                            <div>
+                                Vote!
+                            </div>
+                            <div>
+                                {vote_result}
+                            </div>
+                        </div>
+                    </div>
+                </html>
+                """
+            }
         elif request_path == '/archive':
             return {
                 'statusCode': 200,
