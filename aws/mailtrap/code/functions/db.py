@@ -3,10 +3,10 @@ import boto3
 
 from functions import utils
 
-table = os.environ["TABLE"]
 client = boto3.client('dynamodb')
 
 def put_item(first_name, email):
+    table = os.environ["TABLE"]
     response = client.put_item(
         TableName=table,
         Item={
@@ -36,3 +36,15 @@ def scan():
         """
     html_code += "</html>"
     return html_code
+
+def put_initial_archive_item(table, item):
+    print(f'Putting item...{item}')
+    client.put_item(
+        TableName=table,
+        Item={
+            'id': {
+                'S': item
+            }
+        }
+    )
+    print(f'Complete')
