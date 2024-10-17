@@ -15,16 +15,21 @@ def initial_archive():
 
 def create_archive():
     table = os.environ["TABLE_ARCHIVE"]
+    # cloudfront = os.environ["CLOUDFRONT_URL"]
+    cloudfront = "d5m8h4cywoih5.cloudfront.net"
+
     archived_items = db.get_archive_items(table)
 
-    html_code = "<ul>"
+    html_code = "<ul class='list-disc list-inside'>"
 
     archived_items.sort()
 
     for item in archived_items:
         print(item)
         html_code += f"""
-        <li>{item}</li>
+        <li>
+            <a href={'https://' + cloudfront + '/cdn/' + item + '/newsletter.html'}>{item}</a>
+        </li>
         """
 
     html_code += "</ul>"
