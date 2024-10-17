@@ -24,11 +24,19 @@ def lambda_handler(event,context):
             return handler.privacy_policy()
 
         elif request_path == '/vote':
-            vote_result = 'No vote'
+            vote_result = None
+            user = None
+            vote_message = 'No vote or incorrect vote'
 
             if query_string_parameters:
                 if query_string_parameters.get('file'):
                     vote_result = query_string_parameters['file']
+
+                if query_string_parameters.get('user'):
+                    user = query_string_parameters['user']
+
+                if vote_result and user:
+                    vote_message = f'Thanks for voting {vote_result}, {user}!'
 
             return {
                 'statusCode': 200,
@@ -51,7 +59,7 @@ def lambda_handler(event,context):
                                 Vote!
                             </div>
                             <div>
-                                {vote_result}
+                                {vote_message}
                             </div>
                         </div>
                     </div>
