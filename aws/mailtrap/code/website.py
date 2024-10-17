@@ -5,6 +5,7 @@ from functions import form, handler, db, archive
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 protected_ip = os.getenv('PROTECTED_IP') 
+table_vote = os.getenv('TABLE_VOTE')
 
 def lambda_handler(event,context):
     query_string_parameters = None
@@ -24,19 +25,28 @@ def lambda_handler(event,context):
             return handler.privacy_policy()
 
         elif request_path == '/vote':
-            vote_result = None
-            user = None
+            vote_file, vote_newsletter, vote_user = None, None, None
             vote_message = 'No vote or incorrect vote'
 
             if query_string_parameters:
                 if query_string_parameters.get('file'):
-                    vote_result = query_string_parameters['file']
+                    vote_file = query_string_parameters['file']
 
+                if query_string_parameters.get('newsletter'):
+                    vote_newsletter = query_string_parameters['newsletter']
+
+                if vote_file and vote_newsletter:
+                    vote_message = f'Thanks for voting!'
+                    vote_information = {
+                        'file': vote_file,
+                        'newsletter': vote_newsletter,
+                        'ip': source_ip
+                    }
+                    db.put_vote(table_vote, vote_information)
+
+                # Future implementation to track votes
                 if query_string_parameters.get('user'):
-                    user = query_string_parameters['user']
-
-                if vote_result and user:
-                    vote_message = f'Thanks for voting {vote_result}, {user}!'
+                    vote_user = query_string_parameters['user']
 
             return {
                 'statusCode': 200,
@@ -54,9 +64,6 @@ def lambda_handler(event,context):
                         <div class="grid-rows">
                             <div class="mb-4">
                                 <a href="/">Home</a>
-                            </div>
-                            <div>
-                                Vote!
                             </div>
                             <div>
                                 {vote_message}
