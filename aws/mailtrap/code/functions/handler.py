@@ -199,3 +199,6 @@ def vote(table, query_string_parameters, source_ip):
             html_results += "</table>"
 
         return vote_message, vote_results, html_results
+
+def utm_source(query_string_parameters, source_ip):
+    return query_string_parameters
