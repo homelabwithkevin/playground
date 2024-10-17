@@ -97,7 +97,7 @@ def create_newsletter(entries, date, first_entry):
             <div>
                 <div class="font-bold">{entry['title']} </div>
                 <div>{entry['description']}</div>
-                <a href="{base_url}/vote?newsletter={newsletter_date}&file={entry['cdn_photo']}" target='_blank'>Vote!</a>
+                <a href="{base_url}/vote?newsletter={newsletter_date}&file={entry['cdn_photo']}&user=newsletter" target='_blank'>Vote!</a>
                 <img src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
             </div>
         </div>

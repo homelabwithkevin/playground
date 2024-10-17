@@ -152,7 +152,7 @@ def vote(table, query_string_parameters, source_ip):
                 vote_user = source_ip
 
         if query_string_parameters.get('file'):
-            vote_file = query_string_parameters['file']
+            vote_file = (query_string_parameters['file']).split('/')[2]
 
         # Handle only newsletter results
         if query_string_parameters.get('newsletter'):
