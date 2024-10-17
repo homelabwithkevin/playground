@@ -25,7 +25,7 @@ def put_item(first_name, email):
         }
     )
 
-def put_vote(table, vote_information, vote_user=""):
+def put_vote(table, vote_information, vote_user):
     response = client.put_item(
         TableName=table,
         Item={
