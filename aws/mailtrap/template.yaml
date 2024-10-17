@@ -183,6 +183,8 @@ Resources:
             TableName: !Ref TableArchive
         - DynamoDBCrudPolicy:
             TableName: !Ref TableVote
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableUTM
       Events:
         Api:
           Type: HttpApi
