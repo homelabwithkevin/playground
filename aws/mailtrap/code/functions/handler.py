@@ -182,6 +182,7 @@ def vote(table, query_string_parameters, source_ip):
             html_results = "<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"
             html_results += "<thead>"
             html_results += "<tr>"
+            html_results += "<th class='border border-slate-600'>Photo</th>"
             html_results += "<th class='border border-slate-600'>File</th>"
             html_results += "<th class='border border-slate-600'>Votes</th>"
             html_results += "</tr>"
@@ -189,7 +190,9 @@ def vote(table, query_string_parameters, source_ip):
             html_results += "<tbody>"
 
             for key, value in db_vote_results.items():
+                photo_url = f"<img height='400' width='400' src='https://d5m8h4cywoih5.cloudfront.net/cdn/{vote_newsletter}-newsletter/{key}'/>"
                 html_results += "<tr>"
+                html_results += f"<td class='border border-slate-700 p-2'>{photo_url}</td>"
                 html_results += f"<td class='border border-slate-700 p-2'>{key}</td>"
                 html_results += f"<td class='border border-slate-700 p-2'>{value}</td>"
                 html_results += "</tr>"
