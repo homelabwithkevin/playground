@@ -1,7 +1,7 @@
 import json
 import os
 
-from functions import form, handler, db
+from functions import form, handler, db, archive
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 protected_ip = os.getenv('PROTECTED_IP') 
@@ -20,6 +20,35 @@ def lambda_handler(event,context):
         if request_path == '/privacy-policy':
             return handler.privacy_policy()
 
+        elif request_path == '/archive':
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'text/html',
+                },
+                'body': f"""
+                <html>
+                    <script src="https://cdn.tailwindcss.com"></script>
+                    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+                    <head>
+                        <title>Ginger Kitty Newsletter</title>
+                    </head>
+                    <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                        <div class="grid-rows">
+
+                            <div class="mb-4">
+                                <a href="/">Home</a>
+                            </div>
+
+                            <div>
+                                {archive.create_archive()}
+                            </div>
+
+                        </div>
+                    </div>
+                </html>
+                """
+            }
         elif request_path == '/emails':
             if source_ip == protected_ip:
                 emails =  db.scan()
@@ -67,6 +96,7 @@ def lambda_handler(event,context):
                 <div>
                     <ul>
                         <a href="/privacy-policy">Privacy Policy</a>
+                        <a href="/archive">Archive</a>
                     </ul>
                 </div>
             </div>

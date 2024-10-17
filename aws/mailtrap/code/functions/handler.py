@@ -61,6 +61,7 @@ def privacy_policy():
                         <div class="space-y-4">
                             <div class="mb-4">
                                 <a href="/">Home</a>
+                                <a href="/archive">Archive</a>
                             </div>
 
                             <div>

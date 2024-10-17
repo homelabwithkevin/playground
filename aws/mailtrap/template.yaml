@@ -62,6 +62,25 @@ Resources:
         - AttributeName: email
           KeyType: HASH
 
+  TableArchive:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "hlb-mailtrap-archive-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: order
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: order
+          KeyType: RANGE
+
   Function:
     Type: AWS::Serverless::Function 
     Properties:
@@ -75,6 +94,7 @@ Resources:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
+          TABLE_ARCHIVE: !Ref TableArchive
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
@@ -104,11 +124,14 @@ Resources:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
+          TABLE_ARCHIVE: !Ref TableArchive
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableArchive
       Events:
         Api:
           Type: HttpApi
