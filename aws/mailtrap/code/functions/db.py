@@ -99,3 +99,29 @@ def get_archive_items(table):
         list_items.append(item['id']['S'])
 
     return list_items
+
+def get_votes(table, newsletter):
+    response = client.query(
+            TableName=table,
+            IndexName='newsletter-index',
+            Select='ALL_ATTRIBUTES',
+            KeyConditionExpression='newsletter = :newsletter',
+            ExpressionAttributeValues={
+                ':newsletter': {
+                    'S': newsletter
+                }
+            }
+    )
+
+    results = {}
+
+    votes = 0
+    for item in response['Items']:
+        file = item['file']['S']
+        results[file] = results.get(file, 0) + 1
+
+    return results
+
+
+
+
