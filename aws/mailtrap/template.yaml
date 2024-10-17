@@ -81,6 +81,21 @@ Resources:
         - AttributeName: order
           KeyType: RANGE
 
+  TableVote:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "hlb-mailtrap-vote-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+
   Function:
     Type: AWS::Serverless::Function 
     Properties:
@@ -95,6 +110,7 @@ Resources:
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
           TABLE_ARCHIVE: !Ref TableArchive
+          TABLE_VOTE: !Ref TableVote
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
@@ -125,6 +141,7 @@ Resources:
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
           TABLE_ARCHIVE: !Ref TableArchive
+          TABLE_VOTE: !Ref TableVote
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
@@ -132,6 +149,8 @@ Resources:
             TableName: !Ref Table
         - DynamoDBCrudPolicy:
             TableName: !Ref TableArchive
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableVote
       Events:
         Api:
           Type: HttpApi
