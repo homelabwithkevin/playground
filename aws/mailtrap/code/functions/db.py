@@ -19,6 +19,9 @@ def put_item(first_name, email):
             'email': {
                 'S': email
             },
+            'guid': {
+                'S': utils.randomword(6)
+            },
         }
     )
 
