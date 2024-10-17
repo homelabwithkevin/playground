@@ -208,6 +208,15 @@ def utm_source(query_string_parameters, source_ip):
         'timestamp': {
             'S': str(utils.today())
         },
+        'year': {
+            'S': str(utils.year())
+        },
+        'year_month': {
+            'S': str(utils.year_month())
+        },
+        'year_month_day': {
+            'S': str(utils.year_month_day())
+        },
         'source_ip': {
             'S': source_ip
         },
