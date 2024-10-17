@@ -22,6 +22,22 @@ def put_item(first_name, email):
         }
     )
 
+def update_item(table, email, guid):
+    response = client.update_item(
+            TableName=table,
+            Key={
+                'email': {
+                    'S': email
+                }
+            },
+            UpdateExpression='SET guid = :guid',
+            ExpressionAttributeValues={
+                ':guid': {
+                    'S': guid
+                }
+            }
+    )
+
 def scan():
     response = client.scan(TableName=table)
     html_code = "<html>"
