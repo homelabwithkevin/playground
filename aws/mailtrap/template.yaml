@@ -100,13 +100,15 @@ Resources:
         PointInTimeRecoveryEnabled: true
 
       AttributeDefinitions:
-        - AttributeName: timestamp
-          AttributeType: S
         - AttributeName: newsletter
           AttributeType: S
+        - AttributeName: user
+          AttributeType: S
       KeySchema:
-        - AttributeName: timestamp
+        - AttributeName: newsletter
           KeyType: HASH
+        - AttributeName: user
+          KeyType: RANGE
 
   Function:
     Type: AWS::Serverless::Function 
