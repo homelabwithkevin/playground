@@ -83,6 +83,9 @@ def create_newsletter(entries, date, first_entry):
         <div>
             {first_entry}
         </div>
+        <div class="hidden">
+            <img src="{base_url}/?utm_source=archive"/>
+        </div>
     </div>
     """
 

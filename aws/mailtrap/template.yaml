@@ -110,6 +110,23 @@ Resources:
         - AttributeName: newsletter
           KeyType: RANGE
 
+  TableUTM:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "hlb-mailtrap-utm-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+
   Function:
     Type: AWS::Serverless::Function 
     Properties:
@@ -156,6 +173,7 @@ Resources:
           TABLE: !Ref Table
           TABLE_ARCHIVE: !Ref TableArchive
           TABLE_VOTE: !Ref TableVote
+          TABLE_UTM: !Ref TableUTM
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
@@ -165,6 +183,8 @@ Resources:
             TableName: !Ref TableArchive
         - DynamoDBCrudPolicy:
             TableName: !Ref TableVote
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableUTM
       Events:
         Api:
           Type: HttpApi

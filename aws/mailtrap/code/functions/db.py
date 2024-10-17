@@ -25,6 +25,12 @@ def put_item(first_name, email):
         }
     )
 
+def put_item_v2(table, item):
+    client.put_item(
+        TableName=table,
+        Item=item
+    )
+
 def put_vote(table, vote_information, vote_user):
     response = client.put_item(
         TableName=table,

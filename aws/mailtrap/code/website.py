@@ -9,6 +9,7 @@ table_vote = os.getenv('TABLE_VOTE')
 
 def lambda_handler(event,context):
     query_string_parameters = None
+    utm_source = None
 
     request_context = event['requestContext']
     method = request_context['http']['method']
@@ -16,12 +17,20 @@ def lambda_handler(event,context):
 
     if event.get('queryStringParameters'):
         query_string_parameters = event['queryStringParameters']
+        print(query_string_parameters)
+
+        # Track UTM Source
+        if query_string_parameters.get('utm_source'):
+            utm_source = query_string_parameters['utm_source']
 
     # User Information
     source_ip = request_context['http']['sourceIp']
 
     if method == 'GET':
-        if request_path == '/privacy-policy':
+        if utm_source:
+            utm = handler.utm_source(query_string_parameters, source_ip)
+
+        elif request_path == '/privacy-policy':
             return handler.privacy_policy()
 
         elif request_path == '/vote':

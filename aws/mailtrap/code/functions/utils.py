@@ -6,6 +6,15 @@ import boto3
 def today():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+def year():
+    return datetime.now().strftime("%Y")
+
+def year_month():
+    return datetime.now().strftime("%Y-%m")
+
+def year_month_day():
+    return datetime.now().strftime("%Y-%m-%d")
+
 def today_newsletter():
     return datetime.now().strftime("%Y-%m-%d")
 
