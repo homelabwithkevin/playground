@@ -140,9 +140,6 @@ def lambda_handler(event,context):
                     </div>
                 </div>
                 <div>
-                    {request_path}
-                </div>
-                <div>
                     <ul>
                         <a href="/privacy-policy">Privacy Policy</a>
                         <a href="/archive">Archive</a>
