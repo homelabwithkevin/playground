@@ -28,9 +28,9 @@ def lambda_handler(event,context):
 
     if method == 'GET':
         if utm_source:
-            utm = handler.utm_source(query_string_parameters, source_ip)
+            utm = handler.utm_source(query_string_parameters, request_path, source_ip)
 
-        elif request_path == '/privacy-policy':
+        if request_path == '/privacy-policy':
             return handler.privacy_policy()
 
         elif request_path == '/vote':
@@ -138,6 +138,9 @@ def lambda_handler(event,context):
                     <div>
                         {form.newsletter()}
                     </div>
+                </div>
+                <div>
+                    {request_path}
                 </div>
                 <div>
                     <ul>
