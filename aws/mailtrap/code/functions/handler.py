@@ -201,7 +201,7 @@ def vote(table, query_string_parameters, source_ip):
 
         return vote_message, vote_results, html_results
 
-def utm_source(query_string_parameters, source_ip):
+def utm_source(query_string_parameters, request_path, source_ip):
     table = os.getenv('TABLE_UTM')
 
     item =  {
@@ -222,6 +222,9 @@ def utm_source(query_string_parameters, source_ip):
         },
         'utm_source': {
             'S': query_string_parameters['utm_source']
+        },
+        'request_path': {
+            'S': str(request_path)
         }
     }
 
