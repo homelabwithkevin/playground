@@ -8,15 +8,15 @@ Parameters:
     Type: String
 
   CloudfrontDomain:
-    Description: Environment to deploy to
+    Description: Cloudfront Domain
     Type: String
 
   ProtectedIP:
-    Description: Environment to deploy to
+    Description: Protect IP for Emails
     Type: String
 
   FormImage:
-    Description: Environment to deploy to
+    Description: Image for Form Completion
     Type: String
 
   ExpireS3:
