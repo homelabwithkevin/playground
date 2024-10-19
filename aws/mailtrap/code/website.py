@@ -104,7 +104,8 @@ def lambda_handler(event,context):
             }
         elif request_path == '/emails':
             if source_ip == protected_ip:
-                emails =  db.scan()
+                table = os.getenv('TABLE')
+                emails = db.scan(table)
                 return {
                     'statusCode': 200,
                     'headers': {
