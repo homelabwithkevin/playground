@@ -10,10 +10,14 @@ table_vote = os.getenv('TABLE_VOTE')
 def lambda_handler(event,context):
     query_string_parameters = None
     utm_source = None
+    cf_connecting_ip = None
 
+    headers = event['headers']
     request_context = event['requestContext']
     method = request_context['http']['method']
     request_path = request_context['http']['path']
+
+
 
     if event.get('queryStringParameters'):
         query_string_parameters = event['queryStringParameters']
@@ -23,8 +27,11 @@ def lambda_handler(event,context):
         if query_string_parameters.get('utm_source'):
             utm_source = query_string_parameters['utm_source']
 
-    # User Information
+    # User IP, but if Cloudflare, use that
     source_ip = request_context['http']['sourceIp']
+
+    if headers.get('cf-connecting-ip'):
+        source_ip = headers['cf-connecting-ip']
 
     if method == 'GET':
         if utm_source:
