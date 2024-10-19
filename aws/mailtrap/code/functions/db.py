@@ -69,7 +69,7 @@ def update_item(table, email, guid):
             }
     )
 
-def scan():
+def scan(table):
     response = client.scan(TableName=table)
     html_code = "<html>"
     html_code += """
