@@ -8,7 +8,7 @@ bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
 base_url = "https://ginger.homelabwithkevin.com"
 newsletter_date = utils.today_newsletter()
-newsletter = f"cdn/{newsletter_date}"
+newsletter = f"cdn/{newsletter_date}-newsletter"
 
 def get_files():
     list_of_files = []
@@ -84,13 +84,14 @@ def create_newsletter(entries, date, first_entry):
             {first_entry}
         </div>
         <div class="hidden">
-            <img src="{base_url}/?utm_source=archive"/>
+            <img src="{base_url}/?utm_source=newsletter"/>
         </div>
     </div>
     """
 
     x = 0
     for entry in entries:
+        print(entry)
         if x == 0:
             x += 1
             pass
@@ -149,13 +150,25 @@ def send_email(newsletter, date, to):
 # create_initial_newsletter("newsletter")
 
 opening_entry = f"""
-The 5th week of Ginger photos! She's been enjoying when I'm in my living room watching TV because the couch is quite comfortable.
+<p>
+    We took a few naps on the couch, watched TV, and flew plenty of (virtual) planes on PTO. Back to the 'real world' next week!
+</p>
 
-This week I'm on PTO/vacation. So, I'm sure plenty of naps will be had!
+</br>
+
+<p>
+    You can now vote for your favorite picture! Click the 'Vote!' link below the picture. Thanks to Roland for the suggestion! 
+</p>
+</br>
+
+<p>
+    And there's an archive of newsletters: <a href="{base_url}/archive?utm_source=newsletter" target="_blank">here</a>.
+</p>
+</br>
 """
 
-word_date = "October 13th, 2024"
-source_csv = "2024-10-13.csv"
+word_date = "October 19th, 2024"
+source_csv = "2024-10-19.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
@@ -166,7 +179,7 @@ newsletter_html_content = create(opening_entry, entries, word_date)
 # Upload
 complete_newsletter = "newsletter.html"
 cdn_complete_newsletter = f"{newsletter}/newsletter.html"
-# utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
+utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
 
 # Have to convert tailwind to inline styles
 # Email
