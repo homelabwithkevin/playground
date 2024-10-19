@@ -17,8 +17,6 @@ def lambda_handler(event,context):
     method = request_context['http']['method']
     request_path = request_context['http']['path']
 
-    if headers.get('cf-connecting-ip'):
-        cf_connecting_ip = headers['cf-connecting-ip']
 
 
     if event.get('queryStringParameters'):
@@ -29,8 +27,11 @@ def lambda_handler(event,context):
         if query_string_parameters.get('utm_source'):
             utm_source = query_string_parameters['utm_source']
 
-    # User Information
+    # User IP, but if Cloudflare, use that
     source_ip = request_context['http']['sourceIp']
+
+    if headers.get('cf-connecting-ip'):
+        source_ip = headers['cf-connecting-ip']
 
     if method == 'GET':
         if utm_source:
