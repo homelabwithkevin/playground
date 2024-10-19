@@ -10,12 +10,16 @@ table_vote = os.getenv('TABLE_VOTE')
 def lambda_handler(event,context):
     query_string_parameters = None
     utm_source = None
+    cf_connecting_ip = None
 
+    headers = event['headers']
     request_context = event['requestContext']
     method = request_context['http']['method']
     request_path = request_context['http']['path']
 
-    print(event)
+    if headers.get('cf-connecting-ip'):
+        cf_connecting_ip = headers['cf-connecting-ip']
+
 
     if event.get('queryStringParameters'):
         query_string_parameters = event['queryStringParameters']
