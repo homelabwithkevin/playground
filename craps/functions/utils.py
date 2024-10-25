@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import datetime
 
 def today():
@@ -44,3 +45,17 @@ def calculate_odds(number, amount):
 
     if number in [3, 11]: # 11:4
         return round(amount * 2.75, 2)
+
+def roulette_number():
+    number = random.randint(0, 36)
+
+    if number == 0:
+        set_twelve = 'None'
+    if 1 <= number <= 12:
+        set_twelve = '1st 12'
+    elif 13 <= number <= 24:
+        set_twelve = '2nd 12'
+    elif 25 <= number <= 36:
+        set_twelve = '3rd 12'
+
+    return number, set_twelve
