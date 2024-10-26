@@ -61,14 +61,23 @@ def parse_newsletter_csv(file):
     return entries
 
 def create_newsletter(entries, date, first_entry):
-    posts = ""
-
+    posts = f"""
+    <div class="mb-6">
+        <div>
+            <div class="font-bold">Breakfast Video</div>
+            <video controls class="video-js" preload="auto" autoplay>
+                <source src="{cloudfront}/{newsletter}/breakfast/output.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+    """
     header = f"""
     <html>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://unpkg.com/htmx.org@2.0.2"></script>
         <head>
-        <title>Ginger Pictures - Week of {date}</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <title>Ginger Pictures - Week of {date}</title>
+        </head>
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
         <div class="grid grid-flow-rows max-w-[380px] lg:max-w-[1000px]">
     """
@@ -108,7 +117,6 @@ def create_newsletter(entries, date, first_entry):
         """
     end = f"""
         </div>
-        </head>
     </html>
     """
 
@@ -151,7 +159,16 @@ def send_email(newsletter, date, to):
 
 opening_entry = f"""
 <p>
-    We took a few naps on the couch, watched TV, and flew plenty of (virtual) planes on PTO. Back to the 'real world' next week!
+   Ginger has a fantastic "sun clock". She wakes up from her morning nap and goes to the living room. As soon as that sun is "over", she wanders to my home office and goes back to sleep in the sun. Smart cat!
+</p>
+</br>
+
+<p>
+    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-10-19&utm_source=newsletter" target="_blank">here</a>.
+</p>
+<p>
+    And here's the winning picture:
+    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-10-19-newsletter/kiznsvnpeb.jpg" height="300" width="400">
 </p>
 
 </br>
@@ -159,6 +176,7 @@ opening_entry = f"""
 <p>
     You can now vote for your favorite picture! Click the 'Vote!' link below the picture. Thanks to Roland for the suggestion! 
 </p>
+
 </br>
 
 <p>
@@ -167,8 +185,8 @@ opening_entry = f"""
 </br>
 """
 
-word_date = "October 19th, 2024"
-source_csv = "2024-10-19.csv"
+word_date = "October 26th, 2024"
+source_csv = "2024-10-26.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
