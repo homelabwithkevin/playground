@@ -17,13 +17,21 @@ def read_image_date(image):
 
 def parse_exif_date(exif_date):
     year, month, day_hour, minute, second = exif_date.split(":")
-    print(year, month, day_hour, minute, second) 
-    print(exif_date)
+    day = day_hour.split(" ")[0]
+    return year, month, day, exif_date
 
 for root, dirs, files in os.walk(base_path):
     for file in files:
         image_path = os.path.join(root, file)
         if file.endswith(".jpg"):
             image_date = read_image_date(image_path)
-            parse_exif_date(image_date) 
+            year, month, day, full_date = parse_exif_date(image_date)
+            data = {
+                    "file": file,
+                    "year": year,
+                    "month": month,
+                    "day": day,
+                    "full_date": full_date,
+            }
+            print(data)
             break
