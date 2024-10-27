@@ -1,5 +1,7 @@
 import os
 import PIL.Image
+import pandas as pd
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -53,6 +55,7 @@ def create_html(data):
     year = data['year']
     print(year)
 
-
-for image in walk_directory():
-    print(image)
+images = walk_directory()
+df = pd.DataFrame(images)
+print(df)
+df.to_csv("images.csv", index=False)
