@@ -55,7 +55,12 @@ def create_html(data):
     year = data['year']
     print(year)
 
+unique_years = set()
+
 images = walk_directory()
+for image in images:
+    unique_years.add(image['year'])
+
 df = pd.DataFrame(images)
 print(df)
-df.to_csv("images.csv", index=False)
+# df.to_csv("images.csv", index=False)
