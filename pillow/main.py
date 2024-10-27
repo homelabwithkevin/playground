@@ -51,7 +51,7 @@ def walk_directory():
                 images.append(data)
     return images
 
-def create_html(year, data):
+def create_html(year, data, all_years):
     file_name = f'{year}.html'
 
     header = f"""
@@ -64,6 +64,17 @@ def create_html(year, data):
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
         <div class="grid grid-flow-rows max-w-[380px] lg:max-w-[1000px]">
     """
+
+    year_html = ""
+
+    for y in all_years:
+        year_html += f"""
+        <div class="mb-3">
+            <div>
+                <a href="{y}.html" target="_blank">{y}</a>
+            </div>
+        </div>
+        """
 
     images = ""
     for image in data:
@@ -78,7 +89,7 @@ def create_html(year, data):
     end = f"""
     </html>
     """
-    content = header + images + end
+    content = header + year_html + images + end
 
     with open(file_name, 'w') as f:
         f.write(content)
@@ -108,9 +119,13 @@ for image in images:
     unique_years.add(image_year)
     year_images[image_year].append(image)
 
+all_years = ['home']
+
 for key, year in enumerate(year_images):
-    create_html(year, year_images[year])
-    break
+    all_years.append(year)
+
+for key, year in enumerate(year_images):
+    create_html(year, year_images[year], all_years)
 
 # df = pd.DataFrame(images)
 # print(df)
