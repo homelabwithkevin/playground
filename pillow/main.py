@@ -52,7 +52,38 @@ def walk_directory():
     return images
 
 def create_html(year, data):
-    print(year)
+    file_name = f'{year}.html'
+
+    header = f"""
+    <html>
+        <head>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <title>Jane Pictures of {year}</title>
+        </head>
+        <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+        <div class="grid grid-flow-rows max-w-[380px] lg:max-w-[1000px]">
+    """
+
+    images = ""
+    for image in data:
+        images += f"""
+        <div class="mb-6">
+            <div>
+                <img src="{image['file']}" class="max-h-[600px]">
+            </div>
+        </div>
+        """
+
+    end = f"""
+    </html>
+    """
+    content = header + images + end
+
+    with open(file_name, 'w') as f:
+        f.write(content)
+
+    print(f'Wrote {file_name}')
 
 unique_years = set()
 
@@ -60,7 +91,7 @@ images = walk_directory()
 
 # Probably a better way to do this whatever though
 year_images = {
-        '2015': [], 
+        '2015': [],
         '2016': [],
         '2017': [],
         '2018': [],
@@ -79,6 +110,7 @@ for image in images:
 
 for key, year in enumerate(year_images):
     create_html(year, year_images[year])
+    break
 
 # df = pd.DataFrame(images)
 # print(df)
