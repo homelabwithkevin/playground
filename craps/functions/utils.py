@@ -59,3 +59,13 @@ def roulette_number():
         set_twelve = '3rd 12'
 
     return number, set_twelve
+
+def roulette_color(number):
+    if number == 0:
+        color = 'Green'
+    elif number % 2 == 0:
+        color = 'Red'
+    else:
+        color = 'Black'
+
+    return color
