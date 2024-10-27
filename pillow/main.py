@@ -10,28 +10,49 @@ base_path = os.getenv("BASE_PATH")
 def read_image_date(image):
     img = PIL.Image.open(image)
     exif_data = img._getexif()
-    if not exif_data:
-        return None
 
-    return exif_data[36867]
+    date_taken = None
 
-def parse_exif_date(exif_date):
-    year, month, day_hour, minute, second = exif_date.split(":")
-    day = day_hour.split(" ")[0]
-    return year, month, day, exif_date
+    try:
+        date_taken = exif_data[36867]
+    except:
+        print(image)
+        print(exif_data)
+                
+    return date_taken
 
-for root, dirs, files in os.walk(base_path):
-    for file in files:
-        image_path = os.path.join(root, file)
-        if file.endswith(".jpg"):
-            image_date = read_image_date(image_path)
-            year, month, day, full_date = parse_exif_date(image_date)
-            data = {
-                    "file": file,
-                    "year": year,
-                    "month": month,
-                    "day": day,
-                    "full_date": full_date,
-            }
-            print(data)
-            break
+def parse_exif_date(file, exif_date):
+    try:
+        year, month, day_hour, minute, second = exif_date.split(":")
+        day = day_hour.split(" ")[0]
+        return year, month, day, exif_date
+    except:
+        print(exif_date)
+        print(file)
+
+def walk_directory():
+    images = []
+
+    for root, dirs, files in os.walk(base_path):
+        for file in files:
+            image_path = os.path.join(root, file)
+            if file.endswith(".jpg"):
+                image_date = read_image_date(image_path)
+                year, month, day, full_date = parse_exif_date(file, image_date)
+                data = {
+                        "file": file,
+                        "year": year,
+                        "month": month,
+                        "day": day,
+                        "full_date": full_date,
+                }
+                images.append(data)
+    return images
+
+def create_html(data):
+    year = data['year']
+    print(year)
+
+
+for image in walk_directory():
+    print(image)
