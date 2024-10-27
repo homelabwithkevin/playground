@@ -51,16 +51,35 @@ def walk_directory():
                 images.append(data)
     return images
 
-def create_html(data):
-    year = data['year']
+def create_html(year, data):
     print(year)
 
 unique_years = set()
 
 images = walk_directory()
-for image in images:
-    unique_years.add(image['year'])
 
-df = pd.DataFrame(images)
-print(df)
+# Probably a better way to do this whatever though
+year_images = {
+        '2015': [], 
+        '2016': [],
+        '2017': [],
+        '2018': [],
+        '2019': [],
+        '2020': [],
+        '2021': [],
+        '2022': [],
+        '2023': [],
+        '2024': [],
+}
+
+for image in images:
+    image_year = image['year']
+    unique_years.add(image_year)
+    year_images[image_year].append(image)
+
+for key, year in enumerate(year_images):
+    create_html(year, year_images[year])
+
+# df = pd.DataFrame(images)
+# print(df)
 # df.to_csv("images.csv", index=False)
