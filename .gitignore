@@ -2,6 +2,7 @@
 *.exe
 *.jpg
 *.html
+*.png
 main
 *aws-sam/
 photos/.env
