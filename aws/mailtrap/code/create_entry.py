@@ -61,16 +61,7 @@ def parse_newsletter_csv(file):
     return entries
 
 def create_newsletter(entries, date, first_entry):
-    posts = f"""
-    <div class="mb-6">
-        <div>
-            <div class="font-bold">Breakfast Video</div>
-            <video controls class="video-js" preload="auto" autoplay>
-                <source src="{cloudfront}/{newsletter}/breakfast/output.mp4" type="video/mp4">
-            </video>
-        </div>
-    </div>
-    """
+    posts = ""
     header = f"""
     <html>
         <head>
@@ -87,6 +78,8 @@ def create_newsletter(entries, date, first_entry):
         <div class="text-center content-center justify-center m-4">
             <div class="text-3xl font-bold mb-8">Ginger Pictures - Week of {date}</div>
             <a href="{cloudfront}/{newsletter}/newsletter.html" target="_blank">View in Browser</a>
+             | 
+            <a href="{base_url}/archive?utm_source=newsletter" target="_blank">Archive</a>
         </div>
         <div class="font-bold">Intro</div>
         <div>
@@ -159,34 +152,29 @@ def send_email(newsletter, date, to):
 
 opening_entry = f"""
 <p>
-   Ginger has a fantastic "sun clock". She wakes up from her morning nap and goes to the living room. As soon as that sun is "over", she wanders to my home office and goes back to sleep in the sun. Smart cat!
+    Happy Halloween! Hopefully, everyone ate a lot of candy. 
 </p>
 </br>
 
 <p>
-    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-10-19&utm_source=newsletter" target="_blank">here</a>.
+    The homes around me had a few decorations up and I included one that I really liked.
 </p>
+</br>
+
+<p>
+    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-10-26&utm_source=newsletter" target="_blank">here</a>.
+</p>
+</br>
+
 <p>
     And here's the winning picture:
-    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-10-19-newsletter/kiznsvnpeb.jpg" height="300" width="400">
-</p>
-
-</br>
-
-<p>
-    You can now vote for your favorite picture! Click the 'Vote!' link below the picture. Thanks to Roland for the suggestion! 
-</p>
-
-</br>
-
-<p>
-    And there's an archive of newsletters: <a href="{base_url}/archive?utm_source=newsletter" target="_blank">here</a>.
+    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-10-26-newsletter/ovmrciysrm.jpg" height="300" width="400">
 </p>
 </br>
 """
 
-word_date = "October 26th, 2024"
-source_csv = "2024-10-26.csv"
+word_date = "November 2nd, 2024"
+source_csv = "2024-11-02.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
