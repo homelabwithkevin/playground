@@ -152,29 +152,29 @@ def send_email(newsletter, date, to):
 
 opening_entry = f"""
 <p>
-    Happy Halloween! Hopefully, everyone ate a lot of candy. 
+    Apart from my apartment losing power in half the unit, this week was relaxing. Thankfully, the apartment maintenance team responded within 30-minutes of me opening a support ticket!
 </p>
 </br>
 
 <p>
-    The homes around me had a few decorations up and I included one that I really liked.
+    Ginger has been hanging out in my home office with me enjoying the sun. I have a feeling she's been learning a little too much about the technology I've been working on. Maybe she can be the next IT wizard?
 </p>
 </br>
 
 <p>
-    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-10-26&utm_source=newsletter" target="_blank">here</a>.
+    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-11-02&utm_source=newsletter" target="_blank">here</a>.
 </p>
 </br>
 
 <p>
-    And here's the winning picture:
-    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-10-26-newsletter/ovmrciysrm.jpg" height="300" width="400">
+    There was a 3-way tie... so here is my favorite winning picture:
+    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-11-02-newsletter/piuxypcvga.jpg" height="300" width="400">
 </p>
 </br>
 """
 
-word_date = "November 2nd, 2024"
-source_csv = "2024-11-02.csv"
+word_date = "November 9th, 2024"
+source_csv = "2024-11-09.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
@@ -185,7 +185,7 @@ newsletter_html_content = create(opening_entry, entries, word_date)
 # Upload
 complete_newsletter = "newsletter.html"
 cdn_complete_newsletter = f"{newsletter}/newsletter.html"
-utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
+# utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
 
 # Have to convert tailwind to inline styles
 # Email
