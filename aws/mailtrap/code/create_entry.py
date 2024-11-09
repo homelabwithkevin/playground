@@ -185,7 +185,7 @@ newsletter_html_content = create(opening_entry, entries, word_date)
 # Upload
 complete_newsletter = "newsletter.html"
 cdn_complete_newsletter = f"{newsletter}/newsletter.html"
-# utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
+utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
 
 # Have to convert tailwind to inline styles
 # Email
