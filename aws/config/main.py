@@ -29,4 +29,12 @@ def put_organization_rule():
         },
     )
 
-put_organization_rule()
+
+def get_organization_rule():
+    response = client.get_organization_config_rule_detailed_status(
+        OrganizationConfigRuleName='hlb-config-rule',
+    )
+    for r in response['OrganizationConfigRuleDetailedStatus']:
+        print(r)
+
+get_organization_rule()
