@@ -152,29 +152,19 @@ def send_email(newsletter, date, to):
 
 opening_entry = f"""
 <p>
-    Apart from my apartment losing power in half the unit, this week was relaxing. Thankfully, the apartment maintenance team responded within 30-minutes of me opening a support ticket!
+    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-11-09&utm_source=newsletter" target="_blank">here</a>.
 </p>
 </br>
 
 <p>
-    Ginger has been hanging out in my home office with me enjoying the sun. I have a feeling she's been learning a little too much about the technology I've been working on. Maybe she can be the next IT wizard?
-</p>
-</br>
-
-<p>
-    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-11-02&utm_source=newsletter" target="_blank">here</a>.
-</p>
-</br>
-
-<p>
-    There was a 3-way tie... so here is my favorite winning picture:
-    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-11-02-newsletter/piuxypcvga.jpg" height="300" width="400">
+    And here's the winning photo:
+    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-11-09-newsletter/gggojkhphp.jpg" height="300" width="400">
 </p>
 </br>
 """
 
-word_date = "November 9th, 2024"
-source_csv = "2024-11-09.csv"
+word_date = "November 16th, 2024"
+source_csv = "2024-11-16.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
