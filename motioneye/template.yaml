@@ -24,6 +24,18 @@ Resources:
             Path: /
             Method: get
 
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "hlb-motioneye-develop"
+
+  Subscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref Topic
+      Endpoint: "motioneye@homelabwithkevin.com"
+
 Outputs:
   HelloWorldApi:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
