@@ -24,7 +24,7 @@ Resources:
 
       Policies:
         - SNSPublishMessagePolicy:
-            TopicName: !Ref Topic
+            TopicName: !GetAtt Topic.TopicName
 
       Events:
         Api:
