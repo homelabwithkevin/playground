@@ -126,6 +126,12 @@ def post(path, user_info):
     """
 
 def view_journal(user_info):
+    password = None
+    try:
+        password = user_info.get('password')
+    except:
+        pass
+
     return f"""
         {utils.load_tailwind()}
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
@@ -135,11 +141,31 @@ def view_journal(user_info):
                         {logout()}
                         <div>Journal</div>
                         <div>Today: {utils.today_journal()}</div>
+                        <div>Password: {password}</div>
                         <p>
                             <p>
                                 Welcome {user_info.get('username')}!
                             </p>
-                            {forms.form_message(user_info.get('sub'), 'journal')}
+                            {forms.form_message(user_info.get('sub'), 'journal', password)}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    """
+
+def view_password(user_info):
+    return f"""
+        {utils.load_tailwind()}
+        <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
+            <div>
+                <div class="mt-4">
+                    <div class="space-y-4">
+                        {logout()}
+                        <div>Password</div>
+                        <div>Set a Password for Encryption</div>
+                        <p>
+                            {forms.form_message(user_info.get('sub'), 'password')}
                         </p>
                     </div>
                 </div>
