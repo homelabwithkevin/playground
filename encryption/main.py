@@ -2,11 +2,12 @@
 
 import base64
 import os
-
 import argparse
+import random
+import binascii
 
-# argparse
 parser = argparse.ArgumentParser(description='Encrypt a message with a password')
+parser.add_argument('option', type=str, help='Encrypt/decrypt')
 parser.add_argument('password', type=str, help='The password to use for encryption')
 args = parser.parse_args()
 
@@ -14,8 +15,12 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-def generate_salt(lengt=16):
-    salt = os.urandom(16)
+salt = b'temporary'
+
+def generate_salt(length=16):
+    random = os.urandom(length)
+    salt = binascii.hexlify(random)
+    print(f'Salt: {salt}')
     return salt
 
 def generate_key(salt, password):
@@ -25,19 +30,35 @@ def generate_key(salt, password):
         salt=salt,
         iterations=480000,
     )
-
     key = base64.urlsafe_b64encode(kdf.derive(password))
-
     return key
 
 def encrypt(key, message):
     f = Fernet(key)
-    token = f.encrypt(message)
-    return token
+    encrypted_message = f.encrypt(message)
+    print(f'Encypted Message: {encrypted_message}')
+    return encrypted_message
 
-if args.password:
-    password = args.password
-    salt = generate_salt()
-    key = generate_key(salt, password.encode())
-    encrypted_message = encrypt(key, b"Hello World")
-    print(encrypted_message)
+def decrypt(key, message):
+    f = Fernet(key)
+    decrypted_message = f.decrypt(message)
+    print(f'Decrypted Message: {decrypted_message}')
+    return decrypted_message
+
+if args.option and args.password:
+    option = args.option
+    password = (args.password).encode()
+
+    if option == 'encrypt':
+        # salt = generate_salt()
+        key = generate_key(salt, password)
+        encrypt(key, b'Hello World')
+
+    elif option == 'decrypt':
+        # salt = b'2a56e4c43535a3e7a3ac9692e5094aad'
+        key = generate_key(salt, password)
+        message = b'gAAAAABnRSZ0Jva92SJKbToILIInmSVlG4Kr8khza7cyJOMepRd28-UE363GADQrBT7EDirhFye-VCCM9JDTFgEDDdwiIa48Og=='
+        decrypt(key, message)
+    else:
+        print(f'Invalid option')
+
