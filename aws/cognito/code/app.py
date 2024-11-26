@@ -37,6 +37,16 @@ def lambda_handler(event, context):
         if query_parameters.get('code'):
             code = query_parameters.get('code')
 
+    if '/password' in request_path:
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "text/html",
+            },
+            "body": view.view_password(user_info)
+        }
+
     if '/journal' in request_path:
         return {
             "isBase64Encoded": False,
