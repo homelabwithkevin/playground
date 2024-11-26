@@ -1,5 +1,4 @@
 # ReadMe
-
 Simple implementation of login/logout with
 - Cognito Hosted UI
 - htmx
@@ -7,10 +6,8 @@ Simple implementation of login/logout with
 - AWS HTTP API Gateway
 
 # Notes
-If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
-
-# Notes
-If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
+- If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
+- Password is in the cookie in clear text for now
 
 ## Deployment
 1. sam build; sam deploy
