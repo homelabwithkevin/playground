@@ -1,3 +1,5 @@
+# https://cryptography.io/en/latest/fernet/#using-passwords-with-fernet
+
 import base64
 import os
 
