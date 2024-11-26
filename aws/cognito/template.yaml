@@ -179,11 +179,11 @@ Outputs:
     Value: !Ref Placeholder
 
   Main:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Description: "Main URL for Entry"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
 
   RedirectURI:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Description: "Redirect URI for Cognito"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/callback"
 
   ClientId:
