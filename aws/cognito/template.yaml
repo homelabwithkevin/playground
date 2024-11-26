@@ -151,7 +151,7 @@ Resources:
   FunctionMain:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: hello_world/
+      CodeUri: code/
       Handler: app.lambda_handler
       Architectures:
         - x86_64
