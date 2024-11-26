@@ -19,7 +19,6 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 def generate_salt(length=16):
     random = os.urandom(length)
     salt = binascii.hexlify(random).decode()
-    print(f'Salt: {salt}')
     return salt
 
 def generate_key(salt, password):
@@ -35,7 +34,6 @@ def generate_key(salt, password):
 def encrypt(key, message):
     f = Fernet(key)
     encrypted_message = f.encrypt(message).decode()
-    print(f'Encypted Message: {encrypted_message}')
     return encrypted_message
 
 def decrypt(key, message):
@@ -46,6 +44,12 @@ def decrypt(key, message):
     print(f'\nDecrypted Message: \n{codec_message}')
     return codec_message
 
+def save_to_file(file, salt, message):
+    with open(file, 'a') as f:
+        f.write(f'{salt},{message}\n')
+
+    print(f'Saved to file {file}')
+
 if args.option and args.password:
     option = args.option
     password = (args.password).encode()
@@ -53,6 +57,7 @@ if args.option and args.password:
     if option == 'encrypt':
         salt = generate_salt()
         key = generate_key(salt, password)
+
         lines = []
         while True:
             line = input()
@@ -63,7 +68,8 @@ if args.option and args.password:
 
         message = '\n'.join(lines)
 
-        encrypt(key, message.encode())
+        encrypted_message = encrypt(key, message.encode())
+        save_to_file('encrypted.txt', salt, encrypted_message)
 
     elif option == 'decrypt':
         salt = input('Paste your salt: \n')
@@ -72,4 +78,3 @@ if args.option and args.password:
         decrypt(key, message.encode())
     else:
         print(f'Invalid option')
-
