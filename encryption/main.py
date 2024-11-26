@@ -52,12 +52,13 @@ if args.option and args.password:
     if option == 'encrypt':
         # salt = generate_salt()
         key = generate_key(salt, password)
-        encrypt(key, b'Hello World')
+        message = input('Enter the message to encrypt: ')
+        encrypt(key, message.encode())
 
     elif option == 'decrypt':
         # salt = b'2a56e4c43535a3e7a3ac9692e5094aad'
         key = generate_key(salt, password)
-        message = b'gAAAAABnRSZ0Jva92SJKbToILIInmSVlG4Kr8khza7cyJOMepRd28-UE363GADQrBT7EDirhFye-VCCM9JDTFgEDDdwiIa48Og=='
+        message = b'gAAAAABnRSawMpsKjV4aclf_NSsX37bx42-AhuZkfwImOdpxsF_T0Jkw1vJ2K3B4cJA42zO4Yyy15Zu8PXw7_OZSPhebl1yHU3itJTjViXPZMTVUO9oTv0w='
         decrypt(key, message)
     else:
         print(f'Invalid option')
