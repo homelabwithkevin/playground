@@ -25,60 +25,68 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
 
             if key == 'message':
                 data = value
-
     except:
         pass
 
-
-    body = f"""
-    <div>
-        Success: {decoded_body}
-    </div>
-    """
-
-    try:
-        client.put_item(
-            TableName=table,
-            Item={
-                'id': {
-                    'S': utils.random_string(10)
-                },
-                'date': {
-                    'S': str(utils.today())
-                },
-                'utc_now': {
-                    'S': str(utils.utc_now())
-                },
-                'user_id': {
-                    'S': user_info.get('sub')
-                },
-                'source_ip': {
-                    'S': source_ip
-                },
-                'user_agent': {
-                    'S': user_agent
-                },
-                'message': {
-                    'S': data
-                },
-                'form_type': {
-                    'S': form_type
-                },
-            }
-        )
-    except Exception as e:
-        print(f'Failed to put item: {e}')
+    if form_type == 'password':
         body = f"""
         <div>
-            Failed to save to database
+            <p>Successfully Set Password</p>
+            <p>Success: {data}</p>
         </div>
         """
+    else:
+        body = f"""
+        <div>
+            Success: {decoded_body}
+        </div>
+        """
+        try:
+            client.put_item(
+                TableName=table,
+                Item={
+                    'id': {
+                        'S': utils.random_string(10)
+                    },
+                    'date': {
+                        'S': str(utils.today())
+                    },
+                    'utc_now': {
+                        'S': str(utils.utc_now())
+                    },
+                    'user_id': {
+                        'S': user_info.get('sub')
+                    },
+                    'source_ip': {
+                        'S': source_ip
+                    },
+                    'user_agent': {
+                        'S': user_agent
+                    },
+                    'message': {
+                        'S': data
+                    },
+                    'form_type': {
+                        'S': form_type
+                    },
+                }
+            )
+        except Exception as e:
+            print(f'Failed to put item: {e}')
+            body = f"""
+            <div>
+                Failed to save to database
+            </div>
+            """
 
     return_data = {
         "statusCode": 200,                
         "headers": {
             "Content-Type": "application/html",
         },
+        "cookies": [
+            f"testing={data}"
+        ],
         "body": body
     }
 
