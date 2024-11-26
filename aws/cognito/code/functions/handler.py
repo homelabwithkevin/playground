@@ -3,7 +3,7 @@ import boto3
 import os
 import base64
 
-from functions import utils
+from functions import utils, encryption
 
 table = os.environ["TABLE"]
 
@@ -12,7 +12,8 @@ client = boto3.client('dynamodb')
 def post(body=None, user_info=None, source_ip=None, user_agent=None):
     decoded_body = base64.b64decode(body).decode('utf-8')
     password = None
-    encryption = False
+    salt, encrypted_message = None, None
+    set_encryption = False
 
     # form_type=message&message=example
     # Not the best way to parse this, but it works for now
@@ -37,7 +38,10 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
         password = user_info.get('password')
 
     if password:
-        encryption = True
+        set_encryption = True
+        salt = encryption.generate_salt()
+        key = encryption.generate_key(salt, password.encode())
+        encrypted_message = encryption.encrypt(key, data.encode())
 
     if form_type == 'password':
         body = f"""
@@ -81,7 +85,13 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
                         'S': str(password)
                     },
                     'encryption': {
-                        'S': str(encryption)
+                        'S': str(set_encryption)
+                    },
+                    'salt': {
+                        'S': str(salt)
+                    },
+                    'encrypted_message': {
+                        'S': str(encrypted_message)
                     },
                     'form_type': {
                         'S': form_type
