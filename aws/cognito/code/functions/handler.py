@@ -11,6 +11,8 @@ client = boto3.client('dynamodb')
 
 def post(body=None, user_info=None, source_ip=None, user_agent=None):
     decoded_body = base64.b64decode(body).decode('utf-8')
+    password = None
+    encryption = False
 
     # form_type=message&message=example
     # Not the best way to parse this, but it works for now
@@ -25,8 +27,17 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
 
             if key == 'message':
                 data = value
+
+            if key == 'password':
+                password = value
     except:
         pass
+
+    if user_info.get('password'):
+        password = user_info.get('password')
+
+    if password:
+        encryption = True
 
     if form_type == 'password':
         body = f"""
@@ -65,6 +76,12 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
                     },
                     'message': {
                         'S': data
+                    },
+                    'password': {
+                        'S': str(password)
+                    },
+                    'encryption': {
+                        'S': str(encryption)
                     },
                     'form_type': {
                         'S': form_type
