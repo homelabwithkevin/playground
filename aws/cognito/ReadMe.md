@@ -9,6 +9,16 @@ Simple implementation of login/logout with
 - If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
 - Password is in the cookie in clear text for now
 
+# Routes
+| Route      | Description                    |
+| ---------- | ------------------------------ | 
+| /login     | Redirects to Cognito Hosted UI |
+| /callback  | Call back for Cogntio          |
+| /dashboard | Main Dashboard                 |
+| /logout    | Logout                         |
+| /password  | Set Password for Encryption    |
+| /journal   | Record a Journal Entry         |
+
 ## Deployment
 1. sam build; sam deploy
 2. Get outputs
@@ -28,4 +38,6 @@ Simple implementation of login/logout with
 - https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
 
 ## Commands
-1. `sam sync --stack-name hlb-cognito-develop`
+1. `sam build`
+2. `sam deploy --guided` -- first run placeholders, then use real values from the output of the stack
+3. `sam sync --stack-name hlb-cognito-develop`
