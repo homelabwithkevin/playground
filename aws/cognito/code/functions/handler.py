@@ -84,10 +84,10 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
         "headers": {
             "Content-Type": "application/html",
         },
-        "cookies": [
-            f"testing={data}"
-        ],
         "body": body
     }
+    
+    if form_type == 'password':
+        return_data['cookies'] = [ f"password={data}" ]
 
     return return_data
