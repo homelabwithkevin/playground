@@ -127,6 +127,23 @@ Resources:
         - AttributeName: timestamp
           KeyType: HASH
 
+  TablePosts:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "hlb-mailtrap-posts-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
   Function:
     Type: AWS::Serverless::Function 
     Properties:
@@ -174,6 +191,7 @@ Resources:
           TABLE_ARCHIVE: !Ref TableArchive
           TABLE_VOTE: !Ref TableVote
           TABLE_UTM: !Ref TableUTM
+          TABLE_Posts: !Ref TablePosts
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
