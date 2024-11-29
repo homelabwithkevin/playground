@@ -138,10 +138,10 @@ Resources:
         PointInTimeRecoveryEnabled: true
 
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: cdn_photo
           AttributeType: S
       KeySchema:
-        - AttributeName: id
+        - AttributeName: cdn_photo
           KeyType: HASH
 
   Function:
