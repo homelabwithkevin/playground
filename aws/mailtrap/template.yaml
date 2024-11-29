@@ -140,9 +140,13 @@ Resources:
       AttributeDefinitions:
         - AttributeName: cdn_photo
           AttributeType: S
+        - AttributeName: csv
+          AttributeType: S
       KeySchema:
-        - AttributeName: cdn_photo
+        - AttributeName: csv
           KeyType: HASH
+        - AttributeName: cdn_photo
+          KeyType: RANGE
 
   Function:
     Type: AWS::Serverless::Function 
