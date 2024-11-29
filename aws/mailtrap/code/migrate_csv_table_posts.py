@@ -6,7 +6,8 @@ import json
 from functions import db
 
 client = boto3.client('dynamodb')
-table = 'hlb-mailtrap-posts-develop'
+develop_table = 'hlb-mailtrap-posts-develop'
+table = 'hlb-mailtrap-posts-prod'
 
 def read_csv(file):
     data = pd.read_csv(file, encoding='utf-8')
