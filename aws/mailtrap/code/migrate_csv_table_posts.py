@@ -39,6 +39,4 @@ for file in files:
     file, data = read_csv(file)
     items = convert_to_item(data, file)
     for item in items:
-        print(item)
-        # db.put_item_v2(table, item)
-    break
+        db.put_item_v2(table, item)
