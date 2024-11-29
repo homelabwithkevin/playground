@@ -127,6 +127,27 @@ Resources:
         - AttributeName: timestamp
           KeyType: HASH
 
+  TablePosts:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "hlb-mailtrap-posts-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+      AttributeDefinitions:
+        - AttributeName: cdn_photo
+          AttributeType: S
+        - AttributeName: csv
+          AttributeType: S
+      KeySchema:
+        - AttributeName: csv
+          KeyType: HASH
+        - AttributeName: cdn_photo
+          KeyType: RANGE
+
   Function:
     Type: AWS::Serverless::Function 
     Properties:
@@ -174,6 +195,7 @@ Resources:
           TABLE_ARCHIVE: !Ref TableArchive
           TABLE_VOTE: !Ref TableVote
           TABLE_UTM: !Ref TableUTM
+          TABLE_Posts: !Ref TablePosts
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
       Policies:
