@@ -13,3 +13,12 @@ def read_csv(file):
     data_json = json.loads(data.to_json(orient='records'))
     file_json = { file: data_json }
     return file_json
+
+def list_files():
+    files = []
+    for file in os.listdir('.'):
+        if file.startswith('2024') and file.endswith('.csv'):
+            files.append(file)
+    return files
+
+files = list_files()
