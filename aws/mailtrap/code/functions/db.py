@@ -26,10 +26,15 @@ def put_item(first_name, email):
     )
 
 def put_item_v2(table, item):
-    client.put_item(
-        TableName=table,
-        Item=item
-    )
+    print(f'Putting item...')
+    try:
+        client.put_item(
+            TableName=table,
+            Item=item
+        )
+    except Exception as e:
+        print(f'Error: {e} for {item}')
+
 
 def put_vote(table, vote_information, vote_user):
     response = client.put_item(
