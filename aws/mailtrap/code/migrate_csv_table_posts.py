@@ -20,16 +20,14 @@ def list_files():
             files.append(file)
     return files
 
-def convert_to_item(data):
+def convert_to_item(data, file):
     list_output = []
 
     for item in data:
-        for key, value in enumerate(item):
-            list_output.append(
-                {
-                    value: {'S': str(item[value])}
-                }
-            )
+        for key, value in item.items():
+            item[key] = {'S': str(value)}
+        item['csv'] = {'S': file}
+        list_output.append(item)
 
     return list_output
 
@@ -39,11 +37,8 @@ list_of_data = {}
 for file in files:
     print(f'Reading CSV: {file}')
     file, data = read_csv(file)
-    items = convert_to_item(data)
+    items = convert_to_item(data, file)
     for item in items:
         print(item)
-
-    # items['csv'] = {'S': file}
-    print(items)
-    # db.put_item_v2(table, item)
+        # db.put_item_v2(table, item)
     break
