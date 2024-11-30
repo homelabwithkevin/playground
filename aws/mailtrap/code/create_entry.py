@@ -94,20 +94,33 @@ def create_newsletter(entries, date, first_entry):
     x = 0
     for entry in entries:
         print(entry)
+
         if x == 0:
             x += 1
             pass
 
-        posts += f"""
-        <div class="mb-6">
-            <div>
-                <div class="font-bold">{entry['title']} </div>
-                <div>{entry['description']}</div>
-                <a href="{base_url}/vote?newsletter={newsletter_date}&file={entry['cdn_photo']}&user=newsletter" target='_blank'>Vote!</a>
-                <img src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
+        extension = entry["photo"].split(".")[-1]
+        if extension == "mp4":
+            posts += f"""
+            <div class="mb-6">
+                <div>
+                    <div class="font-bold">{entry['title']} </div>
+                    <div>{entry['description']}</div>
+                    <video controls src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
+                </div>
             </div>
-        </div>
-        """
+            """
+        else:
+            posts += f"""
+            <div class="mb-6">
+                <div>
+                    <div class="font-bold">{entry['title']} </div>
+                    <div>{entry['description']}</div>
+                    <a href="{base_url}/vote?newsletter={newsletter_date}&file={entry['cdn_photo']}&user=newsletter" target='_blank'>Vote!</a>
+                    <img src="{cloudfront}/{entry['cdn_photo']}" class="max-h-[600px]">
+                </div>
+            </div>
+            """
     end = f"""
         </div>
     </html>
@@ -152,19 +165,40 @@ def send_email(newsletter, date, to):
 
 opening_entry = f"""
 <p>
-    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-11-09&utm_source=newsletter" target="_blank">here</a>.
+    We hope everyone had an great holiday! 
 </p>
 </br>
 
 <p>
-    And here's the winning photo:
-    <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-11-09-newsletter/gggojkhphp.jpg" height="300" width="400">
+    I'm thankful to have the privilege to share these photos with y'all.
 </p>
 </br>
+
+<p>
+    While I was at my folks' house for Thanksgiving, there are plenty of photos from the rest of the week!
+</p>
+</br>
+
+<p>
+    Ginger even unplugged the autofeeder! I was able to capture that on my video camera.
+</p>
+</br>
+
+<p>
+    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-11-23&utm_source=newsletter" target="_blank">here</a>. You can totally vote multiple times, too!
+</p>
+</br>
+
+<p class="flex">
+    And here's the winning photo.
+    <div class="grid grid-cols grid-cols-2 space-x-3 mb-4">
+        <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-11-23-newsletter/tuqlemobyb.jpg" height="300" width="400">
+    <div>
+</p>
 """
 
-word_date = "November 16th, 2024"
-source_csv = "2024-11-16.csv"
+word_date = "November 30th, 2024"
+source_csv = "2024-11-30.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
@@ -175,7 +209,7 @@ newsletter_html_content = create(opening_entry, entries, word_date)
 # Upload
 complete_newsletter = "newsletter.html"
 cdn_complete_newsletter = f"{newsletter}/newsletter.html"
-utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
+# utils.upload_file(bucket_name, complete_newsletter, cdn_complete_newsletter, "text/html")
 
 # Have to convert tailwind to inline styles
 # Email
