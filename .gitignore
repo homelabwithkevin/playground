@@ -3,6 +3,7 @@
 *.jpg
 *.html
 *.png
+*.mp4
 main
 *aws-sam/
 photos/.env
