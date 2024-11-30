@@ -44,7 +44,7 @@ Resources:
     Properties:
       Protocol: email
       TopicArn: !Ref Topic
-      endpoint: !Ref Email
+      Endpoint: !Ref Email
 
   Bucket:
     Type: AWS::S3::Bucket
@@ -176,6 +176,7 @@ Resources:
       Environment:
         Variables:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
+          ENVIRONMENT: !Ref Environment
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
           TABLE_ARCHIVE: !Ref TableArchive
