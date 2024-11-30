@@ -17,8 +17,6 @@ def lambda_handler(event,context):
     method = request_context['http']['method']
     request_path = request_context['http']['path']
 
-
-
     if event.get('queryStringParameters'):
         query_string_parameters = event['queryStringParameters']
         print(query_string_parameters)

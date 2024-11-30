@@ -6,6 +6,8 @@ from functions import db, utils
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 form_image = os.getenv('FORM_IMAGE')
+environment = os.getenv('ENVIRONMENT')
+topic = os.getenv('TOPIC')
 
 def post(body, source_ip):
     decoded_body = base64.b64decode(body).decode('utf-8')
@@ -15,6 +17,11 @@ def post(body, source_ip):
     email = split_email.replace('%40', '@')
 
     db.put_item(first_name, email)
+
+    # Send email upon new subscriber
+    subject = f'New Subscriber - {environment} - {email}'
+    message = f'New Subscriber - {environment} {first_name} - {email}'
+    utils.publish(topic, subject, message)
 
     return {
             'statusCode': 200,

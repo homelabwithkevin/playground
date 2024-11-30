@@ -15,6 +15,10 @@ Parameters:
     Description: Protect IP for Emails
     Type: String
 
+  Email:
+    Description: Protect IP for Emails
+    Type: String
+
   FormImage:
     Description: Image for Form Completion
     Type: String
@@ -29,6 +33,19 @@ Parameters:
     Default: 2592000 # 30 days
 
 Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub "hlb-mailtrap-s3-${Environment}"
+      TopicName: !Sub "hlb-mailtrap-s3-${Environment}"
+
+  Subscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref Topic
+      Endpoint: !Ref Email
+
   Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -159,6 +176,7 @@ Resources:
       Environment:
         Variables:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
+          ENVIRONMENT: !Ref Environment
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
           TABLE_ARCHIVE: !Ref TableArchive
@@ -190,6 +208,7 @@ Resources:
       Environment:
         Variables:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
+          ENVIRONMENT: !Ref Environment
           CLOUDFRONT_URL: !Ref CloudfrontDomain
           TABLE: !Ref Table
           TABLE_ARCHIVE: !Ref TableArchive
@@ -198,6 +217,7 @@ Resources:
           TABLE_Posts: !Ref TablePosts
           PROTECTED_IP: !Ref ProtectedIP
           FORM_IMAGE: !Ref FormImage
+          TOPIC: !Ref Topic
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -207,6 +227,8 @@ Resources:
             TableName: !Ref TableVote
         - DynamoDBCrudPolicy:
             TableName: !Ref TableUTM
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt Topic.TopicName
       Events:
         Api:
           Type: HttpApi
