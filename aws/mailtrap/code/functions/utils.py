@@ -41,3 +41,12 @@ def list_bucket(bucket, prefix):
         files.append(content['Key'])
 
     return files
+
+def publish(topic, subject, message):
+    client = boto3.client('sns')
+    response = client.publish(
+        TopicArn=topic,
+        Message=message,
+        Subject=subject
+    )
+    return response
