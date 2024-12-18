@@ -1,0 +1,32 @@
+Description: Monitor Console SignIn
+Parameters:
+  Email:
+    Type: String
+  Name:
+    Type: String
+    Default: hlb-console-signin-alerts
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties: {}
+  Subscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref Topic
+      Protocol: email
+      Endpoint: !Ref Email
+  Rule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Ref Name
+      EventPattern:
+        detail-type:
+          - AWS Console Sign In via CloudTrail
+        source:
+          - aws.signin
+      State: ENABLED
+      Description: !Ref Name
+      EventBusName: default
+      Targets:
+        - Id: !Ref Name
+          Arn: !Ref Topic
