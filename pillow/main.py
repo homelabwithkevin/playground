@@ -18,14 +18,17 @@ def walk_directory(random_name=False):
             image_path = os.path.join(root, file)
             if file.endswith(".jpg"):
                 image_date = photo.read_image_date(image_path)
-                year, month, day, full_date = photo.parse_exif_date(file, image_date)
-                data = {
-                        "file": file,
-                        "year": year,
-                        "month": month,
-                        "day": day,
-                        "full_date": full_date,
-                }
+                try:
+                    year, month, day, full_date = photo.parse_exif_date(file, image_date)
+                    data = {
+                            "file": file,
+                            "year": year,
+                            "month": month,
+                            "day": day,
+                            "full_date": full_date,
+                    }
+                except Exception as e:
+                    print(f"Error parsing exif data for {file}: {e}")
 
                 if random_name:
                     data['cdn_path'] = f'{year}/{utils.randomword()}.jpg'
@@ -35,7 +38,7 @@ def walk_directory(random_name=False):
 
 unique_years = set()
 
-# images = walk_directory(random_name=True)
+images = walk_directory(random_name=True)
 
 # Probably a better way to do this whatever though
 year_images = {
@@ -51,30 +54,34 @@ year_images = {
         '2024': [],
 }
 
-cols = ['file', 'year', 'month', 'day', 'full_date', 'cdn_path']
-images = pd.read_csv('images.csv', header=None, names = cols).to_dict('records')
-
-x = 0
 for image in images:
-    if x == 0:
-        x += 1
-        continue
+    print(image)
 
-    image_year = image['year']
-    cdn_path = image['cdn_path']
-    file_path = image['file']
+def testing():
+    cols = ['file', 'year', 'month', 'day', 'full_date', 'cdn_path']
+    images = pd.read_csv('images.csv', header=None, names = cols).to_dict('records')
 
-    # upload_file(bucket_name, file_path, cdn_path, test=False)
+    x = 0
+    for image in images:
+        if x == 0:
+            x += 1
+            continue
 
-    unique_years.add(image_year)
-    year_images[image_year].append(image)
+        image_year = image['year']
+        cdn_path = image['cdn_path']
+        file_path = image['file']
 
-all_years = ['home']
+        # upload_file(bucket_name, file_path, cdn_path, test=False)
 
-for key, year in enumerate(year_images):
-    all_years.append(year)
+        unique_years.add(image_year)
+        year_images[image_year].append(image)
 
-for key, year in enumerate(year_images):
-    html.create_html(year, year_images[year], all_years)
+    all_years = ['home']
 
-html.create_html(None, None, all_years, home=True)
+    for key, year in enumerate(year_images):
+        all_years.append(year)
+
+    for key, year in enumerate(year_images):
+        html.create_html(year, year_images[year], all_years)
+
+    html.create_html(None, None, all_years, home=True)
