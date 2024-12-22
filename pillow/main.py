@@ -50,27 +50,36 @@ year_images = {
 }
 
 cols = ['file', 'year', 'month', 'day', 'full_date', 'cdn_path']
-# images = pd.read_csv('images.csv', header=None, names = cols).to_dict('records')
+images = pd.read_csv('images.csv', header=None, names = cols).to_dict('records')
 
+x = 0 # Set to 0 to skip header
 for image in images:
+    # Skip header
+    if x == 0:
+        x += 1
+        continue
+
     image_year = image['year']
     cdn_path = image['cdn_path']
     file_path = image['file']
 
-    # Get Unique Years
+    # Get Unique Years and add Image to it
     unique_years.add(image_year)
-
     year_images[image_year].append(image)
+
+    # Upload to S3 via CDN Path from CSV
     # upload_file(bucket_name, file_path, cdn_path, test=False)
 
+# Intial Run Only - Print unique years
 # print(unique_years)
 
-# all_years = ['home']
+## Create HTML Files
+all_years = ['home']
 
-# for key, year in enumerate(year_images):
-#     all_years.append(year)
+for key, year in enumerate(year_images):
+    all_years.append(year)
 
-# for key, year in enumerate(year_images):
-#     html.create_html(year, year_images[year], all_years)
+for key, year in enumerate(year_images):
+    html.create_html(year, year_images[year], all_years)
 
-# html.create_html(None, None, all_years, home=True)
+html.create_html(None, None, all_years, home=True)
