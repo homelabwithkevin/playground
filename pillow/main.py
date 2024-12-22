@@ -1,15 +1,7 @@
 import os
-import PIL.Image
 import pandas as pd
 
-import string
-import random
-
-import boto3
-
 from dotenv import load_dotenv
-from datetime import datetime
-
 from functions import html, photo, utils
 
 load_dotenv()
