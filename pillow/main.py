@@ -42,46 +42,35 @@ images = walk_directory(random_name=True)
 
 # Probably a better way to do this whatever though
 year_images = {
-        '2015': [],
-        '2016': [],
-        '2017': [],
-        '2018': [],
-        '2019': [],
-        '2020': [],
-        '2021': [],
-        '2022': [],
-        '2023': [],
-        '2024': [],
+    '2020': [],
+    '2021': [],
+    '2022': [],
+    '2023': [],
+    '2024': []
 }
 
+cols = ['file', 'year', 'month', 'day', 'full_date', 'cdn_path']
+# images = pd.read_csv('images.csv', header=None, names = cols).to_dict('records')
+
 for image in images:
-    print(image)
+    image_year = image['year']
+    cdn_path = image['cdn_path']
+    file_path = image['file']
 
-def testing():
-    cols = ['file', 'year', 'month', 'day', 'full_date', 'cdn_path']
-    images = pd.read_csv('images.csv', header=None, names = cols).to_dict('records')
+    # Get Unique Years
+    unique_years.add(image_year)
 
-    x = 0
-    for image in images:
-        if x == 0:
-            x += 1
-            continue
+    year_images[image_year].append(image)
+    # upload_file(bucket_name, file_path, cdn_path, test=False)
 
-        image_year = image['year']
-        cdn_path = image['cdn_path']
-        file_path = image['file']
+# print(unique_years)
 
-        # upload_file(bucket_name, file_path, cdn_path, test=False)
+# all_years = ['home']
 
-        unique_years.add(image_year)
-        year_images[image_year].append(image)
+# for key, year in enumerate(year_images):
+#     all_years.append(year)
 
-    all_years = ['home']
+# for key, year in enumerate(year_images):
+#     html.create_html(year, year_images[year], all_years)
 
-    for key, year in enumerate(year_images):
-        all_years.append(year)
-
-    for key, year in enumerate(year_images):
-        html.create_html(year, year_images[year], all_years)
-
-    html.create_html(None, None, all_years, home=True)
+# html.create_html(None, None, all_years, home=True)
