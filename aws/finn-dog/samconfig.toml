@@ -1,0 +1,9 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "hlb-finn-dog-photos"
+resolve_s3 = true
+s3_prefix = "hlb-finn-dog-photos"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "ExpireS3=\"15\" CachePolicy=\"2592000\""
+image_repositories = []
