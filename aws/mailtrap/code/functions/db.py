@@ -134,4 +134,6 @@ def get_votes(table, newsletter):
         file = item['file']['S']
         results[file] = results.get(file, 0) + 1
 
-    return results
+    # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
+    sorted_votes = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
+    return sorted_votes
