@@ -189,6 +189,63 @@ def newsletter(request_path_parameters):
         'body': content,
     }
 
+def wrap(request_path_parameters):
+    proxy_path = request_path_parameters['proxy']
+    monthly_votes = None
+    monthly_html = "<table>"
+
+    try:
+        monthly_votes = utils.get_monthly_votes(limit=3)
+        for vote in monthly_votes:
+            monthly_html += "<tr>"
+            monthly_html += f"""
+                <td>
+                    {vote['newsletter']}
+                </td>
+                <td>
+                    <img src={'https://' + vote['file_path']} height='400' width='400'/>
+                </td>
+                <td>
+                    {vote['votes']}
+                </td>
+            """
+            monthly_html += "</tr>"
+
+        monthly_html += "</table>"
+
+    except Exception as e:
+        print(f'Error: {e}')
+
+    content = f"""
+        <html>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <head>
+                <title>Ginger Kitty Newsletter</title>
+            </head>
+            <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-wrap ml-4 mr-4">
+                <div class="space-y-4">
+                        <div class="mb-4">
+                            <a href="/">Home</a>
+                            <a href="/archive">Archive</a>
+                        </div>
+                    <div>
+                        Welcome to this year's wrap. Here are the best photos.
+                    </div>
+                    <div>
+                        {monthly_html}
+                    </div>
+                </div>
+            </div>
+        <html>
+    """
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/html',
+        },
+        'body': content,
+    }
 def vote(table, query_string_parameters, source_ip):
     vote_file = None
     vote_newsletter = None
