@@ -1,8 +1,9 @@
 import os
 import base64
 import boto3
+import requests
 
-from functions import db, utils
+from functions import db, utils, archive
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 form_image = os.getenv('FORM_IMAGE')
@@ -146,17 +147,16 @@ def privacy_policy():
 
 def newsletter(request_path_parameters):
     path = ""
+    content = ""
     proxy_path = request_path_parameters['proxy']
 
     if not 'newsletter' in proxy_path:
         path = proxy_path
 
-    return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'text/html',
-            },
-            'body': f"""
+    downloaded_html = f"https://{cloudfront_url}/cdn/{path}-newsletter/newsletter.html"
+    response = requests.get(downloaded_html)
+    if response.status_code == 403:
+        content = f"""
             <html>
                 <script src="https://cdn.tailwindcss.com"></script>
                 <script src="https://unpkg.com/htmx.org@2.0.2"></script>
@@ -164,26 +164,30 @@ def newsletter(request_path_parameters):
                     <title>Ginger Kitty Newsletter</title>
                 </head>
                 <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-wrap ml-4 mr-4">
-                    <div>
-                        <div class="space-y-4">
+                    <div class="space-y-4">
                             <div class="mb-4">
                                 <a href="/">Home</a>
                                 <a href="/archive">Archive</a>
                             </div>
-
-                            <div>
-                                <h1 class="font-bold">Newsletter</h1>
-                                <div>
-                                    Newsletter {path}
-                                </div>
-                            </div>
-                            <div>
-                            </div>
+                        <div>
+                            Invalid Newsletter. Try one of the below:
+                        </div>
+                        <div>
+                            {archive.create_archive()}
                         </div>
                     </div>
                 </div>
-            </html>
-            """
+            <html>
+        """
+    else:
+        content = response.content
+
+    return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'text/html',
+            },
+            'body': content
     }
 
 def vote(table, query_string_parameters, source_ip):
