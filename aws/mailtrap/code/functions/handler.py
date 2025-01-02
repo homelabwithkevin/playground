@@ -132,7 +132,7 @@ def privacy_policy():
                             <div>
                                 <h1 class="font-bold">Contact Us</h1>
                                 <div>
-                                    If you have any questions or concerns about this Privacy Policy, please contact us at: 
+                                    If you have any questions or concerns about this Privacy Policy, please contact us at:
                                     <a href="mailto:privacy@homelabwithkevin.com">privacy@homelabwithkevin.com</a>
                                 </div>
                             </div>
@@ -144,9 +144,51 @@ def privacy_policy():
             """
     }
 
+def newsletter(request_path_parameters):
+    path = ""
+    proxy_path = request_path_parameters['proxy']
+
+    if not 'newsletter' in proxy_path:
+        path = proxy_path
+
+    return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'text/html',
+            },
+            'body': f"""
+            <html>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+                <head>
+                    <title>Ginger Kitty Newsletter</title>
+                </head>
+                <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-wrap ml-4 mr-4">
+                    <div>
+                        <div class="space-y-4">
+                            <div class="mb-4">
+                                <a href="/">Home</a>
+                                <a href="/archive">Archive</a>
+                            </div>
+
+                            <div>
+                                <h1 class="font-bold">Newsletter</h1>
+                                <div>
+                                    Newsletter {path}
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </html>
+            """
+    }
+
 def vote(table, query_string_parameters, source_ip):
-    vote_file = None 
-    vote_newsletter = None 
+    vote_file = None
+    vote_newsletter = None
     vote_user = None
     html_results = ""
     vote_results = ""
