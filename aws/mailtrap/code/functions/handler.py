@@ -147,47 +147,46 @@ def privacy_policy():
 
 def newsletter(request_path_parameters):
     path = ""
-    content = ""
-    proxy_path = request_path_parameters['proxy']
-
-    if not 'newsletter' in proxy_path:
-        path = proxy_path
-
-    downloaded_html = f"https://{cloudfront_url}/cdn/{path}-newsletter/newsletter.html"
-    response = requests.get(downloaded_html)
-    if response.status_code == 403:
-        content = f"""
-            <html>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <script src="https://unpkg.com/htmx.org@2.0.2"></script>
-                <head>
-                    <title>Ginger Kitty Newsletter</title>
-                </head>
-                <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-wrap ml-4 mr-4">
-                    <div class="space-y-4">
-                            <div class="mb-4">
-                                <a href="/">Home</a>
-                                <a href="/archive">Archive</a>
-                            </div>
-                        <div>
-                            Invalid Newsletter. Try one of the below:
+    content = f"""
+        <html>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <head>
+                <title>Ginger Kitty Newsletter</title>
+            </head>
+            <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-wrap ml-4 mr-4">
+                <div class="space-y-4">
+                        <div class="mb-4">
+                            <a href="/">Home</a>
+                            <a href="/archive">Archive</a>
                         </div>
-                        <div>
-                            {archive.create_archive()}
-                        </div>
+                    <div>
+                        {archive.create_archive()}
                     </div>
                 </div>
-            <html>
-        """
-    else:
-        content = response.content
+            </div>
+        <html>
+    """
+    proxy_path = request_path_parameters['proxy']
+
+    # If newsletter is requested, download it
+    # Else, return the archive
+    if not 'newsletter' in proxy_path:
+        path = proxy_path
+        downloaded_html = f"https://{cloudfront_url}/cdn/{path}-newsletter/newsletter.html"
+        print(f'Downloaded HTML: {downloaded_html}')
+
+        response = requests.get(downloaded_html)
+
+        if response.status_code == 200:
+            content = response.text
 
     return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'text/html',
-            },
-            'body': content
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/html',
+        },
+        'body': content,
     }
 
 def vote(table, query_string_parameters, source_ip):
