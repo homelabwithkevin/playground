@@ -32,5 +32,12 @@ def create_archive():
         """
 
     html_code += "</ul>"
+    html_code += "<table>"
+    html_code += "<tr>"
+    html_code += "<th>Date</th>"
+    html_code += "<th>Newsletter</th>"
+    html_code += "<th>Votes</th>"
+    html_code += "</tr>"
+    html_code += "</table>"
 
     return html_code
