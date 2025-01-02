@@ -2,6 +2,13 @@ from datetime import datetime
 import random
 import string
 import boto3
+import os
+
+from functions import db
+
+table_vote = os.environ["TABLE_VOTE"]
+table_archive = os.environ["TABLE_ARCHIVE"]
+cdn_url = os.environ["CLOUDFRONT_URL"]
 
 def today():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -50,3 +57,36 @@ def publish(topic, subject, message):
         Subject=subject
     )
     return response
+
+def get_monthly_votes(limit=3):
+    archived_items = db.get_archive_items(table_archive)
+
+    totals = []
+
+    # Iterate through Archived Items
+    # For Each Archived Item, Get Votes for all pictures
+    # Return Pandas Dataframe with all the data
+
+    for archived_item in archived_items:
+        newsletter = archived_item.split('-newsletter')[0]
+        votes = db.get_votes(table_vote, newsletter)
+        _totals = {}
+
+        x = 0
+        for key, file in enumerate(votes):
+            x += 1
+            if x > limit:
+                break
+            file_path = f'{cdn_url}/cdn/{newsletter}-newsletter/{file}'
+
+            _totals = {
+                'newsletter': newsletter,
+                'rank': key,
+                'file': file,
+                'file_path': file_path,
+                'votes': votes[file]
+            }
+
+            totals.append(_totals)
+
+    return totals
