@@ -110,7 +110,7 @@ Resources:
           KeySchema:
             - AttributeName: newsletter
               KeyType: HASH
-          Projection: 
+          Projection:
             ProjectionType: ALL
 
       PointInTimeRecoverySpecification:
@@ -166,11 +166,12 @@ Resources:
           KeyType: RANGE
 
   Function:
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: code
       Handler: app.lambda_handler
       Runtime: python3.10
+      Timeout: 90
       Architectures:
         - x86_64
       Environment:
@@ -198,7 +199,7 @@ Resources:
                   - Name: prefix
                     Value: input/
   FunctionWebsite:
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: code
       Handler: website.lambda_handler
@@ -235,6 +236,11 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: ANY
+        Newsletter:
+          Type: HttpApi
+          Properties:
+            Path: /newsletter/{proxy+}
+            Method: ANY
 
   CloudfrontOriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
@@ -247,8 +253,8 @@ Resources:
 
   Cloudfront:
     Type: AWS::CloudFront::Distribution
-    Properties: 
-      DistributionConfig: 
+    Properties:
+      DistributionConfig:
         Enabled: 'true'
 
         CacheBehaviors:
@@ -257,16 +263,16 @@ Resources:
             TargetOriginId: S3Origin
             ViewerProtocolPolicy: redirect-to-https
 
-        Origins: 
+        Origins:
           - DomainName: !GetAtt Bucket.RegionalDomainName
             Id: S3Origin
-            S3OriginConfig: 
+            S3OriginConfig:
               OriginAccessIdentity: ''
             OriginAccessControlId: !Ref CloudfrontOriginAccessControl
 
-        DefaultCacheBehavior: 
+        DefaultCacheBehavior:
           TargetOriginId: S3Origin
-          ForwardedValues: 
+          ForwardedValues:
             QueryString: 'false'
           ViewerProtocolPolicy: redirect-to-https
         DefaultRootObject: index.html
@@ -286,9 +292,9 @@ Resources:
             CookieBehavior: none
           EnableAcceptEncodingGzip: true
           EnableAcceptEncodingBrotli: true
-          HeadersConfig: 
+          HeadersConfig:
             HeaderBehavior: none
-          QueryStringsConfig: 
+          QueryStringsConfig:
             QueryStringBehavior: none
 
 Outputs:
