@@ -4,7 +4,7 @@ import os
 from functions import form, handler, db, archive
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
-protected_ip = os.getenv('PROTECTED_IP') 
+protected_ip = os.getenv('PROTECTED_IP')
 table_vote = os.getenv('TABLE_VOTE')
 
 def lambda_handler(event,context):
@@ -12,8 +12,13 @@ def lambda_handler(event,context):
     utm_source = None
     cf_connecting_ip = None
 
+    print(event)
     headers = event['headers']
     request_context = event['requestContext']
+
+    route_key = event['routeKey']
+    request_path_parameters = event['pathParameters']
+
     method = request_context['http']['method']
     request_path = request_context['http']['path']
 
@@ -37,6 +42,9 @@ def lambda_handler(event,context):
 
         if request_path == '/privacy-policy':
             return handler.privacy_policy()
+
+        elif request_path == '/newsletter' or route_key == 'ANY /newsletter/{proxy+}':
+            return handler.newsletter(request_path_parameters)
 
         elif request_path == '/vote':
             vote_message, vote_results, html_results = handler.vote(table_vote, query_string_parameters, source_ip)

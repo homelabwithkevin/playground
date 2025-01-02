@@ -15,8 +15,6 @@ def initial_archive(table):
 
 def create_archive():
     table = os.environ["TABLE_ARCHIVE"]
-    # cloudfront = os.environ["CLOUDFRONT_URL"]
-    cloudfront = "d5m8h4cywoih5.cloudfront.net"
 
     archived_items = db.get_archive_items(table)
 
@@ -26,9 +24,10 @@ def create_archive():
 
     for item in archived_items:
         print(item)
+        split_item = item.split('-newsletter')[0]
         html_code += f"""
         <li>
-            <a href={'https://' + cloudfront + '/cdn/' + item + '/newsletter.html'} target='_blank'>{item}</a>
+            <a href={'https://ginger.homelabwithkevin.com/newsletter/' + split_item} target='_blank'>{split_item}</a>
         </li>
         """
 

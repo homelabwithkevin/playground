@@ -1,8 +1,9 @@
 import os
 import base64
 import boto3
+import requests
 
-from functions import db, utils
+from functions import db, utils, archive
 
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 form_image = os.getenv('FORM_IMAGE')
@@ -132,7 +133,7 @@ def privacy_policy():
                             <div>
                                 <h1 class="font-bold">Contact Us</h1>
                                 <div>
-                                    If you have any questions or concerns about this Privacy Policy, please contact us at: 
+                                    If you have any questions or concerns about this Privacy Policy, please contact us at:
                                     <a href="mailto:privacy@homelabwithkevin.com">privacy@homelabwithkevin.com</a>
                                 </div>
                             </div>
@@ -144,9 +145,53 @@ def privacy_policy():
             """
     }
 
+def newsletter(request_path_parameters):
+    path = ""
+    content = f"""
+        <html>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <head>
+                <title>Ginger Kitty Newsletter</title>
+            </head>
+            <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-wrap ml-4 mr-4">
+                <div class="space-y-4">
+                        <div class="mb-4">
+                            <a href="/">Home</a>
+                            <a href="/archive">Archive</a>
+                        </div>
+                    <div>
+                        {archive.create_archive()}
+                    </div>
+                </div>
+            </div>
+        <html>
+    """
+    proxy_path = request_path_parameters['proxy']
+
+    # If newsletter is requested, download it
+    # Else, return the archive
+    if not 'newsletter' in proxy_path:
+        path = proxy_path
+        downloaded_html = f"https://{cloudfront_url}/cdn/{path}-newsletter/newsletter.html"
+        print(f'Downloaded HTML: {downloaded_html}')
+
+        response = requests.get(downloaded_html)
+
+        if response.status_code == 200:
+            content = response.text
+
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/html',
+        },
+        'body': content,
+    }
+
 def vote(table, query_string_parameters, source_ip):
-    vote_file = None 
-    vote_newsletter = None 
+    vote_file = None
+    vote_newsletter = None
     vote_user = None
     html_results = ""
     vote_results = ""
