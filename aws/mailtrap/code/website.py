@@ -46,6 +46,9 @@ def lambda_handler(event,context):
         elif request_path == '/newsletter' or route_key == 'ANY /newsletter/{proxy+}':
             return handler.newsletter(request_path_parameters)
 
+        elif request_path == '/wrap' or route_key == 'ANY /wrap/{proxy+}':
+            return handler.wrap(request_path_parameters)
+
         elif request_path == '/vote':
             vote_message, vote_results, html_results = handler.vote(table_vote, query_string_parameters, source_ip)
             return {
