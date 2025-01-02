@@ -22,11 +22,17 @@ totals = []
 # For Each Archived Item, Get Votes for all pictures
 # Return Pandas Dataframe with all the data
 
+max = 3
 for archived_item in archived_items:
     newsletter = archived_item.split('-newsletter')[0]
     votes = get_votes(newsletter)
     _totals = {}
+
+    x = 0
     for key, file in enumerate(votes):
+        x += 1
+        if x > max:
+            break
         file_path = f'{cdn_url}/{newsletter}-newsletter/{file}'
 
         _totals = {
@@ -38,8 +44,8 @@ for archived_item in archived_items:
         }
 
         totals.append(_totals)
-    break
 
 df = pd.DataFrame(totals)
 print(df)
-# df.to_csv('totals.csv', index=False)
+df.to_csv('totals.csv', index=False)
+print(f'Saved to: totals.csv')
