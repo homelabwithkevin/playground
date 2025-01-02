@@ -22,22 +22,17 @@ def create_archive():
 
     archived_items.sort()
 
-    for item in archived_items:
-        print(item)
-        split_item = item.split('-newsletter')[0]
-        html_code += f"""
-        <li>
-            <a href={'https://ginger.homelabwithkevin.com/newsletter/' + split_item} target='_blank'>{split_item}</a>
-        </li>
-        """
 
     html_code += "</ul>"
-    html_code += "<table>"
-    html_code += "<tr>"
-    html_code += "<th>Date</th>"
-    html_code += "<th>Newsletter</th>"
-    html_code += "<th>Votes</th>"
-    html_code += "</tr>"
+    html_code += f"<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"
+
+    for item in archived_items:
+        split_item = item.split('-newsletter')[0]
+        html_code += "<tr>"
+        html_code += f"<td class='border border-slate-700 p-2'><a href={'https://ginger.homelabwithkevin.com/newsletter/' + split_item} target='_blank'>{split_item}</a></td>"
+        html_code += f"<td class='border border-slate-700 p-2'><a href={'https://ginger.homelabwithkevin.com/vote?newsletter='+ split_item} target='_blank'>Vote Results</a></td>"
+        html_code += "</tr>"
+
     html_code += "</table>"
 
     return html_code
