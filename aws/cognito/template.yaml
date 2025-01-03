@@ -46,6 +46,12 @@ Parameters:
     Type: String
     Default: password
 
+  GoogleClientId:
+    Type: String
+
+  GoogleClientSecret:
+    Type: String
+
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
   Table:
@@ -160,8 +166,8 @@ Resources:
       ProviderName: Google
       ProviderType: Google
       ProviderDetails:
-        client_id: 847536199773-hqd0vnt8vjols3io897u5qaq1np3keq8.apps.googleusercontent.com
-        client_secret: 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
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
         authorize_scopes: "email profile openid"
       AttributeMapping:
         email: "email"
