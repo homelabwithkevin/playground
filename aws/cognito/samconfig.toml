@@ -21,7 +21,7 @@ s3_prefix = "hlb-cognito-develop"
 region = "us-east-1"
 image_repositories = []
 disable_rollback = false
-parameter_overrides = "Placeholder=\"replaceme\" Domain=\"homelabwithkevin-develop\" RedirectURL=\"https://example.com\" CognitoHostedURL=\"https://example.com\" ClientSecret=\"secret\" Environment=\"develop\" Email=\"hello@example.com\" Username=\"hello\""
+parameter_overrides = "Placeholder=\"replaceme\" Domain=\"homelabwithkevin-develop\" RedirectURL=\"https://example.com\" CognitoHostedURL=\"https://example.com\" ClientSecret=\"secret\" Environment=\"develop\" Email=\"hello@example.com\" Username=\"hello\" EncryptionPassword=\"example\""
 
 [default.package.parameters]
 resolve_s3 = true

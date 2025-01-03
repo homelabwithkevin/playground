@@ -8,6 +8,7 @@ from urllib.parse import unquote
 from functions import utils, encryption
 
 table = os.environ["TABLE"]
+encryption_password = os.environ["ENCRYPTION_PASSWORD"]
 
 client = boto3.client('dynamodb')
 
@@ -120,6 +121,9 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
     }
 
     if form_type == 'password':
-        return_data['cookies'] = [ f"password={data}" ]
+        salt = encryption.generate_salt()
+        key = encryption.generate_key(salt, encryption_password.encode())
+        _password = encryption.encrypt(key, data.encode())
+        return_data['cookies'] = [ f"password={data}", f"encrypted_password={_password}", f"encrypted_salt={salt}" ]
 
     return return_data
