@@ -43,7 +43,8 @@ def get_user_info_from_cookies(cookies):
     return_cookie = {}
 
     for cookie in cookies:
-        key, value = cookie.split("=")
+        # https://stackoverflow.com/questions/6903557/splitting-on-first-occurrence
+        key, value = cookie.split("=", 1)
         return_cookie[key] = value
 
     return return_cookie
