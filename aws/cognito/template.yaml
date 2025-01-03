@@ -46,6 +46,12 @@ Parameters:
     Type: String
     Default: password
 
+  GoogleClientId:
+    Type: String
+
+  GoogleClientSecret:
+    Type: String
+
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
   Table:
@@ -139,6 +145,7 @@ Resources:
 
       SupportedIdentityProviders:
         - COGNITO
+        - Google
 
   UserPoolUser:
     Condition: IsExample
@@ -151,6 +158,24 @@ Resources:
       UserAttributes:
         - Name: email
           Value: !Ref Email
+
+  UserPoolIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref UserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
+        authorize_scopes: "email profile openid"
+      AttributeMapping:
+        email: "email"
+        family_name: "family_name"
+        given_name: "given_name"
+        name: "names"
+        preferred_username: "given_name"
+        username: "sub"
 
   FunctionMain:
     Type: AWS::Serverless::Function
