@@ -70,7 +70,7 @@ def dashboard(user_info):
                         <p>Dashboard</p>
                         <p>
                             <p>
-                                Welcome {user_info.get('username')}!
+                                Welcome {user_info.get('given_name')}!
                             </p>
                             {forms.form_message(user_info.get('sub'))}
                         </p>
@@ -79,7 +79,7 @@ def dashboard(user_info):
             </div>
         </div>
     """
- 
+
 def parse_post_details(post_details):
     data = f"""
     <table class="table-fixed">
