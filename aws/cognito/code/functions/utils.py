@@ -116,6 +116,7 @@ def parse_request_headers(request_headers):
     headers = request_headers.split(";")
     new_headers = {}
     for header in headers:
+        # https://stackoverflow.com/questions/6903557/splitting-on-first-occurrence
         key, value = header.split("=")
         new_headers[key] = value
 
@@ -129,7 +130,8 @@ def clear_cookies(cookies):
     return_cookie = []
 
     for cookie in cookies:
-        key, value = cookie.split("=")
+        # https://stackoverflow.com/questions/6903557/splitting-on-first-occurrence
+        key, value = cookie.split("=", 1)
         return_cookie.append(f'{key}=deleted; Max-Age=-1')
 
     return return_cookie
