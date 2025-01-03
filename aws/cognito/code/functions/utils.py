@@ -30,7 +30,8 @@ def random_string(length=10):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 def create_cognito_hosted_uri():
-    return f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=email+openid&redirect_uri={redirect_uri}"
+    # https://stackoverflow.com/questions/61516808/trying-to-get-more-attributes-using-aws-cognitos-userinfo-endpoint-cant-seem
+    return f"https://{domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=openid&redirect_uri={redirect_uri}"
 
 def load_tailwind():
     return """
@@ -81,24 +82,32 @@ def get_user_info(access_token):
         response_json = json.loads(response.content)
         sub = response_json.get("sub")
         email_verified = response_json.get("email_verified")
+        preferred_username = response_json.get("preferred_username")
+        given_name = response_json.get("given_name")
+        family_name = response_json.get("family_name")
         email = response_json.get("email")
         username = response_json.get("username")
-        return sub, email_verified, email, username
+        return sub, email_verified, preferred_username, given_name, family_name, email, username
 
     return None
 
 def handle_callback(code):
     id_token, access_token, refresh_token = None, None, None
     id_token, access_token, refresh_token = cognito_login(code)
-    sub, email_verified, email, username = get_user_info(access_token)
+
+    sub, email_verified, preferred_username, given_name, family_name, email, username = get_user_info(access_token)
 
     cookies = [
         f"id_token={id_token}",
         f"access_token={access_token}",
         f"refresh_token={refresh_token}",
+        f"sub={sub}",
+        f"email_verified={email_verified}",
+        f"preferred_username={preferred_username}",
+        f"given_name={given_name}",
+        f"family_name={family_name}",
         f"email={email}",
         f"username={username}",
-        f"sub={sub}",
     ]
     return cookies
 
