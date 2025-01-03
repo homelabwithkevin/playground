@@ -42,6 +42,10 @@ Parameters:
   Username:
     Type: String
 
+  EncryptionPassword:
+    Type: String
+    Default: password
+
 # https://stackoverflow.com/questions/46619746/aws-cognito-how-to-create-pool-allowing-sign-up-with-email-address-using-clou
 Resources:
   Table:
@@ -158,6 +162,7 @@ Resources:
       Environment:
         Variables:
           DOMAIN: !Ref Domain
+          ENCRYPTION_PASSWORD: !Ref EncryptionPassword
           USER_POOL_ID: !Ref UserPool
           CLIENT_ID: !GetAtt UserPoolClient.ClientId
           CLIENT_SECRET: !Ref ClientSecret
