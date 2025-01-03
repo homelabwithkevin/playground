@@ -26,13 +26,13 @@ def lambda_handler(event, context):
 
     if method == 'POST':
         result_post = handler.post(event['body'], user_info, source_ip, user_agent)
-        return result_post 
+        return result_post
 
     try:
         query_parameters = event['queryStringParameters']
     except Exception as e:
         print(f'No query string parameters found: {e}')
-            
+
     if query_parameters:
         if query_parameters.get('code'):
             code = query_parameters.get('code')
