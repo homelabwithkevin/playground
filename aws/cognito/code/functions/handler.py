@@ -3,6 +3,8 @@ import boto3
 import os
 import base64
 
+from urllib.parse import unquote
+
 from functions import utils, encryption
 
 table = os.environ["TABLE"]
@@ -27,7 +29,7 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
                 form_type = value
 
             if key == 'message':
-                data = value
+                data = unquote(value)
 
             if key == 'password':
                 password = value
@@ -53,7 +55,10 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
     else:
         body = f"""
         <div>
-            Success: {decoded_body}
+            Success (raw): {decoded_body}
+        </div>
+        <div>
+            Success: {data}
         </div>
         """
         try:
@@ -107,13 +112,13 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
             """
 
     return_data = {
-        "statusCode": 200,                
+        "statusCode": 200,
         "headers": {
             "Content-Type": "application/html",
         },
         "body": body
     }
-    
+
     if form_type == 'password':
         return_data['cookies'] = [ f"password={data}" ]
 
