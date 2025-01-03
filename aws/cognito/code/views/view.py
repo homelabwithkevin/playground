@@ -60,6 +60,11 @@ def callback(code=None):
     """
 
 def dashboard(user_info):
+    is_password_set = False
+    users_password = user_info.get('password')
+    if users_password:
+        is_password_set = True
+
     return f"""
         {utils.load_tailwind()}
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
@@ -68,9 +73,13 @@ def dashboard(user_info):
                     <div>
                         {logout()}
                         <p>Dashboard</p>
+                        <p><a href="/password">Password</a></p>
                         <p>
                             <p>
                                 Welcome {user_info.get('given_name')}!
+                            </p>
+                            <p>
+                                Current Password: {is_password_set}
                             </p>
                             {forms.form_message(user_info.get('sub'))}
                         </p>
@@ -155,6 +164,10 @@ def view_journal(user_info):
     """
 
 def view_password(user_info):
+    is_password_set = False
+    users_password = user_info.get('password')
+    if users_password:
+        is_password_set = True
     return f"""
         {utils.load_tailwind()}
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
@@ -162,8 +175,12 @@ def view_password(user_info):
                 <div class="mt-4">
                     <div class="space-y-4">
                         {logout()}
+                        <div><a href="/dashboard">Dashboard</a></div>
                         <div>Password</div>
                         <div>Set a Password for Encryption</div>
+                        <div>
+                            Current Password: {is_password_set}
+                        </div>
                         <p>
                             {forms.form_message(user_info.get('sub'), 'password')}
                         </p>
