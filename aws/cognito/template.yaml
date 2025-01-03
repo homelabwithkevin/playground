@@ -152,6 +152,24 @@ Resources:
         - Name: email
           Value: !Ref Email
 
+  UserPoolIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref UserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: 847536199773-hqd0vnt8vjols3io897u5qaq1np3keq8.apps.googleusercontent.com
+        client_secret: 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
+        authorize_scopes: "email profile openid"
+      AttributeMapping:
+        email: "email"
+        family_name: "family_name"
+        given_name: "given_name"
+        name: "names"
+        preferred_username: "given_name"
+        username: "sub"
+
   FunctionMain:
     Type: AWS::Serverless::Function
     Properties:
