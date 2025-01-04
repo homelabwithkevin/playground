@@ -70,10 +70,9 @@ def dashboard(user_info):
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full text-center text-2xl">
             <div>
                 <div class="mt-4">
-                    <div>
+                    <div class="space-y-4">
                         {logout()}
-                        <p>Dashboard</p>
-                        <p><a href="/password">Password</a></p>
+                        {header()}
                         <p>
                             <p>
                                 Welcome {user_info.get('given_name')}!
@@ -175,8 +174,7 @@ def view_password(user_info):
                 <div class="mt-4">
                     <div class="space-y-4">
                         {logout()}
-                        <div><a href="/dashboard">Dashboard</a></div>
-                        <div>Password</div>
+                        {header()}
                         <div>Set a Password for Encryption</div>
                         <div>
                             Current Password: {is_password_set}
@@ -188,4 +186,10 @@ def view_password(user_info):
                 </div>
             </div>
         </div>
+    """
+
+def header():
+    return f"""
+        <div><a href="/dashboard">Dashboard</a></div>
+        <div><a href="/password">Password</a></div>
     """
