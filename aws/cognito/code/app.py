@@ -54,7 +54,7 @@ def lambda_handler(event, context):
             "headers": {
                 "Content-Type": "text/html",
             },
-            "body": view.view_journal(user_info)
+            "body": view.view_journal(user_info, request_path)
         }
 
     if '/post' in request_path:

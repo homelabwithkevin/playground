@@ -1,4 +1,4 @@
-# ReadMe
+# Read Me
 Simple implementation of login/logout with
 - Cognito Hosted UI
 - htmx
@@ -8,10 +8,11 @@ Simple implementation of login/logout with
 # Notes
 - If you use `AliasAttributes` with both `email` and `preferred_username`, you will need to use the `preferred_username` to login. `email` will not work.
 - Password is in the cookie in clear text for now
+- I've turned this into a combo of `journal` as well.
 
 # Routes
 | Route      | Description                    |
-| ---------- | ------------------------------ | 
+| ---------- | ------------------------------ |
 | /login     | Redirects to Cognito Hosted UI |
 | /callback  | Call back for Cogntio          |
 | /dashboard | Main Dashboard                 |

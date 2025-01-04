@@ -62,6 +62,7 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
             Success: {data}
         </div>
         """
+        year, month, day = utils.today_year_month_day()
         try:
             client.put_item(
                 TableName=table,
@@ -71,6 +72,15 @@ def post(body=None, user_info=None, source_ip=None, user_agent=None):
                     },
                     'date': {
                         'S': str(utils.today())
+                    },
+                    'year': {
+                        'S': str(year)
+                    },
+                    'month': {
+                        'S': str(month)
+                    },
+                    'day': {
+                        'S': str(day)
                     },
                     'utc_now': {
                         'S': str(utils.utc_now())

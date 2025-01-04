@@ -20,6 +20,12 @@ domain = os.environ["DOMAIN"]
 def today():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+def today_year_month_day():
+    year = datetime.now().strftime("%Y")
+    month = datetime.now().strftime("%m")
+    day = datetime.now().strftime("%d")
+    return year, month, day
+
 def today_journal():
     return datetime.now().strftime("%A, %Y-%m-%d %H:%M")
 
