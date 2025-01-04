@@ -77,8 +77,8 @@ def create_newsletter(entries, date, first_entry):
     <div class="mb-4 mt-4">
         <div class="text-center content-center justify-center m-4">
             <div class="text-3xl font-bold mb-8">Ginger Pictures - Week of {date}</div>
-            <a href="{cloudfront}/{newsletter}/newsletter.html" target="_blank">View in Browser</a>
-             | 
+            <a href="{base_url}/newsletter/{newsletter_date}" target="_blank">View in Browser</a>
+             |
             <a href="{base_url}/archive?utm_source=newsletter" target="_blank">Archive</a>
         </div>
         <div class="font-bold">Intro</div>
@@ -165,40 +165,30 @@ def send_email(newsletter, date, to):
 
 opening_entry = f"""
 <p>
-    We hope everyone had an great holiday! 
+    Welcome to the new year! I ended up with leftover PTO and took the last week and a half off.
 </p>
 </br>
 
 <p>
-    I'm thankful to have the privilege to share these photos with y'all.
+    Ginger and I were plenty occupied with gaming, reading, media viewing, and (most importantly) naps.
 </p>
 </br>
 
 <p>
-    While I was at my folks' house for Thanksgiving, there are plenty of photos from the rest of the week!
-</p>
-</br>
-
-<p>
-    Ginger even unplugged the autofeeder! I was able to capture that on my video camera.
-</p>
-</br>
-
-<p>
-    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-11-23&utm_source=newsletter" target="_blank">here</a>. You can totally vote multiple times, too!
+    Here's last week's voting results: <a href="{base_url}/vote?newsletter=2024-12-28&utm_source=newsletter" target="_blank">here</a>.
 </p>
 </br>
 
 <p class="flex">
-    And here's the winning photo.
+    And here's the winning photos:
     <div class="grid grid-cols grid-cols-2 space-x-3 mb-4">
-        <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-11-23-newsletter/tuqlemobyb.jpg" height="300" width="400">
+        <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2024-12-28-newsletter/qcmxgnrufm.jpg" height="300" width="400">
     <div>
 </p>
 """
 
-word_date = "November 30th, 2024"
-source_csv = "2024-11-30.csv"
+word_date = "January 4th, 2025"
+source_csv = "2025-01-04.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
