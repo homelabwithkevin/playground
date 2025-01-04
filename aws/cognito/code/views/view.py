@@ -134,11 +134,10 @@ def post(path, user_info):
     """
 
 def view_journal(user_info):
-    password = None
-    try:
-        password = user_info.get('password')
-    except:
-        pass
+    is_password_set = False
+    users_password = user_info.get('password')
+    if users_password:
+        is_password_set = True
 
     return f"""
         {utils.load_tailwind()}
@@ -147,14 +146,14 @@ def view_journal(user_info):
                 <div class="mt-4">
                     <div class="space-y-4">
                         {logout()}
-                        <div>Journal</div>
+                        {header()}
+                        <div>Password: {is_password_set}</div>
                         <div>Today: {utils.today_journal()}</div>
-                        <div>Password: {password}</div>
                         <p>
                             <p>
-                                Welcome {user_info.get('username')}!
+                                Welcome {user_info.get('given_name')}!
                             </p>
-                            {forms.form_message(user_info.get('sub'), 'journal', password)}
+                            {forms.form_message(user_info.get('sub'), 'journal', users_password)}
                         </p>
                     </div>
                 </div>
@@ -192,4 +191,5 @@ def header():
     return f"""
         <div><a href="/dashboard">Dashboard</a></div>
         <div><a href="/password">Password</a></div>
+        <div><a href="/journal">Journal</a></div>
     """
