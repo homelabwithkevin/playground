@@ -84,7 +84,6 @@ Resources:
         - email
       AliasAttributes:
         - email
-        - preferred_username
       VerificationMessageTemplate:
         DefaultEmailOption: CONFIRM_WITH_LINK
       UsernameConfiguration:
