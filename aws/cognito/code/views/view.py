@@ -133,11 +133,19 @@ def post(path, user_info):
         </div>
     """
 
-def view_journal(user_info):
+def view_journal(user_info, request_path):
     is_password_set = False
     users_password = user_info.get('password')
     if users_password:
         is_password_set = True
+
+    split_request_path = request_path.split('/')
+    length_split_request_path = len(split_request_path)
+
+    if length_split_request_path > 2:
+        route_path = split_request_path[2]
+    else:
+        route_path = None
 
     return f"""
         {utils.load_tailwind()}
@@ -154,6 +162,9 @@ def view_journal(user_info):
                                 Welcome {user_info.get('given_name')}!
                             </p>
                             {forms.form_message(user_info.get('sub'), 'journal', users_password)}
+                        </p>
+                        <p>
+                            Route Path: {route_path}
                         </p>
                     </div>
                 </div>
