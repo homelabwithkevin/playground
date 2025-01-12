@@ -12,11 +12,12 @@ base_url = os.getenv("base_url")
 # Base URL
 # https://opnsense.local/api/<module>/<controller>/<command>/[<param1>/[<param2>/...]]
 
-haproxy_url = f'{base_url}/haproxy/service/status'
+service_url = f'{base_url}/haproxy/service'
 
 def status():
-    response = requests.get(haproxy_url, auth=HTTPBasicAuth(key, secret), verify=False)
+    url = f'{service_url}/status'
+    response = requests.get(url, auth=HTTPBasicAuth(key, secret), verify=False)
     return json.loads(response.content)
 
-
-print(status())
+haproxy_status = status()['status']
+print(haproxy_status)
