@@ -13,6 +13,7 @@ base_url = os.getenv("base_url")
 # https://opnsense.local/api/<module>/<controller>/<command>/[<param1>/[<param2>/...]]
 
 service_url = f'{base_url}/haproxy/service'
+settings_url = f'{base_url}/haproxy/settings'
 
 def service(action):
     url = f'{service_url}/{action}'
@@ -26,4 +27,9 @@ def service(action):
     print(response_json)
     return response_json
 
-service('status')['status']
+def backend(action):
+    if action == 'search':
+        url = f'{settings_url}/searchBackends'
+        response = requests.get(url, auth=HTTPBasicAuth(key, secret), verify=False)
+        response_json = json.loads(response.content)
+        return response_json['rows']
