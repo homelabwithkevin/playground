@@ -14,10 +14,16 @@ base_url = os.getenv("base_url")
 
 service_url = f'{base_url}/haproxy/service'
 
-def status():
-    url = f'{service_url}/status'
-    response = requests.get(url, auth=HTTPBasicAuth(key, secret), verify=False)
-    return json.loads(response.content)
+def service(action):
+    url = f'{service_url}/{action}'
 
-haproxy_status = status()['status']
-print(haproxy_status)
+    if action == 'status' or action == 'configtest':
+        response = requests.get(url, auth=HTTPBasicAuth(key, secret), verify=False)
+    else:
+        response = requests.post(url, auth=HTTPBasicAuth(key, secret), verify=False)
+
+    response_json = json.loads(response.content)
+    print(response_json)
+    return response_json
+
+service('status')['status']
