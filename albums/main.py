@@ -68,7 +68,7 @@ def upload(bucket, source_file):
 
 def create_thumbnail(source_file, output_file):
     # https://stackoverflow.com/a/451580
-    base_width = 1024
+    base_width = 2048
 
     with Image.open(source_file) as img:
         width_percentage = (base_width / float(img.size[0]))
@@ -76,12 +76,21 @@ def create_thumbnail(source_file, output_file):
         img = img.resize((base_width, height_size), Image.Resampling.LANCZOS)
         img.save(output_file)
 
-with open('photos.csv', 'r') as f:
-    lines = f.readlines()
-    for line in lines:
-        tag, file = line.split(",")
-        # upload(bucket, file)
-        print(file)
-        file_replace = file.replace("\\", "\\\\").replace("\n", "")
-        create_thumbnail(file_replace, 'test.jpg')
-        break
+def random_string():
+    import random
+    import string
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+
+def function_create_thumbnail():
+    with open('photos.csv', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            tag, file = line.split(",")
+            # upload(bucket, file)
+            print(file)
+            file_replace = file.replace("\\", "\\\\").replace("\n", "")
+            random_name = random_string()
+            new_file_name = random_name + ".jpg"
+            content = file + "," + new_file_name + "," + random_name
+            write_to_file(content, 'photos-news.csv')
+            create_thumbnail(file_replace, new_file_name)
