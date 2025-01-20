@@ -35,3 +35,12 @@ def get_photos(path):
                             if year == search_year and month == search_month:
                                 if day in search_days:
                                     write_to_file(file, 'photos.csv')
+
+with open('photos.csv', 'r') as f:
+    lines = f.readlines()
+    content = ""
+    for line in lines:
+        content += "<img width='400px' height='500px' src='file://" + line.strip() + "' />\n"
+
+with open('photos.html', 'w') as f:
+    f.write(content)
