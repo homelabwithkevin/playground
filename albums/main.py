@@ -9,6 +9,8 @@ load_dotenv()
 
 base_path = os.getenv("BASE_PATH")
 bucket = os.getenv("BUCKET")
+cdn_url = os.getenv("CDN_URL")
+
 search_year = '2025'
 search_month = '01'
 search_days = ['17', '18', '19']
@@ -50,9 +52,9 @@ def create_html(source_file='photos.csv', output_file='index.html'):
                 x += 1
                 pass
 
-            tag, file = line.split(",")
-            content += "<a target='_blank' href='file://" + file + "'>"
-            content += "<img width='500px' height='700px' src='file://" + file + "' />\n"
+            file, new_file_name, random_name = line.split(",")
+            content += "<a target='_blank' href='" + cdn_url + '/original/' + new_file_name + "'>"
+            content += "<img width='500px' height='700px' src='" + cdn_url + '/' + new_file_name + "' />\n"
             content += "</a>"
 
         content += '</div>'
@@ -60,11 +62,18 @@ def create_html(source_file='photos.csv', output_file='index.html'):
 
     with open(output_file, 'w') as f:
         f.write(content)
+        print(f'Wrote to output file: {output_file}')
 
-def upload(bucket, source_file):
+def upload(bucket, source_file, target):
     import boto3
     s3 = boto3.client('s3')
-    s3.upload_file(source_file, bucket, source_file)
+    print(f'Uploading...')
+    try:
+        s3.upload_file(source_file, bucket, target)
+    except Exception as e:
+        print(f'Failed to upload: {e}')
+
+    print(f'Complete upload!')
 
 def create_thumbnail(source_file, output_file):
     # https://stackoverflow.com/a/451580
@@ -91,6 +100,18 @@ def function_create_thumbnail():
             file_replace = file.replace("\\", "\\\\").replace("\n", "")
             random_name = random_string()
             new_file_name = random_name + ".jpg"
-            content = file + "," + new_file_name + "," + random_name
+            content = file_replace + "," + new_file_name + "," + random_name
             write_to_file(content, 'photos-news.csv')
             create_thumbnail(file_replace, new_file_name)
+
+def parse_new_csv():
+    with open('photos-news.csv', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            file, new_file_name, random_name = line.split(",")
+            print(file, new_file_name, random_name)
+            upload(bucket, file, "original/" + new_file_name)
+            upload(bucket, new_file_name, new_file_name)
+
+
+create_html(source_file='photos-news.csv', output_file='new-index.html')
