@@ -39,8 +39,14 @@ def get_photos(path):
 with open('photos.csv', 'r') as f:
     lines = f.readlines()
     content = ""
+    x = 0
     for line in lines:
-        content += "<img width='400px' height='500px' src='file://" + line.strip() + "' />\n"
+        if x == 0:
+            x += 1
+            pass
+
+        tag, file = line.split(",")
+        content += "<img width='400px' height='600px' src='file://" + file + "' />\n"
 
 with open('photos.html', 'w') as f:
     f.write(content)
