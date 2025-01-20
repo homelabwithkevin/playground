@@ -39,6 +39,9 @@ def get_photos(path):
 with open('photos.csv', 'r') as f:
     lines = f.readlines()
     content = ""
+    content += '<script src="https://cdn.tailwindcss.com"></script>'
+    content += '<div class="flex flex-wrap justify-center">'
+    content += '<div class="grid grid-cols-6 gap-4">'
     x = 0
     for line in lines:
         if x == 0:
@@ -46,7 +49,12 @@ with open('photos.csv', 'r') as f:
             pass
 
         tag, file = line.split(",")
-        content += "<img width='400px' height='600px' src='file://" + file + "' />\n"
+        content += "<a target='_blank' href='file://" + file + "'>"
+        content += "<img width='500px' height='700px' src='file://" + file + "' />\n"
+        content += "</a>"
+
+    content += '</div>'
+    content += '</div>'
 
 with open('photos.html', 'w') as f:
     f.write(content)
