@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 base_path = os.getenv("BASE_PATH")
+bucket = os.getenv("BUCKET")
 search_year = '2025'
 search_month = '01'
 search_days = ['17', '18', '19']
@@ -59,3 +60,28 @@ def create_html(source_file='photos.csv', output_file='index.html'):
 
     with open(output_file, 'w') as f:
         f.write(content)
+
+def upload(bucket, source_file):
+    import boto3
+    s3 = boto3.client('s3')
+    s3.upload_file(source_file, bucket, source_file)
+
+def create_thumbnail(source_file, output_file):
+    # https://stackoverflow.com/a/451580
+    base_width = 1024
+
+    with Image.open(source_file) as img:
+        width_percentage = (base_width / float(img.size[0]))
+        height_size = int((float(img.size[1]) * float(width_percentage)))
+        img = img.resize((base_width, height_size), Image.Resampling.LANCZOS)
+        img.save(output_file)
+
+with open('photos.csv', 'r') as f:
+    lines = f.readlines()
+    for line in lines:
+        tag, file = line.split(",")
+        # upload(bucket, file)
+        print(file)
+        file_replace = file.replace("\\", "\\\\").replace("\n", "")
+        create_thumbnail(file_replace, 'test.jpg')
+        break
