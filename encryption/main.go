@@ -61,5 +61,9 @@ func main() {
 
 	c := encrypt(passphrase, text)
 	fmt.Println(c)
+	f, _ := os.OpenFile("example.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f.Write([]byte(c))
+	f.Write([]byte("\n"))
+	defer f.Close()
 	fmt.Println(decrypt(passphrase, text))
 }
