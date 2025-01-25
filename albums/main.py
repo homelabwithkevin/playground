@@ -45,7 +45,7 @@ def create_html(source_file='photos.csv', output_file='index.html'):
         content = ""
         content += '<script src="https://cdn.tailwindcss.com"></script>'
         content += '<div class="flex flex-wrap justify-center">'
-        content += '<div class="grid grid-cols-6 gap-4">'
+        content += '<div class="grid grid-cols-2 gap-2 lg:grid-cols-6 lg:gap-4">'
         x = 0
         for line in lines:
             if x == 0:
@@ -53,7 +53,7 @@ def create_html(source_file='photos.csv', output_file='index.html'):
                 pass
 
             file, new_file_name, random_name = line.split(",")
-            content += "<a target='_blank' href='" + cdn_url + '/original/' + new_file_name + "'>"
+            # content += "<a target='_blank' href='" + cdn_url + '/original/' + new_file_name + "'>"
             content += "<img width='500px' height='700px' src='" + cdn_url + '/' + new_file_name + "' />\n"
             content += "</a>"
 
