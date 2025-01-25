@@ -61,5 +61,5 @@ func main() {
 
 	c := encrypt(passphrase, text)
 	fmt.Println(c)
-	fmt.Println(decrypt(passphrase, ""))
+	fmt.Println(decrypt(passphrase, text))
 }
