@@ -1,0 +1,9 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "hlb-album-2025"
+resolve_s3 = true
+s3_prefix = "hlb-album-2025"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Album=\"hlb-album-2025\" ExpireS3=\"15\" CachePolicy=\"2592000\""
+image_repositories = []
