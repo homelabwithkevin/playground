@@ -10,18 +10,30 @@ import (
 	"fmt"
 )
 
-func createPrivateKey() string {
+func createPrivateKey() (string, string) {
 	key, _ := rsa.GenerateKey(rand.Reader, 4096)
-	x509_encoded := x509.MarshalPKCS1PrivateKey(key)
-	pem_encoded := pem.EncodeToMemory(&pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: x509_encoded,
-	},
+	p_key := key.PublicKey
+
+	private_key := x509.MarshalPKCS1PrivateKey(key)
+	public_key := x509.MarshalPKCS1PublicKey(&p_key)
+
+	private_key_encoded := pem.EncodeToMemory(
+		&pem.Block{
+			Type:  "RSA PRIVATE KEY",
+			Bytes: private_key,
+		},
 	)
-	return string(pem_encoded)
+
+	public_key_encoded := pem.EncodeToMemory(&pem.Block{
+		Type:  "RSA PUBLIC KEY",
+		Bytes: public_key,
+	})
+
+	return string(private_key_encoded), string(public_key_encoded)
 }
 
 func main() {
-	key := createPrivateKey()
-	fmt.Print(key)
+	private_key, public_key := createPrivateKey()
+	fmt.Print(private_key)
+	fmt.Print(public_key)
 }
