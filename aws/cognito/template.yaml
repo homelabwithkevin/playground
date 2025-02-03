@@ -146,6 +146,45 @@ Resources:
         - COGNITO
         - Google
 
+  UserPoolClientCli:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Sub ${Domain}-cli
+
+      AllowedOAuthFlows:
+        - code
+        - implicit
+
+      AllowedOAuthFlowsUserPoolClient: true
+
+      AllowedOAuthScopes:
+        - openid
+        - email
+
+      DefaultRedirectURI: http://localhost:3000/callback
+
+      CallbackURLs:
+        - http://localhost:3000/callback
+
+      LogoutURLs:
+        - http://localhost:3000/logout
+
+      EnablePropagateAdditionalUserContextData: false
+      EnableTokenRevocation: true
+      GenerateSecret: false
+      PreventUserExistenceErrors: ENABLED
+
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+      SupportedIdentityProviders:
+        - Google
+
   UserPoolUser:
     Condition: IsExample
     Type: AWS::Cognito::UserPoolUser
@@ -218,6 +257,134 @@ Outputs:
   ClientId:
     Description: "ClientId"
     Value: !Sub ${UserPoolClient.ClientId}
+
+  UserPoolClientAppURL:
+    Description: "User Pool Client App URL"
+    Value: !Sub "https://${AWS::Region}.console.aws.amazon.com/cognito/v2/idp/user-pools/${UserPool}/app-integration/clients/${UserPoolClient.ClientId}?region=us-east-1"
+
+  CognitoHostedURL:
+    Description: "Cognito Hosted URL"
+    Value: !Sub "https://${Domain}.auth.${AWS::Region}.amazoncognito.com/oauth2/authorize?client_id=${UserPoolClient.ClientId}&response_type=code&scope=email+openid&redirect_uri=https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/callback"
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Ref Domain
+
+      # AuthSessionValidity: 3
+      # AccessTokenValidity: 1
+      # RefreshTokenValidity: 30
+      # IdTokenValidity: 60
+
+      AllowedOAuthFlows:
+        - code
+        - implicit
+
+      AllowedOAuthFlowsUserPoolClient: true
+
+      AllowedOAuthScopes:
+        - openid
+        - email
+
+      DefaultRedirectURI: !Ref RedirectURL
+      CallbackURLs:
+        - !Ref RedirectURL
+      LogoutURLs:
+        - !Ref RedirectURL
+
+      EnablePropagateAdditionalUserContextData: false
+      EnableTokenRevocation: true
+      GenerateSecret: true
+      PreventUserExistenceErrors: ENABLED
+
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+      SupportedIdentityProviders:
+        - COGNITO
+        - Google
+
+  UserPoolUser:
+    Condition: IsExample
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref UserPool
+      Username: kevin
+      DesiredDeliveryMediums:
+        - EMAIL
+      UserAttributes:
+        - Name: email
+          Value: !Ref Email
+
+  UserPoolIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref UserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
+        authorize_scopes: "email profile openid"
+      AttributeMapping:
+        email: "email"
+        family_name: "family_name"
+        given_name: "given_name"
+        name: "names"
+        preferred_username: "given_name"
+        username: "sub"
+
+  FunctionMain:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: code/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DOMAIN: !Ref Domain
+          ENCRYPTION_PASSWORD: !Ref EncryptionPassword
+          USER_POOL_ID: !Ref UserPool
+          CLIENT_ID: !GetAtt UserPoolClient.ClientId
+          CLIENT_SECRET: !Ref ClientSecret
+          REDIRECT_URI: !Ref RedirectURL
+          TABLE: !Ref Table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  Placeholder:
+    Description: "API Gateway endpoint URL for Prod stage for function"
+    Value: !Ref Placeholder
+
+  Main:
+    Description: "Main URL for Entry"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+
+  RedirectURI:
+    Description: "Redirect URI for Cognito"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/callback"
+
+  ClientId:
+    Description: "ClientId"
+    Value: !Sub ${UserPoolClient.ClientId}
+
+  ClientIdCli:
+    Description: "ClientId for CLI"
+    Value: !Sub ${UserPoolClientCli.ClientId}
 
   UserPoolClientAppURL:
     Description: "User Pool Client App URL"
