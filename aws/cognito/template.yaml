@@ -103,6 +103,49 @@ Resources:
       UserPoolId: !Ref UserPool
       Domain: !Ref Domain
 
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Ref Domain
+
+      # AuthSessionValidity: 3
+      # AccessTokenValidity: 1
+      # RefreshTokenValidity: 30
+      # IdTokenValidity: 60
+
+      AllowedOAuthFlows:
+        - code
+        - implicit
+
+      AllowedOAuthFlowsUserPoolClient: true
+
+      AllowedOAuthScopes:
+        - openid
+        - email
+
+      DefaultRedirectURI: !Ref RedirectURL
+      CallbackURLs:
+        - !Ref RedirectURL
+      LogoutURLs:
+        - !Ref RedirectURL
+
+      EnablePropagateAdditionalUserContextData: false
+      EnableTokenRevocation: true
+      GenerateSecret: true
+      PreventUserExistenceErrors: ENABLED
+
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+      SupportedIdentityProviders:
+        - COGNITO
+        - Google
+
   UserPoolClientCli:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -119,7 +162,7 @@ Resources:
         - openid
         - email
 
-      DefaultRedirectURI: http://localhost:3000
+      DefaultRedirectURI: http://localhost:3000/callback
 
       CallbackURLs:
         - http://localhost:3000/callback
@@ -338,6 +381,10 @@ Outputs:
   ClientId:
     Description: "ClientId"
     Value: !Sub ${UserPoolClient.ClientId}
+
+  ClientIdCli:
+    Description: "ClientId for CLI"
+    Value: !Sub ${UserPoolClientCli.ClientId}
 
   UserPoolClientAppURL:
     Description: "User Pool Client App URL"
