@@ -1,0 +1,9 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "hlb-rocketchat-webhooks"
+resolve_s3 = true
+s3_prefix = "hlb-rocketchat-webhooks"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Environment=\"develop\""
+image_repositories = []
