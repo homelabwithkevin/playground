@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: RocketChat Webhooks
+
+Globals:
+  Function:
+    Timeout: 60
+    Runtime: python3.10
+
+Parameters:
+  Environment:
+    Type: String
+    Default: develop
+    AllowedValues:
+      - develop
+      - prod
+
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      TableClass: STANDARD
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+        RecoveryPeriodInDays: 3
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: code/
+      Handler: app.lambda_handler
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /
+            Method: POST
+
+Outputs:
+  Api:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+  Function:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt Function.Arn
+  FunctionIamRole:
+    Description: "Implicit IAM Role created for function"
+    Value: !GetAtt FunctionRole.Arn
