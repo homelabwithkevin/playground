@@ -1,7 +1,6 @@
-from pprint import pprint
 from rocketchat_API.rocketchat import RocketChat
 
-from functions import integrations, channel
+from functions import integrations, channel, utils
 
 from dotenv import load_dotenv
 import os
@@ -13,12 +12,8 @@ password = os.getenv('PASSWORD')
 server = os.getenv('SERVER')
 api = os.getenv('API')
 
-def read_file(file_name):
-  file = open(file_name)
-  return file.read()
-
 rocket = RocketChat(user, password, server_url=server)
-outgoing_webhook_file = read_file('outgoing.js')
+outgoing_webhook_file = utils.read_file('outgoing.js')
 
 channel_name = None # Set this if you want to create a channel
 if channel_name:
