@@ -17,7 +17,7 @@ outgoing_webhook_file = utils.read_file('outgoing.js')
 
 channel_name = None # Set this if you want to create a channel
 if channel_name:
-  channel.create(rocket, channel_name, ['hxrsmurf'])
+  channel.create(rocket, channel_name, ['kevin'])
   integrations.create_outgoing(rocket, api, channel_name, outgoing_webhook_file)
 
 list_channels = channel.list(rocket=rocket, filter='testing')
