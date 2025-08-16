@@ -8,8 +8,8 @@ bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
 base_url = "https://ginger.homelabwithkevin.com"
 newsletter_date = utils.today_newsletter()
+newsletter_date = "2025-08-16"
 newsletter = f"cdn/{newsletter_date}-newsletter"
-
 
 def get_files():
     list_of_files = []
