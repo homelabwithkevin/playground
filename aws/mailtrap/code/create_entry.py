@@ -256,8 +256,8 @@ opening_entry = f"""
 </p>
 """
 
-word_date = "March 15, 2025"
-source_csv = "2025-03-15.csv"
+word_date = "August 16th, 2025"
+source_csv = "2025-08-16.csv"
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name, newsletter_date)
