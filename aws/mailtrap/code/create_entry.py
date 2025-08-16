@@ -255,8 +255,6 @@ opening_entry = f"""
     </div>
 </p>
 """
-# <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2025-03-08-newsletter/nvkcrdahzw.jpg" height="300" width="400">
-# And here's the winning photo:
 
 word_date = "March 15, 2025"
 source_csv = "2025-03-15.csv"
