@@ -2,7 +2,7 @@ import pandas as pd
 
 from functions import utils
 
-def parse_newsletter_csv_pandas(file, bucket):
+def parse_newsletter_csv_pandas(file, bucket, newsletter_date):
     entries = []
     df = pd.read_csv(file)
 
@@ -22,7 +22,7 @@ def parse_newsletter_csv_pandas(file, bucket):
         if not isinstance(cdn_photo, str):
             extension = photo.split('.')[-1]
             cdn_file = f'{utils.randomword()}.{extension}'
-            cdn_path = f'cdn/{utils.today_newsletter()}-newsletter/{cdn_file}'
+            cdn_path = f'cdn/{newsletter_date}-newsletter/{cdn_file}'
 
             df.at[index, 'cdn_photo'] = cdn_path
             print(f'Uploading {photo} to S3 CDN: {cdn_path}')
