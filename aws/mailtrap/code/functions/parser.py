@@ -1,6 +1,4 @@
 import pandas as pd
-import time
-import boto3
 
 from functions import utils
 
