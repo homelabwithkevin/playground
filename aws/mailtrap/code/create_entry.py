@@ -230,7 +230,6 @@ def send_email(newsletter, date, to):
     except Exception as e:
         print(f"Error sending email: {e}")
 
-
 # create_initial_newsletter("newsletter")
 
 opening_entry = f"""
