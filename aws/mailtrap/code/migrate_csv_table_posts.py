@@ -37,7 +37,8 @@ list_of_data = {}
 
 for file in files:
     print(f'Reading CSV: {file}')
-    file, data = read_csv(file)
-    items = convert_to_item(data, file)
-    for item in items:
-        db.put_item_v2(table, item)
+    if file == '2024-12-28.csv':
+        file, data = read_csv(file)
+        items = convert_to_item(data, file)
+        for item in items:
+            db.put_item_v2(table, item)
