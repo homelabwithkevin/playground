@@ -8,8 +8,8 @@ bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
 base_url = "https://ginger.homelabwithkevin.com"
 newsletter_date = utils.today_newsletter()
+newsletter_date = "2025-08-16"
 newsletter = f"cdn/{newsletter_date}-newsletter"
-
 
 def get_files():
     list_of_files = []
@@ -139,12 +139,9 @@ def create_newsletter(entries, date, first_entry):
 def create_newsletter_maizzle(entries, date, first_entry):
     posts = ""
     header = f"""
----
-title: Ginger Pictures - Week of {date}
----
 <x-main>
     <div class="flex justify-center mt-8">
-    <div class="grid grid-flow-rows max-w-[380px] lg:max-w-[1000px]">
+    <div class="grid grid-flow-rows max-w-[1000px]">
 """
 
     intro = f"""
@@ -186,7 +183,7 @@ title: Ginger Pictures - Week of {date}
         """
     end = f"""
         <div>
-            <img src="https://ginger.homelabwithkevin.com/?utm_source=mailtrap-maizzle&newsletter=2025-03-00">
+            <img src="https://ginger.homelabwithkevin.com/?utm_source=mailtrap-maizzle&newsletter={newsletter_date}">
         </div>
     </x-main>
     """
@@ -233,7 +230,6 @@ def send_email(newsletter, date, to):
     except Exception as e:
         print(f"Error sending email: {e}")
 
-
 # create_initial_newsletter("newsletter")
 
 opening_entry = f"""
@@ -259,14 +255,12 @@ opening_entry = f"""
     </div>
 </p>
 """
-# <img src="https://d5m8h4cywoih5.cloudfront.net/cdn/2025-03-08-newsletter/nvkcrdahzw.jpg" height="300" width="400">
-# And here's the winning photo:
 
-word_date = "March 15, 2025"
-source_csv = "2025-03-15.csv"
+word_date = "August 16th, 2025"
+source_csv = "2025-08-16.csv"
 
 # Parse CSV and upload to CDN
-entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name)
+entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name, newsletter_date)
 
 # Create
 newsletter_html_content = create(opening_entry, entries, word_date)
