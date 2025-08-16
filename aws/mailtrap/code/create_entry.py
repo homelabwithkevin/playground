@@ -186,7 +186,7 @@ title: Ginger Pictures - Week of {date}
         """
     end = f"""
         <div>
-            <img src="https://ginger.homelabwithkevin.com/?utm_source=mailtrap-maizzle&newsletter=2025-03-00">
+            <img src="https://ginger.homelabwithkevin.com/?utm_source=mailtrap-maizzle&newsletter={newsletter_date}">
         </div>
     </x-main>
     """
