@@ -33,4 +33,4 @@ def parse_newsletter_csv_pandas(file, bucket):
     else:
         print(f'Photos already uploaded to CDN')
 
-    return entries            
+    return entries
