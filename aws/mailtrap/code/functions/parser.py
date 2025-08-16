@@ -29,7 +29,7 @@ def parse_newsletter_csv_pandas(file, bucket):
             utils.upload_file(bucket, photo, cdn_path)
 
     if not isinstance(cdn_photo, str):
-        df.to_csv(f'{file}new.csv', index=False) 
+        df.to_csv(f'{file}new.csv', index=False)
     else:
         print(f'Photos already uploaded to CDN')
 
