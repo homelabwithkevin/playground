@@ -139,12 +139,9 @@ def create_newsletter(entries, date, first_entry):
 def create_newsletter_maizzle(entries, date, first_entry):
     posts = ""
     header = f"""
----
-title: Ginger Pictures - Week of {date}
----
 <x-main>
     <div class="flex justify-center mt-8">
-    <div class="grid grid-flow-rows max-w-[380px] lg:max-w-[1000px]">
+    <div class="grid grid-flow-rows max-w-[1000px]">
 """
 
     intro = f"""
