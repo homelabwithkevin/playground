@@ -16,10 +16,6 @@ search_month = '01'
 search_days = ['17', '18', '19']
 exif_search = False
 
-def write_to_file(content, file):
-    with open(file, 'a') as f:
-        f.write(content + '\n')
-
 def get_photos(path):
     for file in walk_directory(path):
         if file.lower().endswith(('.jpg', '.jpeg', '.png')):
