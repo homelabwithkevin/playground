@@ -86,10 +86,6 @@ def create_thumbnail(source_file, output_file):
         img = img.resize((base_width, height_size), Image.Resampling.LANCZOS)
         img.save(output_file)
 
-def random_string():
-    import random
-    import string
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=10))
 
 def function_create_thumbnail():
     with open('photos.csv', 'r') as f:
