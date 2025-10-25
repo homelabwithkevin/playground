@@ -5,9 +5,11 @@ def walk_directory(path):
     for root, dirs, files in os.walk(path):
         for file in files:
             yield os.path.join(root, file)
+
 def write_to_file(content, file):
     with open(file, 'a') as f:
         f.write(content + '\n')
+
 
 def upload(bucket, source_file, target):
     import boto3
@@ -19,6 +21,7 @@ def upload(bucket, source_file, target):
         print(f'Failed to upload: {e}')
 
     print(f'Complete upload!')
+
 def random_string():
     import random
     import string
