@@ -4,6 +4,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 
 from dotenv import load_dotenv
+from functions import utils
 
 load_dotenv()
 
