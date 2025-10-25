@@ -100,9 +100,19 @@ def create_html(source_file, output_file):
         print(f'Wrote to output file: {output_file}')
 
 
+# create_html(source_file='photos-news.csv', output_file='new-index.html')
+target_csv = 'indy-8-hour'
 
+# Do each in parts...
 
+# Get the folders from base_path
+# get_photos(path=base_path, target_csv=target_csv)
 
+# Create Thumbnails
+# function_create_thumbnail(source_file=target_csv)
 
+# Upload the original and thumbnail photos, the upload obfuscates the original file name.
+# parse_new_csv(f'{target_csv}-new')
 
-create_html(source_file='photos-news.csv', output_file='new-index.html')
+# Create the HTML
+create_html(source_file=f'{target_csv}-new.csv', output_file='index.html')
