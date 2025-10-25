@@ -1,6 +1,10 @@
 from PIL import Image
 import os
 
+def walk_directory(path):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            yield os.path.join(root, file)
 def random_string():
     import random
     import string

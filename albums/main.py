@@ -16,11 +16,6 @@ search_month = '01'
 search_days = ['17', '18', '19']
 exif_search = False
 
-def walk_directory(path):
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            yield os.path.join(root, file)
-
 def write_to_file(content, file):
     with open(file, 'a') as f:
         f.write(content + '\n')
