@@ -1,3 +1,6 @@
+from PIL import Image
+import os
+
 def random_string():
     import random
     import string
