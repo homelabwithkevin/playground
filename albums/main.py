@@ -14,6 +14,7 @@ cdn_url = os.getenv("CDN_URL")
 search_year = '2025'
 search_month = '01'
 search_days = ['17', '18', '19']
+exif_search = False
 
 def walk_directory(path):
     for root, dirs, files in os.walk(path):
@@ -29,7 +30,7 @@ def get_photos(path):
         if file.lower().endswith(('.jpg', '.jpeg', '.png')):
             with Image.open(file) as image:
                 exif_data = image._getexif()
-                if exif_data:
+                if exif_data and exif_search:
                     for tag, value in exif_data.items():
                         tag_name = TAGS.get(tag, tag)
                         if tag_name == 'DateTimeOriginal':
