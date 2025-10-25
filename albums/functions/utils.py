@@ -9,6 +9,16 @@ def write_to_file(content, file):
     with open(file, 'a') as f:
         f.write(content + '\n')
 
+def upload(bucket, source_file, target):
+    import boto3
+    s3 = boto3.client('s3')
+    print(f'Uploading...')
+    try:
+        s3.upload_file(source_file, bucket, target)
+    except Exception as e:
+        print(f'Failed to upload: {e}')
+
+    print(f'Complete upload!')
 def random_string():
     import random
     import string

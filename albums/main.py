@@ -56,16 +56,6 @@ def create_html(source_file='photos.csv', output_file='index.html'):
         f.write(content)
         print(f'Wrote to output file: {output_file}')
 
-def upload(bucket, source_file, target):
-    import boto3
-    s3 = boto3.client('s3')
-    print(f'Uploading...')
-    try:
-        s3.upload_file(source_file, bucket, target)
-    except Exception as e:
-        print(f'Failed to upload: {e}')
-
-    print(f'Complete upload!')
 
 
 
