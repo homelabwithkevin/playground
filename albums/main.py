@@ -17,9 +17,12 @@ search_month = '01'
 search_days = ['17', '18', '19']
 exif_search = False
 
-def get_photos(path):
-    for file in walk_directory(path):
+def get_photos(path, target_csv):
+    for file in utils.walk_directory(path):
         if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+            if not 'raw' in file and not exif_search:
+                print(file)
+                utils.write_to_file(file, f'{target_csv}.csv')
             with Image.open(file) as image:
                 exif_data = image._getexif()
                 if exif_data and exif_search:
@@ -30,9 +33,48 @@ def get_photos(path):
                             year, month, day = (value.split(" "))[0].split(":")
                             if year == search_year and month == search_month:
                                 if day in search_days:
-                                    write_to_file(file, 'photos.csv')
+                                    utils.write_to_file(file, 'photos.csv')
 
-def create_html(source_file='photos.csv', output_file='index.html'):
+def function_create_thumbnail(source_file):
+    with open(f'{source_file}.csv', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            file = line
+            # upload(bucket, file)
+            print(file)
+
+            # Support Windows
+            file_replace = file.replace("\\", "\\\\").replace("\n", "")
+
+            # Generate random name, as to not dox file name
+            random_name = utils.random_string()
+            new_file_name = random_name + ".jpg"
+            content = file_replace + "," + new_file_name + "," + random_name
+
+            # Write the original photo and thumbnail paths to a new CSV
+            utils.write_to_file(content, f'{source_file}-new.csv')
+
+            # Create the actual thumbnail
+            utils.create_thumbnail(file_replace, new_file_name)
+
+            print(f'Successfully converted and wrote thumbnails to: {source_file}-new.csv')
+
+def parse_new_csv(target_csv):
+    with open(f'{target_csv}.csv', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            file, new_file_name, random_name = line.split(",")
+            print(file, new_file_name, random_name)
+
+            # Upload originals
+            utils.upload(bucket=bucket, source_file=file, target="original/" + new_file_name)
+
+            # Upload thumbnails
+            utils.upload(bucket=bucket, source_file=new_file_name, target=new_file_name)
+
+            print(f'Successfully uploaded the files to S3 bucket: {bucket}.')
+
+def create_html(source_file, output_file):
     with open(source_file, 'r') as f:
         lines = f.readlines()
         content = ""
@@ -61,28 +103,6 @@ def create_html(source_file='photos.csv', output_file='index.html'):
 
 
 
-def function_create_thumbnail():
-    with open('photos.csv', 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            tag, file = line.split(",")
-            # upload(bucket, file)
-            print(file)
-            file_replace = file.replace("\\", "\\\\").replace("\n", "")
-            random_name = random_string()
-            new_file_name = random_name + ".jpg"
-            content = file_replace + "," + new_file_name + "," + random_name
-            write_to_file(content, 'photos-news.csv')
-            create_thumbnail(file_replace, new_file_name)
-
-def parse_new_csv():
-    with open('photos-news.csv', 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            file, new_file_name, random_name = line.split(",")
-            print(file, new_file_name, random_name)
-            upload(bucket, file, "original/" + new_file_name)
-            upload(bucket, new_file_name, new_file_name)
 
 
 create_html(source_file='photos-news.csv', output_file='new-index.html')
