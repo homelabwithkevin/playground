@@ -49,14 +49,30 @@ def display_statistics(roll_counts):
     for total in range(2, 13):
         count = roll_counts.get(total, 0)
         if count > 0:
-            bar = "█" * count
-            print(f"  {total:2d}: {count:3d} {bar}")
+            print(f"  {total:2d}: {count:3d}")
+
+
+def save_statistics(roll_counts, filename):
+    """Save statistics to a file."""
+    total_rolls = sum(roll_counts.values())
+
+    with open(filename, "w") as f:
+        f.write(f"Dice Roll Statistics\n")
+        f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Total Rolls: {total_rolls}\n")
+        f.write("=" * 50 + "\n\n")
+
+        for total in range(2, 13):
+            count = roll_counts.get(total, 0)
+            percentage = (count / total_rolls * 100) if total_rolls > 0 else 0
+            f.write(f"{total:2d}: {count:3d} ({percentage:5.1f}%)\n")
 
 
 def main():
     # Generate filename with current date and time
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"dice_rolls_{timestamp}.txt"
+    stats_filename = f"dice_statistics_{timestamp}.txt"
 
     # Initialize roll tracking dictionary
     roll_counts = {i: 0 for i in range(2, 13)}
@@ -71,6 +87,8 @@ def main():
         if die1 is None:
             print("\n\nThanks for playing!")
             display_statistics(roll_counts)
+            save_statistics(roll_counts, stats_filename)
+            print(f"\nStatistics saved to: {stats_filename}")
             break
 
         total = record_roll(die1, die2, filename)
