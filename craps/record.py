@@ -43,10 +43,23 @@ def record_roll(die1, die2, filename="dice_rolls.txt"):
     return total
 
 
+def display_statistics(roll_counts):
+    """Display statistics for all rolls."""
+    print("\nRoll Statistics:")
+    for total in range(2, 13):
+        count = roll_counts.get(total, 0)
+        if count > 0:
+            bar = "█" * count
+            print(f"  {total:2d}: {count:3d} {bar}")
+
+
 def main():
     # Generate filename with current date and time
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"dice_rolls_{timestamp}.txt"
+
+    # Initialize roll tracking dictionary
+    roll_counts = {i: 0 for i in range(2, 13)}
 
     print("Dice Rolling Recorder")
     print(f"Recording to: {filename}")
@@ -57,11 +70,14 @@ def main():
 
         if die1 is None:
             print("\n\nThanks for playing!")
+            display_statistics(roll_counts)
             break
 
         total = record_roll(die1, die2, filename)
+        roll_counts[total] += 1
 
         print(f"\nRecorded - Die 1: {die1}, Die 2: {die2}, Total: {total}")
+        print(f"Times {total} has rolled: {roll_counts[total]}")
         print("-" * 40)
         print()
 
