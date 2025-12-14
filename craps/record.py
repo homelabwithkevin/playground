@@ -9,12 +9,20 @@ def get_dice_input():
     """Get dice values from user input."""
     while True:
         try:
-            die1 = int(input("Enter die 1 (1-6): "))
+            die1_input = input("Enter die 1 (1-6): ")
+            if die1_input.lower() == 'q':
+                return None, None
+
+            die1 = int(die1_input)
             if die1 < 1 or die1 > 6:
                 print("Please enter a number between 1 and 6")
                 continue
 
-            die2 = int(input("Enter die 2 (1-6): "))
+            die2_input = input("Enter die 2 (1-6): ")
+            if die2_input.lower() == 'q':
+                return None, None
+
+            die2 = int(die2_input)
             if die2 < 1 or die2 > 6:
                 print("Please enter a number between 1 and 6")
                 continue
@@ -46,6 +54,11 @@ def main():
 
     while True:
         die1, die2 = get_dice_input()
+
+        if die1 is None:
+            print("\n\nThanks for playing!")
+            break
+
         total = record_roll(die1, die2, filename)
 
         print(f"\nRecorded - Die 1: {die1}, Die 2: {die2}, Total: {total}")
