@@ -8,7 +8,11 @@ utils.save_to_csv(output_file, data=header)
 
 roll_number = 0
 since_set = 0
-sleep_time = 6
+
+sleep_time = 5
+
+sleep_time = int(input("Sleep time? :"))
+print(f'Sleep time set: {sleep_time}')
 
 while True:
     number, set_twelve = utils.roulette_number()
@@ -25,7 +29,7 @@ while True:
         since_set = since_set + 1
 
     result = f'{roll_number}, {set_twelve}, {number}, {color}, {since_set}'
-    utils.save_to_csv(output_file, data=result)
+    utils.save_to_csv(output_file, data=f'{result}\n')
 
     x = 0 
     while x < sleep_time:
