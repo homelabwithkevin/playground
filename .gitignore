@@ -23,6 +23,7 @@ aws/mailtrap/samconfig.toml.private
 aws/mailtrap/tmp
 pillow/2015.html
 samconfig.toml.private
+
 # Actual Budget
 actualbudget/actual-data/*
 actualbudget/actual-data/*
