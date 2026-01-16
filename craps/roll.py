@@ -2,7 +2,7 @@ from functions import dice, utils
 
 output_file = f'rolls_{utils.today()}.csv'
 
-header = 'Dice 1, Dice 2, Roll #, Sum of Dice\n'
+header = 'Timestamp, Dice 1, Dice 2, Roll #, Sum of Dice\n'
 utils.save_to_csv(output_file, data=header)
 
 roll_number = 0
@@ -15,8 +15,10 @@ while True:
     else:
         roll_number = roll_number + 1
 
-    result = f'{dice_1}, {dice_2}, {roll_number}, {sum_of_dice}\n'
-    utils.save_to_csv(output_file, data=result)
+    result = f'{utils.today()}, {dice_1}, {dice_2}, {roll_number}, {sum_of_dice}\n'
+    print_result = f'{dice_1}, {dice_2}, {roll_number}, {sum_of_dice}\n'
+    print(print_result)
+    utils.save_to_csv(output_file, data=result, print_out=False)
 
     press = input('Press Enter to roll again')
 
