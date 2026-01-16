@@ -1,9 +1,19 @@
+# Extensions
 *.csv
+*.csv.*
 *.exe
 *.jpg
 *.html
 *.png
 *.mp4
+*.txt
+*.pyc
+*.aac
+*.pem
+*.bin
+*.key
+
+# Folders
 main
 *aws-sam/
 photos/.env
