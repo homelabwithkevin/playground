@@ -1,0 +1,2 @@
+# docker run -it --rm --mount type=volume,src=synapse-data,dst=/data -e SYNAPSE_SERVER_NAME=matrix.homelabwithkevin.com -e SYNAPSE_REPORT_STATS=yes matrixdotorg/synapse:latest generate
+docker run -it --rm -v ${PWD}/data:/data -e SYNAPSE_SERVER_NAME=matrix.homelabwithkevin.com -e SYNAPSE_REPORT_STATS=yes matrixdotorg/synapse:latest generate
