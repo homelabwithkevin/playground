@@ -29,3 +29,7 @@ actualbudget/actual-data/*
 
 # Gitea
 gitea/gitea/*
+
+# RocketChat
+rocketchat/mongodb_data/*
+rocketchat/mongodb-docker/*
