@@ -26,3 +26,6 @@ samconfig.toml.private
 # Actual Budget
 actualbudget/actual-data/*
 actualbudget/actual-data/*
+
+# Gitea
+gitea/gitea/*
