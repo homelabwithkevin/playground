@@ -1,4 +1,4 @@
-def create_html(year, data, all_years, home=False):
+def create_html(year, data, all_years, cdn_url, home=False):
     file_name = None
     if not home:
         file_name = f'{year}.html'
@@ -10,7 +10,7 @@ def create_html(year, data, all_years, home=False):
         <head>
             <script src="https://cdn.tailwindcss.com"></script>
             <script src="https://unpkg.com/htmx.org@2.0.2"></script>
-            <title>Jane Pictures of {year}</title>
+            <title>Finn Pictures of {year}</title>
         </head>
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
         <div class="grid grid-flow-rows max-w-[380px] lg:max-w-[1000px]">
@@ -19,13 +19,11 @@ def create_html(year, data, all_years, home=False):
     home_html = f"""
         <div class="mb-3">
             <p>
-                Welcome to Jane's Pictures.
+                Welcome to Finn's Pictures.
             </p>
+
             <p>
-                RIP October 2024
-            </p>
-            <p>
-                <img src="{ cdn_url + '/' + '2023/xbgmzdilop.jpg'}" class="max-h-[600px]">
+                <img src="{ cdn_url + '/' + '2020/zrsjmesuer.jpg'}" class="max-h-[600px]">
             </p>
         </div>
     """

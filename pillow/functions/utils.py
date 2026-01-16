@@ -16,14 +16,15 @@ def upload_file(bucket_name, file, cdn_path, content_type="image/jpeg", test=Tru
         client = boto3.client('s3')
         try:
             client.upload_file(file, bucket_name, cdn_path, ExtraArgs={'ContentType': content_type})
-            print('File uploaded to S3')
+            print(f'File uploaded to S3: {file}')
         except Exception as e:
             print(f'Error uploading {file} to S3: {e}')
 
 def today():
     return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
-def create_csv():
+def create_csv(images):
     df = pd.DataFrame(images)
+    df.to_csv(f"images-{today()}.csv", index=False)
     print(df)
-    df.to_csv(f"images-{today}.csv", index=False)
+    print(f'File saved as images-{today()}.csv')
