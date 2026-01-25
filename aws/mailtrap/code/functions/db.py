@@ -89,6 +89,20 @@ def scan(table):
     html_code += "</html>"
     return html_code
 
+def scan_paginate(table):
+    """
+        Description: Paginator for Scan Operation
+        Doc: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/paginator/Scan.html
+    """
+    paginator = client.get_paginator('scan')
+    page_iterator = paginator.paginate(TableName=table)
+
+    items = []
+    for page in page_iterator:
+        items.append(page['Items'])
+
+    return items
+
 def put_initial_archive_item(table, order, item):
     print(f'Putting item...{item}')
     client.put_item(
