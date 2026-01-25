@@ -3,12 +3,13 @@ import random
 import string
 import boto3
 import os
+import pandas as pd
 
 from functions import db
 
-table_vote = os.environ["TABLE_VOTE"]
-table_archive = os.environ["TABLE_ARCHIVE"]
-cdn_url = os.environ["CLOUDFRONT_URL"]
+# table_vote = os.environ["TABLE_VOTE"]
+# table_archive = os.environ["TABLE_ARCHIVE"]
+# cdn_url = os.environ["CLOUDFRONT_URL"]
 
 def today():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -24,6 +25,9 @@ def year_month_day():
 
 def today_newsletter():
     return datetime.now().strftime("%Y-%m-%d")
+
+def today_file_timestamp():
+    return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 def upload_file(bucket_name, file, cdn_path, content_type="image/jpeg"):
     client = boto3.client('s3')
@@ -90,3 +94,14 @@ def get_monthly_votes(limit=3):
             totals.append(_totals)
 
     return totals
+
+def save_dataframe(dataframe, filename):
+    """
+        Helper function to save dataframe to a file.
+    """
+    try:
+        name = f'{filename}-{today_file_timestamp()}.csv'
+        dataframe.to_csv(name, index=0)
+        print(f'Saved dataframe to {name}')
+    except Exception as e:
+        print(f'Failed to save dataframe: {e}')
