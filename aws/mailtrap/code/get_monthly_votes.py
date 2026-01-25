@@ -51,7 +51,17 @@ def test():
 
 def get_archive_items(table, save_to_file=True):
     """
-        Helps paginate the dynamodb table for archive items (all newsletters)
+    Retrieves and processes archive items from a DynamoDB table, sorted by order.
+
+    Note:
+        Docstring updated with Claude Code.
+
+    Args:
+        table (str): The name of the DynamoDB table to scan for archive items.
+        save_to_file (bool, optional): If True, saves the resulting dataframe to a CSV file. Defaults to True.
+
+    Returns:
+        str: The filename of the saved CSV if save_to_file is True, otherwise None.
     """
 
     archived_items = db.scan_paginate(table)
