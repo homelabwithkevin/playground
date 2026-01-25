@@ -52,6 +52,7 @@ def test():
     print(f'Saved to: totals.csv')
 
 def read_table_from_csv(file):
+    items = []
     with open(file, 'r') as f:
         csv_file = csv.reader(f)
         next(csv_file) # Skip Header
@@ -59,12 +60,18 @@ def read_table_from_csv(file):
         for line in csv_file:
             _order = line[0]
             _id = line[1]
+            items.append({
+                "order": _order,
+                "id": _id
+            })
 
-            print(_order, _id)
-            break
+    return items
 
 if os.path.isfile(archive_file):
     print(f'Already have archive file.')
-    read_table_from_csv(archive_file)
+    ids = read_table_from_csv(archive_file)
+    for _id in ids:
+        print(_id)
+        break
 else:
     archive_file_name = db.get_archive_items(table_archive, save_to_file=True)
