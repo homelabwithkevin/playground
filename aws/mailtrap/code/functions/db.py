@@ -120,6 +120,7 @@ def put_initial_archive_item(table, order, item):
     print(f'Complete')
 
 def get_votes(table, newsletter):
+    print(f'Getting votes for: {newsletter}')
     response = client.query(
             TableName=table,
             IndexName='newsletter-index',
