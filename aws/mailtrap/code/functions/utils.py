@@ -97,11 +97,20 @@ def get_monthly_votes(limit=3):
 
 def save_dataframe(dataframe, filename):
     """
-        Helper function to save dataframe to a file.
+    Save dataframe to a CSV file with timestamp.
+
+    Claude: Yes, for docstring
+
+    Args:
+        dataframe: pandas DataFrame to save
+        filename: base filename (timestamp will be appended)
+
+    Returns:
+        str: filename with timestamp, or None on failure
     """
     try:
         name = f'{filename}-{today_file_timestamp()}.csv'
-        dataframe.to_csv(name, index=0)
+        dataframe.to_csv(name, index=False)
         print(f'Saved dataframe to {name}')
         return name
     except Exception as e:
