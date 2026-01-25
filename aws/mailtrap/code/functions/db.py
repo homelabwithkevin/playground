@@ -119,7 +119,8 @@ def put_initial_archive_item(table, order, item):
     )
     print(f'Complete')
 
-def get_votes(table, newsletter):
+def get_votes(table, newsletter, parse=False):
+    print(f'Getting votes for: {newsletter}')
     response = client.query(
             TableName=table,
             IndexName='newsletter-index',
@@ -132,16 +133,26 @@ def get_votes(table, newsletter):
             }
     )
 
-    results = {}
+    results = None
+    if not parse:
+        results = []
+    else:
+        results = {}
 
     votes = 0
     for item in response['Items']:
         file = item['file']['S']
-        results[file] = results.get(file, 0) + 1
+        if not parse:
+            results.append(file)
+        else:
+            results[file] = results.get(file, 0) + 1
 
-    # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
-    sorted_votes = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
-    return sorted_votes
+        # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
+    if not parse:
+        return results
+    else:
+        sorted_votes = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
+        return sorted_votes
 
 def get_archive_items(table, save_to_file=True):
     """

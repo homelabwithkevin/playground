@@ -1,4 +1,5 @@
 import os
+import csv
 import pandas as pd
 
 from dotenv import load_dotenv
@@ -9,6 +10,7 @@ load_dotenv()
 table_vote = os.environ["TABLE_VOTE"]
 table_archive = os.environ["TABLE_archive"]
 cdn_url = os.environ["CDN_URL"]
+archive_file = 'archived-items.csv'
 
 def get_votes(newsletter='2024-12-28'):
     vote_results = db.get_votes(table_vote, newsletter)
@@ -49,4 +51,48 @@ def test():
     df.to_csv('totals.csv', index=False)
     print(f'Saved to: totals.csv')
 
-archive_file_name = db.get_archive_items(table_archive, save_to_file=True)
+def read_table_from_csv(file):
+    items = []
+    with open(file, 'r') as f:
+        csv_file = csv.reader(f)
+        next(csv_file) # Skip Header
+
+        for line in csv_file:
+            _order = line[0]
+            _id = line[1]
+            items.append({
+                "order": _order,
+                "id": _id
+            })
+
+    return items
+
+if os.path.isfile(archive_file):
+    print(f'Already have archive file.')
+    items = read_table_from_csv(archive_file)
+    vote_items = []
+    for item in items:
+        _id = item['id']
+        _id_newsletter = _id.split('-newsletter')[0]
+
+        temp_run = False
+        if temp_run:
+            _id = '2026-01-24-newsletter'
+            _id_newsletter = '2026-01-24'
+
+        vote_results = db.get_votes(table_vote, _id_newsletter, False)
+        cdn_path = f'{cdn_url}/{_id}'
+        for _vote in vote_results:
+            vote_items.append(
+                {
+                    '_id': _id,
+                    'year': _id.split('-')[0],
+                    'image': _vote,
+                    'cdn_path': f'{cdn_path}/{_vote}'
+                }
+            )
+    df = pd.DataFrame(vote_items)
+    print(df)
+    utils.save_dataframe(df, 'votes')
+else:
+    archive_file_name = db.get_archive_items(table_archive, save_to_file=True)
