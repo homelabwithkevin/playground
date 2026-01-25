@@ -110,8 +110,14 @@ def save_dataframe(dataframe, filename):
     """
     try:
         name = f'{filename}-{today_file_timestamp()}.csv'
+        name_no_timestamp = f'{filename}.csv'
+
+        # Save both Timestamp and Non-Timestamp files.
         dataframe.to_csv(name, index=False)
+        dataframe.to_csv(name_no_timestamp, index=False)
+
         print(f'Saved dataframe to {name}')
         return name
     except Exception as e:
         print(f'Failed to save dataframe: {e}')
+        return None
