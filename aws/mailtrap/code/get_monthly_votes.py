@@ -81,11 +81,13 @@ if os.path.isfile(archive_file):
             _id_newsletter = '2026-01-24'
 
         vote_results = db.get_votes(table_vote, _id_newsletter, False)
+        cdn_path = f'{cdn_url}/{_id}'
         for _vote in vote_results:
             vote_items.append(
                 {
                     '_id': _id,
-                    'votes': _vote
+                    'votes': _vote,
+                    'cdn_path': f'{cdn_path}/{_vote}'
                 }
             )
     df = pd.DataFrame(vote_items)
