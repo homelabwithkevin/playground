@@ -95,7 +95,7 @@ def get_monthly_votes(limit=3):
 
     return totals
 
-def save_dataframe(dataframe, filename):
+def save_dataframe(dataframe, filename, index=False):
     """
     Save dataframe to a CSV file with timestamp.
 
@@ -113,8 +113,8 @@ def save_dataframe(dataframe, filename):
         name_no_timestamp = f'{filename}.csv'
 
         # Save both Timestamp and Non-Timestamp files.
-        dataframe.to_csv(name, index=False)
-        dataframe.to_csv(name_no_timestamp, index=False)
+        dataframe.to_csv(name, index=index)
+        dataframe.to_csv(name_no_timestamp, index=index)
 
         print(f'Saved dataframe to {name}')
         return name
