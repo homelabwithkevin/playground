@@ -103,5 +103,6 @@ def save_dataframe(dataframe, filename):
         name = f'{filename}-{today_file_timestamp()}.csv'
         dataframe.to_csv(name, index=0)
         print(f'Saved dataframe to {name}')
+        return name
     except Exception as e:
         print(f'Failed to save dataframe: {e}')
