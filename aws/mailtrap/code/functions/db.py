@@ -118,16 +118,6 @@ def put_initial_archive_item(table, order, item):
     )
     print(f'Complete')
 
-def get_archive_items(table):
-    response = client.scan(TableName=table)
-
-    list_items = []
-
-    for item in response['Items']:
-        list_items.append(item['id']['S'])
-
-    return list_items
-
 def get_votes(table, newsletter):
     response = client.query(
             TableName=table,
