@@ -1,4 +1,5 @@
 import os
+import csv
 import pandas as pd
 
 from dotenv import load_dotenv
@@ -50,7 +51,20 @@ def test():
     df.to_csv('totals.csv', index=False)
     print(f'Saved to: totals.csv')
 
+def read_table_from_csv(file):
+    with open(file, 'r') as f:
+        csv_file = csv.reader(f)
+        next(csv_file) # Skip Header
+
+        for line in csv_file:
+            _order = line[0]
+            _id = line[1]
+
+            print(_order, _id)
+            break
+
 if os.path.isfile(archive_file):
     print(f'Already have archive file.')
+    read_table_from_csv(archive_file)
 else:
     archive_file_name = db.get_archive_items(table_archive, save_to_file=True)
