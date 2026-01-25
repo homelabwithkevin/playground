@@ -69,9 +69,16 @@ def read_table_from_csv(file):
 
 if os.path.isfile(archive_file):
     print(f'Already have archive file.')
-    ids = read_table_from_csv(archive_file)
-    for _id in ids:
-        print(_id)
+    items = read_table_from_csv(archive_file)
+    vote_items = {}
+    for item in items:
+        _id = item['id']
+        _id_newsletter = _id.split('-newsletter')[0]
+        _id = '2026-01-24-newsletter'
+        _id_newsletter = '2026-01-24'
+        vote_results = db.get_votes(table_vote, _id_newsletter)
+        vote_items[_id] = vote_results
         break
+    print(vote_items)
 else:
     archive_file_name = db.get_archive_items(table_archive, save_to_file=True)
