@@ -86,7 +86,8 @@ if os.path.isfile(archive_file):
             vote_items.append(
                 {
                     '_id': _id,
-                    'votes': _vote,
+                    'year': _id.split('-')[0],
+                    'image': _vote,
                     'cdn_path': f'{cdn_path}/{_vote}'
                 }
             )
