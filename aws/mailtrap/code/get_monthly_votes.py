@@ -80,7 +80,7 @@ if os.path.isfile(archive_file):
             _id = '2026-01-24-newsletter'
             _id_newsletter = '2026-01-24'
 
-        vote_results = db.get_votes(table_vote, _id_newsletter)
+        vote_results = db.get_votes(table_vote, _id_newsletter, False)
         for _vote in vote_results:
             vote_items.append(
                 {
