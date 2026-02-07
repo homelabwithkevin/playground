@@ -134,7 +134,7 @@ def get_votes(table, newsletter, parse=False):
     )
 
     results = None
-    if not parse:
+    if parse:
         results = []
     else:
         results = {}
