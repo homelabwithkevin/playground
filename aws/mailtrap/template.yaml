@@ -43,6 +43,10 @@ Parameters:
       - python3.10
       - python3.14
 
+  Prefix:
+    Type: String
+    Default: hlb-mailtrap
+
 Conditions:
   IsProduction: !Equals [!Ref Environment, prod]
   IsDevelopment: !Not [!Equals [!Ref Environment, prod]]
@@ -277,6 +281,19 @@ Resources:
         - !Ref LayerRequests
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          BUCKET_NAME: !Sub ${Prefix}-s3-prod
+          CLOUDFRONT_URL: !Ref CloudfrontDomain
+          ENVIRONMENT: !Ref Environment
+          FORM_IMAGE: !Ref FormImage
+          PROTECTED_IP: !Ref ProtectedIP
+          TOPIC: !Sub arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${Prefix}-s3-prod
+          TABLE: !Sub ${Prefix}-s3-prod
+          TABLE_ARCHIVE: !Sub ${Prefix}-archive-prod
+          TABLE_Posts: !Sub ${Prefix}-posts-prod
+          TABLE_UTM: !Sub ${Prefix}-utm-prod
+          TABLE_VOTE: !Sub ${Prefix}-vote-prod
 
   LayerRequests:
     Type: AWS::Serverless::LayerVersion
