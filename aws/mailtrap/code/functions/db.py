@@ -142,7 +142,7 @@ def get_votes(table, newsletter, parse=False):
     votes = 0
     for item in response['Items']:
         file = item['file']['S']
-        if not parse:
+        if parse:
             results.append(file)
         else:
             results[file] = results.get(file, 0) + 1
