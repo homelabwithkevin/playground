@@ -35,8 +35,17 @@ Parameters:
     Type: Number
     Default: 2592000 # 30 days
 
+  PythonRuntime:
+    Description: Python Runtime for the Lambda Function
+    Type: String
+    Default: python3.14
+    AllowedValues:
+      - python3.10
+      - python3.14
+
 Conditions:
   IsProduction: !Equals [!Ref Environment, prod]
+  IsDevelopment: !Not [!Equals [!Ref Environment, prod]]
 
 Resources:
   Topic:
@@ -184,7 +193,7 @@ Resources:
     Properties:
       CodeUri: code
       Handler: app.lambda_handler
-      Runtime: python3.10
+      Runtime: !Ref PythonRuntime
       Timeout: 90
       Architectures:
         - x86_64
@@ -218,7 +227,7 @@ Resources:
     Properties:
       CodeUri: code
       Handler: website.lambda_handler
-      Runtime: python3.10
+      Runtime: !Ref PythonRuntime
       Architectures:
         - x86_64
       Environment:
@@ -256,6 +265,16 @@ Resources:
           Properties:
             Path: /newsletter/{proxy+}
             Method: ANY
+
+  FunctionWebsiteDevelop:
+    Type: AWS::Serverless::Function
+    Condition: IsDevelopment
+    Properties:
+      CodeUri: code
+      Handler: website.lambda_handler
+      Runtime: !Ref PythonRuntime
+      Architectures:
+        - x86_64
 
   CloudfrontOriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
