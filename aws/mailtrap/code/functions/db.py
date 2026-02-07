@@ -134,7 +134,7 @@ def get_votes(table, newsletter, parse=False):
     )
 
     results = None
-    if not parse:
+    if parse:
         results = []
     else:
         results = {}
@@ -142,13 +142,13 @@ def get_votes(table, newsletter, parse=False):
     votes = 0
     for item in response['Items']:
         file = item['file']['S']
-        if not parse:
+        if parse:
             results.append(file)
         else:
             results[file] = results.get(file, 0) + 1
 
         # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
-    if not parse:
+    if parse:
         return results
     else:
         sorted_votes = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
