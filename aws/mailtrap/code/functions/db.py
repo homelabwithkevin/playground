@@ -148,7 +148,7 @@ def get_votes(table, newsletter, parse=False):
             results[file] = results.get(file, 0) + 1
 
         # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
-    if not parse:
+    if parse:
         return results
     else:
         sorted_votes = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
