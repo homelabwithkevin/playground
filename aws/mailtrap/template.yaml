@@ -294,6 +294,19 @@ Resources:
           TABLE_Posts: !Sub ${Prefix}-posts-prod
           TABLE_UTM: !Sub ${Prefix}-utm-prod
           TABLE_VOTE: !Sub ${Prefix}-vote-prod
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Sub ${Prefix}-s3-prod
+        - DynamoDBCrudPolicy:
+            TableName: !Sub ${Prefix}-archive-prod
+        - DynamoDBCrudPolicy:
+            TableName: !Sub ${Prefix}-posts-prod
+        - DynamoDBCrudPolicy:
+            TableName: !Sub ${Prefix}-utm-prod 
+        - DynamoDBCrudPolicy:
+            TableName: !Sub ${Prefix}-vote-prod
+        - SNSPublishMessagePolicy:
+            TopicName: !Sub ${Prefix}-s3-prod
 
   LayerRequests:
     Type: AWS::Serverless::LayerVersion
