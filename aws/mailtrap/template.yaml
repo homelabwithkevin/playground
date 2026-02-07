@@ -273,8 +273,19 @@ Resources:
       CodeUri: code
       Handler: website.lambda_handler
       Runtime: !Ref PythonRuntime
+      Layers:
+        - !Ref LayerRequests
       Architectures:
         - x86_64
+
+  LayerRequests:
+    Type: AWS::Serverless::LayerVersion
+    Condition: IsDevelopment
+    Properties:
+      ContentUri: layer
+      LayerName: !Sub "hlb-mailtrap-requests-${Environment}"
+      CompatibleRuntimes:
+        - !Ref PythonRuntime
 
   CloudfrontOriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
