@@ -41,7 +41,6 @@ Conditions:
 Resources:
   Topic:
     Type: AWS::SNS::Topic
-    Condition: IsProduction
     Properties:
       DisplayName: !Sub "hlb-mailtrap-s3-${Environment}"
       TopicName: !Sub "hlb-mailtrap-s3-${Environment}"
