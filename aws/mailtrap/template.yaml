@@ -49,7 +49,6 @@ Parameters:
 
 Conditions:
   IsProduction: !Equals [!Ref Environment, prod]
-  IsDevelopment: !Not [!Equals [!Ref Environment, prod]]
 
 Resources:
   Topic:
@@ -269,53 +268,6 @@ Resources:
           Properties:
             Path: /newsletter/{proxy+}
             Method: ANY
-
-  FunctionWebsiteDevelop:
-    Type: AWS::Serverless::Function
-    Condition: IsDevelopment
-    Properties:
-      CodeUri: code
-      Handler: website.lambda_handler
-      Runtime: !Ref PythonRuntime
-      Layers:
-        - !Ref LayerRequests
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          BUCKET_NAME: !Sub ${Prefix}-s3-prod
-          CLOUDFRONT_URL: !Ref CloudfrontDomain
-          ENVIRONMENT: !Ref Environment
-          FORM_IMAGE: !Ref FormImage
-          PROTECTED_IP: !Ref ProtectedIP
-          TOPIC: !Sub arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${Prefix}-s3-prod
-          TABLE: !Sub ${Prefix}-s3-prod
-          TABLE_ARCHIVE: !Sub ${Prefix}-archive-prod
-          TABLE_Posts: !Sub ${Prefix}-posts-prod
-          TABLE_UTM: !Sub ${Prefix}-utm-prod
-          TABLE_VOTE: !Sub ${Prefix}-vote-prod
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Sub ${Prefix}-s3-prod
-        - DynamoDBCrudPolicy:
-            TableName: !Sub ${Prefix}-archive-prod
-        - DynamoDBCrudPolicy:
-            TableName: !Sub ${Prefix}-posts-prod
-        - DynamoDBCrudPolicy:
-            TableName: !Sub ${Prefix}-utm-prod 
-        - DynamoDBCrudPolicy:
-            TableName: !Sub ${Prefix}-vote-prod
-        - SNSPublishMessagePolicy:
-            TopicName: !Sub ${Prefix}-s3-prod
-
-  LayerRequests:
-    Type: AWS::Serverless::LayerVersion
-    Condition: IsDevelopment
-    Properties:
-      ContentUri: layer
-      LayerName: !Sub "hlb-mailtrap-requests-${Environment}"
-      CompatibleRuntimes:
-        - !Ref PythonRuntime
 
   CloudfrontOriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
