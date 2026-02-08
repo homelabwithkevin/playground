@@ -65,6 +65,8 @@ Resources:
       CodeUri: code
       Handler: website.lambda_handler
       Runtime: !Ref PythonRuntime
+      AutoPublishAlias: live
+      AutoPublishAliasAllProperties: true
       Architectures:
         - x86_64
       Environment:

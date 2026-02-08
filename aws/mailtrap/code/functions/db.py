@@ -74,20 +74,31 @@ def update_item(table, email, guid):
             }
     )
 
-def scan(table):
+def scan(table, json=False):
     response = client.scan(TableName=table)
     html_code = "<html>"
     html_code += """
     email,first_name<br>
     """
+    result_json = []
+
     for item in response['Items']:
         email = item['email']['S']
         first_name = item['first_name']['S']
+        result_json.append({
+            'email': email,
+            'first_name': first_name
+        })
         html_code += f"""
         {email},{first_name}<br>
         """
+
     html_code += "</html>"
-    return html_code
+
+    if json:
+        return result_json
+    else:
+        return html_code
 
 def scan_paginate(table):
     """
