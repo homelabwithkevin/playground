@@ -20,9 +20,6 @@ def create_archive():
 
     html_code = "<ul class='list-disc list-inside'>"
 
-    archived_items.sort()
-
-
     html_code += "</ul>"
     html_code += f"<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"
 
