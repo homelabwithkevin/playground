@@ -161,6 +161,9 @@ def newsletter(request_path_parameters):
                             <a href="/archive">Archive</a>
                         </div>
                     <div>
+                        Missing newsletter.
+                    </div>
+                    <div>
                         {archive.create_archive()}
                     </div>
                 </div>
@@ -180,6 +183,8 @@ def newsletter(request_path_parameters):
 
         if response.status_code == 200:
             content = response.text
+        else:
+            print(f'Missing newsletter.')
 
     return {
         'statusCode': 200,
