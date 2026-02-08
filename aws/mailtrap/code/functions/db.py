@@ -1,6 +1,5 @@
 import os
 import boto3
-import pandas as pd
 
 from functions import utils
 
@@ -155,6 +154,7 @@ def get_votes(table, newsletter, parse=False):
         return sorted_votes
 
 def get_archive_items(table, save_to_file=True):
+    import pandas as pd
     """
     Retrieves and processes archive items from a DynamoDB table, sorted by order.
 
@@ -170,6 +170,7 @@ def get_archive_items(table, save_to_file=True):
     """
 
     archived_items = scan_paginate(table)
+
     all_items = []
     for items in archived_items:
         for item in items:
