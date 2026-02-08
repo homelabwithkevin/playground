@@ -20,6 +20,7 @@ def lambda_handler(event,context):
 
     print(event)
     headers = event['headers']
+    content_type = headers.get('content-type')
     request_context = event['requestContext']
 
     route_key = event['routeKey']
@@ -120,14 +121,25 @@ def lambda_handler(event,context):
         elif request_path == '/emails':
             if source_ip == protected_ip:
                 table = os.getenv('TABLE')
-                emails = db.scan(table)
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'text/html',
-                    },
-                    'body': emails
-                }
+                emails = None
+                if content_type == 'application/json':
+                    emails = db.scan(table, True)
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                        },
+                        'body': json.dumps(emails)
+                    }
+                else:
+                    emails = db.scan(table)
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'text/html',
+                        },
+                        'body': emails
+                    }
             else:
                 return {
                     'statusCode': 401,
