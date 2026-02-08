@@ -80,6 +80,8 @@ Resources:
           TABLE_Posts: !Sub ${Prefix}-posts-prod
           TABLE_UTM: !Sub ${Prefix}-utm-prod
           TABLE_VOTE: !Sub ${Prefix}-vote-prod
+      Layers:
+        - arn:aws:lambda:us-east-1:195663387853:layer:hlb-mailtrap-requests-develop:2
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Sub ${Prefix}-s3-prod
