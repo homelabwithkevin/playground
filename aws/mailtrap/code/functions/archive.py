@@ -16,7 +16,7 @@ def initial_archive(table):
 def create_archive():
     table = os.environ["TABLE_ARCHIVE"]
 
-    archived_items = db.get_archive_items(table)
+    archived_items = db.get_archive_items(table=table, save_to_file=False)
 
     html_code = "<ul class='list-disc list-inside'>"
 
