@@ -43,10 +43,6 @@ Parameters:
       - python3.10
       - python3.14
 
-  Prefix:
-    Type: String
-    Default: hlb-mailtrap
-
 Conditions:
   IsProduction: !Equals [!Ref Environment, prod]
 
