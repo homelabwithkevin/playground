@@ -1,11 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: hlb-mailtrap-s3-develop
+Description: hlb-mailtrap-s3-prod
 
 Parameters:
   Environment:
     Description: Environment to deploy to
     Type: String
+    Default: prod
     AllowedValues:
       - prod
       - develop
