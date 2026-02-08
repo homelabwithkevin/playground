@@ -189,5 +189,5 @@ def get_archive_items(table, save_to_file=True):
     if save_to_file:
         file_name = utils.save_dataframe(dataframe=df, filename='archived-items')
         return file_name
-
-    return None
+    else:
+        return df['id'].tolist()
