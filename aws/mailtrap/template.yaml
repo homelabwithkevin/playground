@@ -1,11 +1,15 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: hlb-mailtrap-s3-develop
+Description: hlb-mailtrap-s3-prod
 
 Parameters:
   Environment:
     Description: Environment to deploy to
     Type: String
+    Default: prod
+    AllowedValues:
+      - prod
+      - develop
 
   CloudfrontDomain:
     Description: Cloudfront Domain
@@ -32,6 +36,17 @@ Parameters:
     Type: Number
     Default: 2592000 # 30 days
 
+  PythonRuntime:
+    Description: Python Runtime for the Lambda Function
+    Type: String
+    Default: python3.14
+    AllowedValues:
+      - python3.10
+      - python3.14
+
+Conditions:
+  IsProduction: !Equals [!Ref Environment, prod]
+
 Resources:
   Topic:
     Type: AWS::SNS::Topic
@@ -41,6 +56,7 @@ Resources:
 
   Subscription:
     Type: AWS::SNS::Subscription
+    Condition: IsProduction
     Properties:
       Protocol: email
       TopicArn: !Ref Topic
@@ -48,6 +64,7 @@ Resources:
 
   Bucket:
     Type: AWS::S3::Bucket
+    Condition: IsProduction
     Properties:
       BucketName: !Sub "hlb-mailtrap-s3-${Environment}"
       AccessControl: Private
@@ -66,6 +83,7 @@ Resources:
 
   Table:
     Type: AWS::DynamoDB::Table
+    Condition: IsProduction
     DeletionPolicy: Retain
     Properties:
       TableName: !Sub "hlb-mailtrap-s3-${Environment}"
@@ -81,6 +99,7 @@ Resources:
 
   TableArchive:
     Type: AWS::DynamoDB::Table
+    Condition: IsProduction
     DeletionPolicy: Retain
     Properties:
       TableName: !Sub "hlb-mailtrap-archive-${Environment}"
@@ -100,6 +119,7 @@ Resources:
 
   TableVote:
     Type: AWS::DynamoDB::Table
+    Condition: IsProduction
     DeletionPolicy: Retain
     Properties:
       TableName: !Sub "hlb-mailtrap-vote-${Environment}"
@@ -129,6 +149,7 @@ Resources:
 
   TableUTM:
     Type: AWS::DynamoDB::Table
+    Condition: IsProduction
     DeletionPolicy: Retain
     Properties:
       TableName: !Sub "hlb-mailtrap-utm-${Environment}"
@@ -146,6 +167,7 @@ Resources:
 
   TablePosts:
     Type: AWS::DynamoDB::Table
+    Condition: IsProduction
     DeletionPolicy: Retain
     Properties:
       TableName: !Sub "hlb-mailtrap-posts-${Environment}"
@@ -167,10 +189,11 @@ Resources:
 
   Function:
     Type: AWS::Serverless::Function
+    Condition: IsProduction
     Properties:
       CodeUri: code
       Handler: app.lambda_handler
-      Runtime: python3.10
+      Runtime: !Ref PythonRuntime
       Timeout: 90
       Architectures:
         - x86_64
@@ -200,10 +223,11 @@ Resources:
                     Value: input/
   FunctionWebsite:
     Type: AWS::Serverless::Function
+    Condition: IsProduction
     Properties:
       CodeUri: code
       Handler: website.lambda_handler
-      Runtime: python3.10
+      Runtime: !Ref PythonRuntime
       Architectures:
         - x86_64
       Environment:
@@ -244,6 +268,7 @@ Resources:
 
   CloudfrontOriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
+    Condition: IsProduction
     Properties:
       OriginAccessControlConfig:
         Name: !Sub "hlb-mailtrap-s3-${Environment}"
@@ -253,6 +278,7 @@ Resources:
 
   Cloudfront:
     Type: AWS::CloudFront::Distribution
+    Condition: IsProduction
     Properties:
       DistributionConfig:
         Enabled: 'true'
@@ -281,6 +307,7 @@ Resources:
 
   CloudfrontCachePolicy:
     Type: AWS::CloudFront::CachePolicy
+    Condition: IsProduction
     Properties:
       CachePolicyConfig:
         Name: !Sub "hlb-mailtrap-s3-${Environment}"
@@ -299,9 +326,11 @@ Resources:
 
 Outputs:
   CloudfrontDomain:
+    Condition: IsProduction
     Value: !GetAtt Cloudfront.DomainName
     Description: The domain name of the Cloudfront distribution
 
   Website:
+    Condition: IsProduction
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"

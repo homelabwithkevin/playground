@@ -6,6 +6,12 @@ from functions import form, handler, db, archive
 cloudfront_url = os.getenv('CLOUDFRONT_URL')
 protected_ip = os.getenv('PROTECTED_IP')
 table_vote = os.getenv('TABLE_VOTE')
+environment = os.getenv('ENVIRONMENT')
+
+newsletter_environment  = ""
+
+if environment == 'develop':
+    newsletter_environment  = 'Environment: develop'
 
 def lambda_handler(event,context):
     query_string_parameters = None
@@ -152,6 +158,9 @@ def lambda_handler(event,context):
             </head>
             <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
                 <div>
+                    <div class="text-red-700 text-2xl">
+                        {newsletter_environment}
+                    </div>
                     <div>
                         {form.newsletter()}
                     </div>

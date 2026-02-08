@@ -1,0 +1,28 @@
+version: 0.1
+
+prod:
+  deploy:
+    parameters:
+      stack_name: hlb-mailtrap-s3-prod
+      resolve_s3: true
+      s3_prefix: hlb-mailtrap-s3-prod
+      region: us-east-1
+      confirm_changeset: false
+      capabilities: CAPABILITY_IAM
+      image_repositories: []
+  global:
+    parameters:
+      region: us-east-1
+
+develop:
+  deploy:
+    parameters:
+      stack_name: hlb-mailtrap-s3-develop
+      resolve_s3: true
+      s3_prefix: hlb-mailtrap-s3-develop
+      confirm_changeset: false
+      capabilities: CAPABILITY_IAM
+      image_repositories: []
+  global:
+    parameters:
+      region: us-east-1

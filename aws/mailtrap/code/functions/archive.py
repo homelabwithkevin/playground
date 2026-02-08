@@ -16,12 +16,9 @@ def initial_archive(table):
 def create_archive():
     table = os.environ["TABLE_ARCHIVE"]
 
-    archived_items = db.get_archive_items(table)
+    archived_items = db.get_archive_items(table=table, save_to_file=False)
 
     html_code = "<ul class='list-disc list-inside'>"
-
-    archived_items.sort()
-
 
     html_code += "</ul>"
     html_code += f"<table class='table-auto border-separate border-spacing-2 border border-slate-500'>"

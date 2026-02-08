@@ -1,9 +1,17 @@
+# Extensions
 .aws-sam
-tmp
 .gitignore
 *.csv
 *.csv.org
 *.png
+*.zip
+
+# Folders
 **/__pycache__/**
+tmp
+
+# Files
 samconfig.toml
 samconfig.toml.private
+samconfig.yaml
+samconfig.yaml.private

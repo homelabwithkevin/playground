@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: hlb-mailtrap-s3-develop
+
+Parameters:
+  Environment:
+    Description: Environment to deploy to
+    Type: String
+    AllowedValues:
+      - prod
+      - develop
+
+  CloudfrontDomain:
+    Description: Cloudfront Domain
+    Type: String
+
+  ProtectedIP:
+    Description: Protect IP for Emails
+    Type: String
+
+  Email:
+    Description: Protect IP for Emails
+    Type: String
+
+  FormImage:
+    Description: Image for Form Completion
+    Type: String
+
+  ExpireS3:
+    Description: Days to Expire S3
+    Type: String
+
+  CachePolicy:
+    Description: Days to Cache in Cloudfront
+    Type: Number
+    Default: 2592000 # 30 days
+
+  PythonRuntime:
+    Description: Python Runtime for the Lambda Function
+    Type: String
+    Default: python3.14
+    AllowedValues:
+      - python3.10
+      - python3.14
+
+  Prefix:
+    Type: String
+    Default: hlb-mailtrap
+
+Conditions:
+  IsProduction: !Equals [!Ref Environment, prod]
+  IsDevelopment: !Not [!Equals [!Ref Environment, prod]]
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub "hlb-mailtrap-s3-${Environment}"
+      TopicName: !Sub "hlb-mailtrap-s3-${Environment}"
+
+  FunctionWebsiteDevelop:
+    Type: AWS::Serverless::Function
+    Condition: IsDevelopment
+    Properties:
+      CodeUri: code
+      Handler: website.lambda_handler
+      Runtime: !Ref PythonRuntime
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          BUCKET_NAME: !Sub ${Prefix}-s3-prod
+          CLOUDFRONT_URL: !Ref CloudfrontDomain
+          ENVIRONMENT: !Ref Environment
+          FORM_IMAGE: !Ref FormImage
+          PROTECTED_IP: !Ref ProtectedIP
+          TOPIC: !Sub arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${Prefix}-s3-prod
+          TABLE: !Sub ${Prefix}-s3-prod
+          TABLE_ARCHIVE: !Sub ${Prefix}-archive-prod
+          TABLE_Posts: !Sub ${Prefix}-posts-prod
+          TABLE_UTM: !Sub ${Prefix}-utm-prod
+          TABLE_VOTE: !Sub ${Prefix}-vote-prod
+      Layers:
+        - arn:aws:lambda:us-east-1:195663387853:layer:hlb-mailtrap-requests-develop:2
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Sub ${Prefix}-s3-prod
+        - DynamoDBReadPolicy:
+            TableName: !Sub ${Prefix}-archive-prod
+        - DynamoDBReadPolicy:
+            TableName: !Sub ${Prefix}-posts-prod
+        - DynamoDBReadPolicy:
+            TableName: !Sub ${Prefix}-utm-prod 
+        - DynamoDBReadPolicy:
+            TableName: !Sub ${Prefix}-vote-prod
+        - SNSPublishMessagePolicy:
+            TopicName: !Sub ${Prefix}-s3-prod
+      Events:
+        Api:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+        Newsletter:
+          Type: HttpApi
+          Properties:
+            Path: /newsletter/{proxy+}
+            Method: ANY
+
+Outputs:
+  Website:
+    Condition: IsDevelopment
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
