@@ -16,6 +16,7 @@ def load_file():
     # https://ourairports.com/airports.html
     df = pd.read_csv('us-airports.csv')
 
+    # Right now I find only these columns to be useful.
     selected_columns = [
         'ident',
         'type',
