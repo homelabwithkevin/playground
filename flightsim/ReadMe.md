@@ -1,5 +1,5 @@
 # Read Me
-Messing around with FastAPI.
+Messing around with FastAPI. Huge kudos to Geri at [Next Sim Flight](https://www.nextsimflight.com/)
 
 # AI Usage
 - Used a little bit of Claude Code to get me started. As well as gemma3 in OpenWebUI.
