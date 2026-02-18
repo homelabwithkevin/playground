@@ -95,7 +95,6 @@ def calculate_range(source: str, area: int):
     source_airport = get_airport(source)
     data['distance_to'] = data.apply(lambda row: calculate_distance(
         source_airport, row['latitude_deg'], row['longitude_deg']), axis=1)
-    data.drop(1, inplace=True)
 
     # https://www.geeksforgeeks.org/pandas/drop-rows-from-the-dataframe-based-on-certain-condition-applied-on-a-column/
     indices_to_drop = data[data['ident'] == source.upper()].index
