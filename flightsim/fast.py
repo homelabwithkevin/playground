@@ -7,6 +7,12 @@ app = FastAPI()
 
 
 def load_file():
+    """
+    Load and filter US airport data from CSV file.
+
+    Returns:
+        pd.DataFrame: Filtered DataFrame containing US airport data excluding heliports, seaplane bases, and closed airports.
+    """
     # https://ourairports.com/airports.html
     df = pd.read_csv('us-airports.csv')
 
@@ -35,6 +41,15 @@ def load_file():
 
 
 def get_airport(icao: str):
+    """
+    Retrieve airport data by ICAO code.
+
+    Args:
+        icao (str): ICAO airport code (case-insensitive).
+
+    Returns:
+        dict: Airport information including name, coordinates, elevation, and codes. Returns None if airport not found.
+    """
     data = load_file()
     try:
         df = data[data['ident'] == icao.upper()]
@@ -45,6 +60,17 @@ def get_airport(icao: str):
 
 
 def calculate_distance(source_airport, latitude_deg, longitude_deg):
+    """
+    Calculate distance between source airport and destination coordinates using haversine formula.
+
+    Args:
+        source_airport (dict): Airport dictionary containing 'latitude_deg' and 'longitude_deg' keys.
+        latitude_deg (float): Destination latitude in degrees.
+        longitude_deg (float): Destination longitude in degrees.
+
+    Returns:
+        float: Distance in miles, rounded to 4 decimal places.
+    """
     source_coordinates = source_airport['latitude_deg'], source_airport['longitude_deg']
     destination_coordinates = latitude_deg, longitude_deg
     result = haversine(source_coordinates,
@@ -53,6 +79,16 @@ def calculate_distance(source_airport, latitude_deg, longitude_deg):
 
 
 def calculate_range(source: str, area: int):
+    """
+    Find all airports within a specified range from source airport.
+
+    Args:
+        source (str): ICAO code of source airport.
+        area (int): Search radius in miles.
+
+    Returns:
+        pd.DataFrame: DataFrame of airports within range, sorted by distance_to column.
+    """
     data = load_file()
     results = []
 
@@ -69,6 +105,16 @@ def calculate_range(source: str, area: int):
 
 
 def choose_random_airport(data, sort):
+    """
+    Select 10 random airports from provided dataset.
+
+    Args:
+        data (pd.DataFrame): DataFrame of airports to sample from.
+        sort (bool): If True, sort results by distance_to column; otherwise return unsorted.
+
+    Returns:
+        pd.DataFrame: DataFrame containing 10 randomly sampled airports.
+    """
     df = data.sample(n=10)
     if sort:
         return df.sort_values('distance_to')

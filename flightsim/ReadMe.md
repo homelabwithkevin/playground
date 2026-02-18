@@ -3,6 +3,7 @@ Messing around with FastAPI.
 
 # AI Usage
 - Used a little bit of Claude Code to get me started. As well as gemma3 in OpenWebUI.
+- Used to create doc strings
 
 # Commands
 - fastapi dev .\fast.py
