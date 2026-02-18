@@ -139,7 +139,7 @@ async def calculate_source_destination(source: str, destination: str):
 
 
 @app.get('/calculate/nearest/{source}/{area}')
-async def calcuate_nearest_airport(source: str, area: int):
+async def calculate_nearest_airport(source: str, area: int):
     results_range = calculate_range(source, area).sort_values('distance_to')
     formatted_results = results_range.to_dict(orient='records')
     random_results = choose_random_airport(
