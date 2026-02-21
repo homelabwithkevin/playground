@@ -40,10 +40,10 @@ Resources:
         Variables:
           app_name: !Ref AppName
           slogan: !Ref Slogan
-          table_name: !If [IsProduction, !Ref Table, !Sub "bet-${Environment}"]
+          table_name: !Sub bet-${Environment}
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !If [IsProduction, !Ref Table, !Sub "bet-${Environment}"]
+            TableName: !Sub bet-${Environment}
       Events:
         Get:
           Type: HttpApi
@@ -58,7 +58,6 @@ Resources:
 
   Table:
     Type: AWS::DynamoDB::Table
-    Condition: IsProduction
     DeletionPolicy: Retain
     Properties:
       TableName: !Sub "bet-${Environment}"
