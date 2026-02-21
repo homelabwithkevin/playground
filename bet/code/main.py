@@ -44,6 +44,25 @@ def save_vote_to_dynamodb(timestamp: str, event_id: str, vote: str):
 def get_timestamp():
     return datetime.now(timezone.utc).isoformat()
 
+def get_vote_counts_from_dynamodb(event_id: int):
+    """Fetch vote counts for an event from DynamoDB."""
+    table = dynamodb.Table(settings.table_name)
+
+    response = table.scan(
+        FilterExpression='event_id = :event_id',
+        ExpressionAttributeValues={
+            ':event_id': str(event_id)
+        }
+    )
+
+    votes = {'yes': 0, 'no': 0}
+    for item in response.get('Items', []):
+        vote_type = item.get('vote', '')
+        if vote_type in votes:
+            votes[vote_type] += 1
+
+    return votes
+
 @app.get("/", response_class=HTMLResponse)
 async def read_items():
     all_events = []
@@ -56,7 +75,7 @@ async def read_items():
                     'title': row[0],
                     'over': row[1],
                     'under': row[2],
-                    'votes': vote_counts.get(index, {'yes': 0, 'no': 0}),
+                    'votes': get_vote_counts_from_dynamodb(index),
                 }
             )
 
@@ -105,5 +124,23 @@ async def event_vote(item: int, vote: str):
     vote_counts[item][vote] += 1
     print(vote_counts)
     return vote_counts[item]
+
+@app.get("/votes/{event_id}")
+async def get_votes(event_id: int):
+    """Retrieve all votes for a specific event from DynamoDB."""
+    table = dynamodb.Table(settings.table_name)
+
+    response = table.scan(
+        FilterExpression='event_id = :event_id',
+        ExpressionAttributeValues={
+            ':event_id': str(event_id)
+        }
+    )
+
+    return {
+        'event_id': event_id,
+        'votes': response.get('Items', []),
+        'total_votes': response.get('Count', 0)
+    }
 
 handler = Mangum(app, lifespan="off")
