@@ -19,6 +19,8 @@ settings = Settings()
 
 app = FastAPI()
 
+vote_counts = {}
+
 
 @app.get("/", response_class=HTMLResponse)
 async def read_items():
@@ -60,5 +62,10 @@ async def read_items():
 
 @app.post("/event/{item}")
 async def event_vote(item: int, vote: str):
-    print(item, vote)
-    return { 'event_id': item, 'vote': vote }
+    if item not in vote_counts:
+        vote_counts[item] = {}
+    if vote not in vote_counts[item]:
+        vote_counts[item][vote] = 0
+    vote_counts[item][vote] += 1
+    print(vote_counts)
+    return vote_counts[item]
