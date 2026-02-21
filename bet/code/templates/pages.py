@@ -1,4 +1,4 @@
-def header(app_name):
+def header(app_name, slogan):
     categories = [
     ]
 
@@ -14,7 +14,7 @@ def header(app_name):
 
     return f"""
     <div>
-        {app_name}
+        {app_name} | {slogan}
     </div>
     <div class="grid grid-cols-4 gap-4 pt-4">
         {category_html}
