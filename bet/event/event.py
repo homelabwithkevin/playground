@@ -1,3 +1,27 @@
+def generate_bar_chart(votes):
+    yes_count = votes.get('yes', 0)
+    no_count = votes.get('no', 0)
+    total = yes_count + no_count
+
+    if total == 0:
+        yes_percent = 50
+        no_percent = 50
+    else:
+        yes_percent = (yes_count / total) * 100
+        no_percent = (no_count / total) * 100
+
+    return f"""
+        <div class="w-full bg-gray-700 rounded-lg h-8 flex overflow-hidden">
+            <div class="bg-green-600 flex items-center justify-center text-white font-semibold text-sm" style="width: {yes_percent}%">
+                {yes_percent:.0f}%
+            </div>
+            <div class="bg-red-700 flex items-center justify-center text-white font-semibold text-sm" style="width: {no_percent}%">
+                {no_percent:.0f}%
+            </div>
+        </div>
+    """
+
+
 def event(title, over, under):
     return f"""
     <div class="pt-4">
@@ -32,7 +56,7 @@ def events(items):
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
-                        Yes
+                        Yes ({item['votes'].get('yes', 0)})
                     </span>
                 </button>
                 <button hx-post="/event/{item['index']}?vote=no" hx-swap="none" class="button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
@@ -40,9 +64,14 @@ def events(items):
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
-                        No
+                        No ({item['votes'].get('no', 0)})
                     </span>
                 </button>
+            </div>
+
+            <!-- Vote Distribution Bar Chart -->
+            <div class="pt-4">
+                {generate_bar_chart(item['votes'])}
             </div>
         </div>
     </div>
