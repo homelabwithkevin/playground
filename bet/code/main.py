@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse
 from mangum import Mangum
 
 import csv
+import boto3
 
 from templates import pages
 from event import event
@@ -17,6 +18,7 @@ load_dotenv()
 class Settings(BaseSettings):
     app_name: str = os.getenv('app_name')
     slogan: str = os.getenv('slogan')
+    table_name: str = os.getenv('table_name')
 
 settings = Settings()
 
@@ -24,6 +26,20 @@ app = FastAPI()
 
 vote_counts = {}
 vote_records = []
+
+dynamodb = boto3.resource('dynamodb')
+
+def save_vote_to_dynamodb(timestamp: str, event_id: str, vote: str):
+    """Save a vote record to DynamoDB."""
+    print(f'Saving to table')
+    table = dynamodb.Table(settings.table_name)
+    table.put_item(
+        Item={
+            'timestamp': timestamp,
+            'event_id': event_id,
+            'vote': vote
+        }
+    )
 
 def get_timestamp():
     return datetime.now(timezone.utc).isoformat()
@@ -56,7 +72,7 @@ async def read_items():
             <div class="flex justify-center pt-4">
                 <div>
                     <div class='text-white text-3xl'>
-                        {pages.header(app_name=settings.app_name)}
+                        {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
                     <div>
                         {event.events(all_events)}
@@ -77,6 +93,9 @@ async def event_vote(item: int, vote: str):
         'event_id': item,
         'vote': vote
     })
+
+    # Save vote to DynamoDB
+    save_vote_to_dynamodb(timestamp, str(item), vote)
 
     # Update vote counts for display
     if item not in vote_counts:
