@@ -14,7 +14,7 @@ def events(items):
     item_html = ""
     for item in items:
         html = f"""
-    <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 items-center justify-center">
+    <div class="bg-slate-700 p-6 items-center justify-center rounded-xl">
     <div>
         <!-- Main Card -->
         <div class="card-gradient rounded-xl p-6 space-y-5">
@@ -27,7 +27,7 @@ def events(items):
             
             <!-- Vote Buttons -->
             <div class="grid grid-cols-2 gap-3 pt-2">
-                <button class="button-yes bg-green-600 hover:bg-green-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                <button class="button-yes w-full bg-green-600 hover:bg-green-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -35,7 +35,7 @@ def events(items):
                         Yes
                     </span>
                 </button>
-                <button class="button-no bg-red-600 hover:bg-red-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                <button class="button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
