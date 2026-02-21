@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 from fastapi.responses import HTMLResponse
+from mangum import Mangum
+
 import csv
 
 from templates import pages
@@ -70,3 +72,5 @@ async def event_vote(item: int, vote: str):
     vote_counts[item][vote] += 1
     print(vote_counts)
     return vote_counts[item]
+
+handler = Mangum(app, lifespan="off")
