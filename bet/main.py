@@ -5,6 +5,8 @@ from fastapi import FastAPI
 from pydantic_settings import BaseSettings
 from fastapi.responses import HTMLResponse
 
+from templates import pages
+
 load_dotenv()
 
 class Settings(BaseSettings):
@@ -26,7 +28,9 @@ async def read_items():
             <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         </head>
         <div class="flex justify-center pt-4">
-            <h1>Look ma! HTML!</h1>
+            <div>
+                {pages.header(app_name=settings.app_name)}
+            </div>
         </div>
     </html>
     """
