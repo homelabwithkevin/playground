@@ -27,7 +27,7 @@ def events(items):
             
             <!-- Vote Buttons -->
             <div class="grid grid-cols-2 gap-3 pt-2">
-                <button class="button-yes w-full bg-green-600 hover:bg-green-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                <button hx-post="/event/{item['index']}?vote=yes" hx-swap="none" class="button-yes w-full bg-green-600 hover:bg-green-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -35,7 +35,7 @@ def events(items):
                         Yes
                     </span>
                 </button>
-                <button class="button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                <button hx-post="/event/{item['index']}?vote=no" hx-swap="none" class="button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
