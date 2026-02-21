@@ -20,7 +20,7 @@ settings = Settings()
 app = FastAPI()
 
 
-@app.get("/items/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def read_items():
     all_events = []
     with open('events.csv', newline='') as f:
@@ -41,15 +41,17 @@ async def read_items():
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         </head>
-        <div class="flex justify-center pt-4">
-            <div>
+        <body class="bg-slate-900">
+            <div class="flex justify-center pt-4">
                 <div>
-                    {pages.header(app_name=settings.app_name)}
-                </div>
-                <div>
-                    {event.events(all_events)}
+                    <div class='text-white text-3xl'>
+                        {pages.header(app_name=settings.app_name)}
+                    </div>
+                    <div>
+                        {event.events(all_events)}
+                    </div>
                 </div>
             </div>
-        </div>
+        </body>
     </html>
     """
