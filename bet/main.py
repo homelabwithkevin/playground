@@ -25,9 +25,10 @@ async def read_items():
     all_events = []
     with open('events.csv', newline='') as f:
         reader = csv.reader(f)
-        for row in reader:
+        for index, row in enumerate(reader):
             all_events.append(
                 {
+                    'index': index,
                     'title': row[0],
                     'over': row[1],
                     'under': row[2],

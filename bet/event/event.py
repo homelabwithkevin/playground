@@ -21,7 +21,7 @@ def events(items):
             <!-- Header with Avatar and Chance Badge -->
             <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
-                    <h2 class="question-text text-white text-lg">{item['title']}</h2>
+                    <h2 class="question-text text-white text-lg">{item['title']} | {item['index']}</h2>
                 </div>
             </div>
             
