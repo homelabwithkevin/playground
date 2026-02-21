@@ -9,6 +9,16 @@ Parameters:
   Slogan:
     Type: String
     Description: Application slogan
+  Environment:
+    Type: String
+    Description: Environment name
+    AllowedValues:
+      - prod
+      - develop
+    Default: develop
+
+Conditions:
+  IsProduction: !Equals [!Ref Environment, prod]
 
 Globals:
   Function:
@@ -19,7 +29,7 @@ Resources:
     Type: AWS::SNS::Topic
 
   Function:
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: code/
       Handler: main.handler
@@ -30,12 +40,41 @@ Resources:
         Variables:
           app_name: !Ref AppName
           slogan: !Ref Slogan
+          table_name: !If [IsProduction, !Ref Table, !Sub "bet-${Environment}"]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !If [IsProduction, !Ref Table, !Sub "bet-${Environment}"]
       Events:
         Get:
-          Type: HttpApi 
+          Type: HttpApi
           Properties:
             Path: /{proxy+}
             Method: GET
+        Post:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: POST
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    Condition: IsProduction
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "bet-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: S
+        - AttributeName: event_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+        - AttributeName: event_id
+          KeyType: RANGE
 
 Outputs:
   Api:
