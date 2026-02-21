@@ -12,10 +12,10 @@ def generate_bar_chart(votes):
 
     return f"""
         <div class="w-full bg-gray-700 rounded-lg h-8 flex overflow-hidden">
-            <div class="bg-green-600 flex items-center justify-center text-white font-semibold text-sm" style="width: {yes_percent}%">
+            <div class="bg-green-600 flex items-center justify-center text-white font-semibold text-sm leading-none" style="width: {yes_percent}%">
                 {yes_percent:.0f}%
             </div>
-            <div class="bg-red-700 flex items-center justify-center text-white font-semibold text-sm" style="width: {no_percent}%">
+            <div class="bg-red-700 flex items-center justify-center text-white font-semibold text-sm leading-none" style="width: {no_percent}%">
                 {no_percent:.0f}%
             </div>
         </div>
