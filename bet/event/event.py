@@ -1,6 +1,5 @@
 def event(title, over, under):
     return f"""
-
     <div class="pt-4">
         <div class="box-border size-32 border-4 p-4">
             <div class="title">{title}</div>
@@ -10,21 +9,44 @@ def event(title, over, under):
     </div>
     """
 
+
 def events(items):
     item_html = ""
     for item in items:
         html = f"""
-        <div class="box-border size-32 border-4 p-4">
-            <div class='mb-2'>{item['title']}</div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>Under</div>
-                <div class='pl-4'>{item['under']}</div>
+    <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 items-center justify-center">
+    <div>
+        <!-- Main Card -->
+        <div class="card-gradient rounded-xl p-6 space-y-5">
+            <!-- Header with Avatar and Chance Badge -->
+            <div class="flex items-start justify-between gap-4">
+                <div class="flex-1">
+                    <h2 class="question-text text-white text-lg">{item['title']}</h2>
+                </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>Over</div>
-                <div class='pl-4'>{item['over']}</div>
+            
+            <!-- Vote Buttons -->
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button class="button-yes bg-green-600 hover:bg-green-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Yes
+                    </span>
+                </button>
+                <button class="button-no bg-red-600 hover:bg-red-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        No
+                    </span>
+                </button>
             </div>
         </div>
+    </div>
+    </div>
         """
         item_html += html
 
