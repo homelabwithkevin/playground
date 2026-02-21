@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import datetime, timezone
 
 from fastapi import FastAPI
 from pydantic_settings import BaseSettings
@@ -22,7 +23,10 @@ settings = Settings()
 app = FastAPI()
 
 vote_counts = {}
+vote_records = []
 
+def get_timestamp():
+    return datetime.now(timezone.utc).isoformat()
 
 @app.get("/", response_class=HTMLResponse)
 async def read_items():
@@ -65,6 +69,16 @@ async def read_items():
 
 @app.post("/event/{item}")
 async def event_vote(item: int, vote: str):
+    timestamp = get_timestamp()
+
+    # Store individual vote record with timestamp
+    vote_records.append({
+        'timestamp': timestamp,
+        'event_id': item,
+        'vote': vote
+    })
+
+    # Update vote counts for display
     if item not in vote_counts:
         vote_counts[item] = {}
     if vote not in vote_counts[item]:
