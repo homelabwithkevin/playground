@@ -34,6 +34,7 @@ async def read_items():
                     'title': row[0],
                     'over': row[1],
                     'under': row[2],
+                    'votes': vote_counts.get(index, {'yes': 0, 'no': 0}),
                 }
             )
 
