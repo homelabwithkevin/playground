@@ -1,9 +1,5 @@
 def header(app_name):
     categories = [
-        "New",
-        "Sayings",
-        "Mentions",
-        "Tech",
     ]
 
     category_html = ""
