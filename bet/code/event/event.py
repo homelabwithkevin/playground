@@ -34,11 +34,10 @@ def event(title, over, under):
     """
 
 
-def events(items):
-    item_html = ""
-    for item in items:
-        html = f"""
-    <div class="bg-slate-700 p-6 items-center justify-center rounded-xl">
+def generate_event_card(item):
+    """Generate HTML for a single event card."""
+    return f"""
+    <div class="bg-slate-700 p-6 items-center justify-center rounded-xl" id="event-{item['index']}">
     <div>
         <!-- Main Card -->
         <div class="card-gradient rounded-xl p-6 space-y-5">
@@ -48,10 +47,10 @@ def events(items):
                     <h2 class="question-text text-white text-lg">{item['title']} | {item['index']}</h2>
                 </div>
             </div>
-            
+
             <!-- Vote Buttons -->
             <div class="grid grid-cols-2 gap-3 pt-2">
-                <button hx-post="/event/{item['index']}?vote=yes" hx-swap="none" class="button-yes w-full bg-green-600 hover:bg-green-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                <button hx-post="/event/{item['index']}?vote=yes" hx-target="#event-{item['index']}" hx-swap="outerHTML" class="button-yes w-full bg-green-600 hover:bg-green-300 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -59,7 +58,7 @@ def events(items):
                         Yes ({item['votes'].get('yes', 0)})
                     </span>
                 </button>
-                <button hx-post="/event/{item['index']}?vote=no" hx-swap="none" class="button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
+                <button hx-post="/event/{item['index']}?vote=no" hx-target="#event-{item['index']}" hx-swap="outerHTML" class="button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-3 px-4 font-semibold text-white text-sm transition-all active:scale-95 cursor-pointer">
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -76,7 +75,13 @@ def events(items):
         </div>
     </div>
     </div>
-        """
+    """
+
+
+def events(items):
+    item_html = ""
+    for item in items:
+        html = generate_event_card(item)
         item_html += html
 
     return f"""

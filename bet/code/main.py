@@ -102,7 +102,7 @@ async def read_items():
     </html>
     """
 
-@app.post("/event/{item}")
+@app.post("/event/{item}", response_class=HTMLResponse)
 async def event_vote(item: int, vote: str):
     timestamp = get_timestamp()
 
@@ -116,14 +116,25 @@ async def event_vote(item: int, vote: str):
     # Save vote to DynamoDB
     save_vote_to_dynamodb(timestamp, str(item), vote)
 
-    # Update vote counts for display
-    if item not in vote_counts:
-        vote_counts[item] = {}
-    if vote not in vote_counts[item]:
-        vote_counts[item][vote] = 0
-    vote_counts[item][vote] += 1
-    print(vote_counts)
-    return vote_counts[item]
+    # Get updated vote counts from DynamoDB
+    votes = get_vote_counts_from_dynamodb(item)
+
+    # Read the event data from CSV
+    with open('events.csv', newline='') as f:
+        reader = csv.reader(f)
+        for index, row in enumerate(reader):
+            if index == item:
+                event_data = {
+                    'index': index,
+                    'title': row[0],
+                    'over': row[1],
+                    'under': row[2],
+                    'votes': votes,
+                }
+                break
+
+    # Generate and return the updated card HTML
+    return event.generate_event_card(event_data)
 
 @app.get("/votes/{event_id}")
 async def get_votes(event_id: int):
