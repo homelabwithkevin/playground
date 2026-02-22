@@ -63,6 +63,20 @@ def get_vote_counts_from_dynamodb(event_id: int):
 
     return votes
 
+def save_event_to_dynamodb(event_id: str, title: str, date: str):
+    """Save an event record to DynamoDB."""
+    print(f'Saving event {event_id} to DynamoDB')
+    table = dynamodb.Table(settings.table_name)
+    table.put_item(
+        Item={
+            'event_id': event_id,
+            'event_type': 'event_record',
+            'title': title,
+            'date': date,
+            'created_at': get_timestamp()
+        }
+    )
+
 @app.get("/", response_class=HTMLResponse)
 async def read_items():
     all_events = []
@@ -152,6 +166,29 @@ async def get_votes(event_id: int):
         'event_id': event_id,
         'votes': response.get('Items', []),
         'total_votes': response.get('Count', 0)
+    }
+
+@app.get("/clear")
+async def clear_table():
+    """Clear all items from the DynamoDB table."""
+    table = dynamodb.Table(settings.table_name)
+
+    # Scan to get all items
+    response = table.scan()
+    items = response.get('Items', [])
+
+    # Delete items in batches
+    deleted_count = 0
+    with table.batch_writer(
+        overwrite_by_pkeys=['timestamp', 'event_id']
+    ) as batch:
+        for item in items:
+            batch.delete_item(Key={'timestamp': item['timestamp'], 'event_id': item['event_id']})
+            deleted_count += 1
+
+    return {
+        'message': 'Table cleared successfully',
+        'deleted_count': deleted_count
     }
 
 handler = Mangum(app, lifespan="off")
