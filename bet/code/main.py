@@ -102,8 +102,8 @@ async def read_items():
             <script src="https://unpkg.com/htmx.org@1.9.10"></script>
         </head>
         <body class="bg-slate-900">
-            <div class="flex justify-center pt-4">
-                <div>
+            <div class="flex justify-center pt-4 px-2 sm:px-0">
+                <div class="w-full max-w-7xl">
                     <div class='text-white text-3xl'>
                         {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
