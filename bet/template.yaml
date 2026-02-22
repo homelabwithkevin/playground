@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: bet
+
+Parameters:
+  AppName:
+    Type: String
+    Description: Application name
+  Slogan:
+    Type: String
+    Description: Application slogan
+  Environment:
+    Type: String
+    Description: Environment name
+    AllowedValues:
+      - prod
+      - develop
+    Default: develop
+
+Conditions:
+  IsProduction: !Equals [!Ref Environment, prod]
+
+Globals:
+  Function:
+    Timeout: 60
+
+Resources:
+  Topic:
+    Type: AWS::SNS::Topic
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: code/
+      Handler: main.handler
+      Runtime: python3.14
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          app_name: !Ref AppName
+          slogan: !Ref Slogan
+          table_name: !Sub bet-${Environment}
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Sub bet-${Environment}
+      Events:
+        Get:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: GET
+        Post:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: POST
+
+  Table:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "bet-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: S
+        - AttributeName: event_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+        - AttributeName: event_id
+          KeyType: RANGE
+
+Outputs:
+  Api:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello/"
+  Function:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt Function.Arn
+  FunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt FunctionRole.Arn
