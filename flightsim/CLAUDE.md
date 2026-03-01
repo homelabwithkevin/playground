@@ -5,7 +5,7 @@ A FastAPI-based flight simulator calculator application designed to run on AWS L
 
 ## Tech Stack
 - **Framework**: FastAPI
-- **Language**: Python 3.11+
+- **Language**: Python 3.14+
 - **Deployment**: AWS Lambda (SAM)
 - **Package Manager**: pip
 - **Testing**: pytest
