@@ -151,6 +151,8 @@ async def root():
                     padding: 20px;
                     border-radius: 8px;
                     background-color: #f9f9f9;
+                    display: flex;
+                    flex-direction: column;
                 }
                 .form-section h2 {
                     margin-top: 0;
@@ -171,6 +173,7 @@ async def root():
                     border: none;
                     border-radius: 4px;
                     width: 100%;
+                    margin-top: auto;
                 }
                 button:hover {
                     background-color: #0056b3;
