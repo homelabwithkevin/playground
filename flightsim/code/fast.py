@@ -259,7 +259,12 @@ async def root():
                             document.getElementById('spinner').classList.remove('show');
                             const resultDiv = document.getElementById('result');
                             if (data && Object.keys(data).length > 0) {
-                                resultDiv.innerHTML = '<h3>Airport Data:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                                let table = '<h3>Airport Data:</h3><table style="border-collapse: collapse; width: 100%; margin-top: 10px;"><tr style="background-color: #e0e0e0;"><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Field</th><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Value</th></tr>';
+                                for (const [key, value] of Object.entries(data)) {
+                                    table += `<tr><td style="border: 1px solid #ddd; padding: 8px; font-weight: bold;">${key}</td><td style="border: 1px solid #ddd; padding: 8px;">${value}</td></tr>`;
+                                }
+                                table += '</table>';
+                                resultDiv.innerHTML = table;
                             } else {
                                 resultDiv.innerHTML = '<p style="color: red;">Airport not found</p>';
                             }
@@ -315,7 +320,13 @@ async def root():
                             document.getElementById('spinner').classList.remove('show');
                             const resultDiv = document.getElementById('result');
                             if (data && data.random) {
-                                resultDiv.innerHTML = '<h3>Nearest Airports:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                                let html = '<h3>Nearest Airports (Random Selection):</h3>';
+                                html += '<table style="border-collapse: collapse; width: 100%; margin-top: 10px;"><tr style="background-color: #e0e0e0;"><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">ICAO</th><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Distance (mi)</th><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Elevation (ft)</th><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Latitude</th><th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Longitude</th></tr>';
+                                data.random.forEach(airport => {
+                                    html += `<tr><td style="border: 1px solid #ddd; padding: 8px;">${airport.ident}</td><td style="border: 1px solid #ddd; padding: 8px;">${airport.name}</td><td style="border: 1px solid #ddd; padding: 8px;">${airport.distance_to}</td><td style="border: 1px solid #ddd; padding: 8px;">${airport.elevation_ft}</td><td style="border: 1px solid #ddd; padding: 8px;">${airport.latitude_deg}</td><td style="border: 1px solid #ddd; padding: 8px;">${airport.longitude_deg}</td></tr>`;
+                                });
+                                html += '</table>';
+                                resultDiv.innerHTML = html;
                             } else {
                                 resultDiv.innerHTML = '<p style="color: red;">No airports found in range</p>';
                             }
