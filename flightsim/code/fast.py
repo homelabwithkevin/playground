@@ -129,48 +129,160 @@ def choose_random_airport(data, sort):
 @app.get('/', response_class=HTMLResponse)
 async def root():
     return """
+    <!DOCTYPE html>
     <html>
         <head>
-            <title>Flight Sim - Airport Search</title>
+            <title>Flight Sim Calculator</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
-                    max-width: 500px;
-                    margin: 50px auto;
+                    max-width: 900px;
+                    margin: 20px auto;
                     padding: 20px;
+                }
+                .container {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 20px;
+                    margin-bottom: 30px;
+                }
+                .form-section {
+                    border: 1px solid #ddd;
+                    padding: 20px;
+                    border-radius: 8px;
+                    background-color: #f9f9f9;
+                }
+                .form-section h2 {
+                    margin-top: 0;
                 }
                 input {
                     padding: 8px;
-                    font-size: 16px;
-                    width: 200px;
+                    font-size: 14px;
+                    width: 100%;
+                    margin-bottom: 10px;
+                    box-sizing: border-box;
                 }
                 button {
-                    padding: 8px 16px;
-                    font-size: 16px;
+                    padding: 10px 16px;
+                    font-size: 14px;
                     cursor: pointer;
+                    background-color: #007bff;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    width: 100%;
+                }
+                button:hover {
+                    background-color: #0056b3;
+                }
+                .result-section {
+                    margin-top: 30px;
+                }
+                #result {
+                    background-color: #f0f0f0;
+                    padding: 15px;
+                    border-radius: 4px;
+                    min-height: 50px;
                 }
             </style>
         </head>
         <body>
-            <h1>Flight Sim Airport Search</h1>
-            <form onsubmit="searchAirport(event)">
-                <label for="icao">Enter Airport ICAO Code:</label><br><br>
-                <input type="text" id="icao" name="icao" placeholder="e.g., KJFK" required>
-                <button type="submit">Search</button>
-            </form>
-            <div id="result"></div>
+            <h1>Flight Sim Calculator</h1>
+
+            <div class="container">
+                <div class="form-section">
+                    <h2>Airport Search</h2>
+                    <label for="icao">ICAO Code:</label>
+                    <input type="text" id="icao" placeholder="e.g., KJFK" required>
+                    <button onclick="searchAirport()">Search Airport</button>
+                </div>
+
+                <div class="form-section">
+                    <h2>Distance Calculator</h2>
+                    <label for="source">Source Airport:</label>
+                    <input type="text" id="source" placeholder="e.g., KJFK" required>
+                    <label for="destination">Destination Airport:</label>
+                    <input type="text" id="destination" placeholder="e.g., KLAX" required>
+                    <button onclick="calculateDistance()">Calculate Distance</button>
+                </div>
+
+                <div class="form-section">
+                    <h2>Nearest Airports</h2>
+                    <label for="source-range">Source Airport:</label>
+                    <input type="text" id="source-range" placeholder="e.g., KJFK" required>
+                    <label for="range">Range (miles):</label>
+                    <input type="number" id="range" placeholder="e.g., 100" required>
+                    <button onclick="calculateNearest()">Find Nearest</button>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <h2>Results</h2>
+                <div id="result"></div>
+            </div>
+
             <script>
-                function searchAirport(event) {
-                    event.preventDefault();
+                function searchAirport() {
                     const icao = document.getElementById('icao').value;
+                    if (!icao) {
+                        alert('Please enter an ICAO code');
+                        return;
+                    }
+
                     fetch(`/airport/${icao}`)
                         .then(response => response.json())
                         .then(data => {
                             const resultDiv = document.getElementById('result');
-                            if (data) {
-                                resultDiv.innerHTML = '<h2>Airport Data:</h2><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                            if (data && Object.keys(data).length > 0) {
+                                resultDiv.innerHTML = '<h3>Airport Data:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
                             } else {
                                 resultDiv.innerHTML = '<p style="color: red;">Airport not found</p>';
+                            }
+                        })
+                        .catch(error => {
+                            document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error + '</p>';
+                        });
+                }
+
+                function calculateDistance() {
+                    const source = document.getElementById('source').value;
+                    const destination = document.getElementById('destination').value;
+                    if (!source || !destination) {
+                        alert('Please enter both source and destination');
+                        return;
+                    }
+
+                    fetch(`/calculate/distance/${source}/${destination}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const resultDiv = document.getElementById('result');
+                            if (data && data.result !== null) {
+                                resultDiv.innerHTML = '<h3>Distance Calculation:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                            } else {
+                                resultDiv.innerHTML = '<p style="color: red;">Unable to calculate distance</p>';
+                            }
+                        })
+                        .catch(error => {
+                            document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error + '</p>';
+                        });
+                }
+
+                function calculateNearest() {
+                    const source = document.getElementById('source-range').value;
+                    const range = document.getElementById('range').value;
+                    if (!source || !range) {
+                        alert('Please enter source airport and range');
+                        return;
+                    }
+
+                    fetch(`/calculate/nearest/${source}/${range}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const resultDiv = document.getElementById('result');
+                            if (data && data.random) {
+                                resultDiv.innerHTML = '<h3>Nearest Airports:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                            } else {
+                                resultDiv.innerHTML = '<p style="color: red;">No airports found in range</p>';
                             }
                         })
                         .catch(error => {
