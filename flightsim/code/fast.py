@@ -218,15 +218,6 @@ async def root():
                 </div>
 
                 <div class="form-section">
-                    <h2>Distance Calculator</h2>
-                    <label for="source">Source Airport:</label>
-                    <input type="text" id="source" placeholder="e.g., KJFK" required>
-                    <label for="destination">Destination Airport:</label>
-                    <input type="text" id="destination" placeholder="e.g., KLAX" required>
-                    <button onclick="calculateDistance()">Calculate Distance</button>
-                </div>
-
-                <div class="form-section">
                     <h2>Nearest Airports</h2>
                     <label for="source-range">Source Airport:</label>
                     <input type="text" id="source-range" placeholder="e.g., KJFK" required>
@@ -267,34 +258,6 @@ async def root():
                                 resultDiv.innerHTML = table;
                             } else {
                                 resultDiv.innerHTML = '<p style="color: red;">Airport not found</p>';
-                            }
-                        })
-                        .catch(error => {
-                            document.getElementById('spinner').classList.remove('show');
-                            document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error + '</p>';
-                        });
-                }
-
-                function calculateDistance() {
-                    const source = document.getElementById('source').value;
-                    const destination = document.getElementById('destination').value;
-                    if (!source || !destination) {
-                        alert('Please enter both source and destination');
-                        return;
-                    }
-
-                    document.getElementById('spinner').classList.add('show');
-                    document.getElementById('result').innerHTML = '';
-
-                    fetch(`/calculate/distance/${source}/${destination}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('spinner').classList.remove('show');
-                            const resultDiv = document.getElementById('result');
-                            if (data && data.result !== null) {
-                                resultDiv.innerHTML = '<h3>Distance Calculation:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
-                            } else {
-                                resultDiv.innerHTML = '<p style="color: red;">Unable to calculate distance</p>';
                             }
                         })
                         .catch(error => {
