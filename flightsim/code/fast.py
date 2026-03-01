@@ -184,6 +184,23 @@ async def root():
                     border-radius: 4px;
                     min-height: 50px;
                 }
+                .spinner {
+                    display: none;
+                    border: 4px solid #f3f3f3;
+                    border-top: 4px solid #007bff;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    animation: spin 1s linear infinite;
+                    margin: 20px auto;
+                }
+                .spinner.show {
+                    display: block;
+                }
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
             </style>
         </head>
         <body>
@@ -218,6 +235,7 @@ async def root():
 
             <div class="result-section">
                 <h2>Results</h2>
+                <div class="spinner" id="spinner"></div>
                 <div id="result"></div>
             </div>
 
@@ -229,9 +247,13 @@ async def root():
                         return;
                     }
 
+                    document.getElementById('spinner').classList.add('show');
+                    document.getElementById('result').innerHTML = '';
+
                     fetch(`/airport/${icao}`)
                         .then(response => response.json())
                         .then(data => {
+                            document.getElementById('spinner').classList.remove('show');
                             const resultDiv = document.getElementById('result');
                             if (data && Object.keys(data).length > 0) {
                                 resultDiv.innerHTML = '<h3>Airport Data:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
@@ -240,6 +262,7 @@ async def root():
                             }
                         })
                         .catch(error => {
+                            document.getElementById('spinner').classList.remove('show');
                             document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error + '</p>';
                         });
                 }
@@ -252,9 +275,13 @@ async def root():
                         return;
                     }
 
+                    document.getElementById('spinner').classList.add('show');
+                    document.getElementById('result').innerHTML = '';
+
                     fetch(`/calculate/distance/${source}/${destination}`)
                         .then(response => response.json())
                         .then(data => {
+                            document.getElementById('spinner').classList.remove('show');
                             const resultDiv = document.getElementById('result');
                             if (data && data.result !== null) {
                                 resultDiv.innerHTML = '<h3>Distance Calculation:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
@@ -263,6 +290,7 @@ async def root():
                             }
                         })
                         .catch(error => {
+                            document.getElementById('spinner').classList.remove('show');
                             document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error + '</p>';
                         });
                 }
@@ -275,9 +303,13 @@ async def root():
                         return;
                     }
 
+                    document.getElementById('spinner').classList.add('show');
+                    document.getElementById('result').innerHTML = '';
+
                     fetch(`/calculate/nearest/${source}/${range}`)
                         .then(response => response.json())
                         .then(data => {
+                            document.getElementById('spinner').classList.remove('show');
                             const resultDiv = document.getElementById('result');
                             if (data && data.random) {
                                 resultDiv.innerHTML = '<h3>Nearest Airports:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
@@ -286,6 +318,7 @@ async def root():
                             }
                         })
                         .catch(error => {
+                            document.getElementById('spinner').classList.remove('show');
                             document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error + '</p>';
                         });
                 }
