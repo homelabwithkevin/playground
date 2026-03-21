@@ -315,7 +315,7 @@ def vote(table, query_string_parameters, source_ip):
 
         return vote_message, vote_results, html_results
 
-def utm_source(query_string_parameters, request_path, source_ip):
+def utm_source(query_string_parameters, request_path, source_ip, topic):
     table = os.getenv('TABLE_UTM')
 
     item =  {
@@ -348,3 +348,5 @@ def utm_source(query_string_parameters, request_path, source_ip):
         }
 
     db.put_item_v2(table, item)
+    message = f"The user read the newsletter: {query_string_parameters['user']}"
+    utils.publish(topic=topic, subject=f'Newsletter Viewed {utils.year_month_day()}', message=message)
