@@ -213,6 +213,7 @@ Resources:
       MemorySize: 256
       Architectures:
         - x86_64
+      AutoPublishAlias: live
       Environment:
         Variables:
           BUCKET_NAME: !Sub "hlb-mailtrap-s3-${Environment}"
@@ -248,6 +249,7 @@ Resources:
       MemorySize: 128
       Architectures:
         - x86_64
+      AutoPublishAlias: live
       Environment:
         Variables:
           BUCKET_NAME: !If [IsProduction, !Sub "hlb-mailtrap-s3-${Environment}", !Sub "${Prefix}-s3-prod" ]
