@@ -9,6 +9,9 @@
 # Folders
 **/__pycache__/**
 tmp
+archive
+csvs
+layer
 
 # Files
 samconfig.toml
