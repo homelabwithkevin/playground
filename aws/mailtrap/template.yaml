@@ -246,7 +246,7 @@ Resources:
       Handler: website.lambda_handler
       Runtime: !Ref PythonRuntime
       Timeout: 90
-      MemorySize: 128
+      MemorySize: 256
       Architectures:
         - x86_64
       AutoPublishAlias: live
