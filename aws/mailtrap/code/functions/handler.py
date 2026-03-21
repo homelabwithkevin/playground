@@ -84,7 +84,7 @@ def privacy_policy():
                                 <h1 class="font-bold">Data Collection</h1>
                                 <div>
                                     We may collect certain personal information from you when you use our services, including but not limited to:
-                                    <ul class="list-disc list-inside">
+                                    <ul class="list-disc list-inside pl-6">
                                         <li>Name</li>
                                         <li>Email address</li>
                                         <li>Contact Information</li>
@@ -96,7 +96,7 @@ def privacy_policy():
                                 <h1 class="font-bold">Use of Information</h1>
                                 <div>
                                     We use the information we collect to:
-                                    <ul class="list-disc list-inside">
+                                    <ul class="list-disc list-inside pl-6">
                                         <li>Provide and maintain our services</li>
                                         <li>Improve and personalize user experience</li>
                                         <li>Communicate with you about our services</li>
@@ -115,7 +115,7 @@ def privacy_policy():
                                 <h1 class="font-bold">Your Rights</h1>
                                 <div>
                                     You have the right to:
-                                    <ul class="list-disc list-inside">
+                                    <ul class="list-disc list-inside pl-6">
                                         <li>Access your personal information</li>
                                         <li>Request corrections to your data</li>
                                         <li>Request deletion of your data</li>
