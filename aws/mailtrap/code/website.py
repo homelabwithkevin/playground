@@ -7,6 +7,7 @@ cloudfront_url = os.getenv('CLOUDFRONT_URL')
 protected_ip = os.getenv('PROTECTED_IP')
 table_vote = os.getenv('TABLE_VOTE')
 environment = os.getenv('ENVIRONMENT')
+topic = os.getenv('TOPIC')
 
 newsletter_environment  = ""
 
@@ -45,7 +46,7 @@ def lambda_handler(event,context):
 
     if method == 'GET':
         if utm_source:
-            utm = handler.utm_source(query_string_parameters, request_path, source_ip)
+            utm = handler.utm_source(query_string_parameters, request_path, source_ip, topic)
 
         if request_path == '/privacy-policy':
             return handler.privacy_policy()
