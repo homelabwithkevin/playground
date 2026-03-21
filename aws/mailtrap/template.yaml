@@ -265,7 +265,7 @@ Resources:
           - IsProduction
           - DynamoDBCrudPolicy:
               TableName: !Ref Table
-          - DynamoDBReadPolicy:
+          - DynamoDBCrudPolicy:
               TableName: !Sub "${Prefix}-s3-prod"
         - !If
           - IsProduction
