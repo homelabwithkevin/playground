@@ -111,6 +111,16 @@ async def read_items():
                     <div class='text-white text-3xl mb-8'>
                         {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
+                    <div class="bg-slate-700 p-6 rounded-xl mb-8">
+                        <h2 class="text-white text-2xl font-bold mb-6">Go to Project</h2>
+                        <form method="post" action="/go-to-project" class="space-y-4">
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Project Name</label>
+                                <input type="text" name="project" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="Project name">
+                            </div>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded transition-all active:scale-95">Go to Project</button>
+                        </form>
+                    </div>
                     <div class="bg-slate-700 p-6 rounded-xl">
                         <h2 class="text-white text-2xl font-bold mb-6">Add New Bet</h2>
                         <form method="post" action="/add-bet" class="space-y-4">
@@ -130,6 +140,11 @@ async def read_items():
         </body>
     </html>
     """
+
+@app.post("/go-to-project")
+async def go_to_project(project: str = Form()):
+    """Redirect to a specific project page."""
+    return RedirectResponse(url=f"/{project}", status_code=303)
 
 @app.post("/add-bet")
 async def add_bet(project: str = Form(), title: str = Form()):
