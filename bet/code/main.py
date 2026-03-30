@@ -336,7 +336,7 @@ async def view_project(project: str):
                     <div class='text-white text-3xl mb-6'>
                         {pages.header(app_name=settings.app_name, slogan=project)}
                     </div>
-                    <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to all bets</a>
+                    <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to home</a>
                     <div>
                         {event.events(project_events)}
                     </div>
