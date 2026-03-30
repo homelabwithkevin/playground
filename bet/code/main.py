@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import base64
 import urllib.parse
 
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Request
 from pydantic_settings import BaseSettings
 from fastapi.responses import HTMLResponse, RedirectResponse
 from mangum import Mangum
@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     slogan: str = os.getenv('slogan')
     votes_table_name: str = os.getenv('votes_table_name')
     bets_table_name: str = os.getenv('bets_table_name')
+    allowed_clear_ips: str = os.getenv('allowed_clear_ips', '127.0.0.1,localhost')
 
 settings = Settings()
 
@@ -243,8 +244,51 @@ async def event_vote(item: str, vote: str):
         """
 
 @app.get("/clear", response_class=HTMLResponse)
-async def clear_table():
+async def clear_table(request: Request):
     """Clear all items from the DynamoDB table."""
+    # Check IP address
+    client_ip = request.client.host
+    allowed_ips = [ip.strip() for ip in settings.allowed_clear_ips.split(',')]
+
+    if client_ip not in allowed_ips:
+        return f"""
+        <html>
+            <head>
+                <title>Access Denied</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+            </head>
+            <body class="bg-slate-900">
+                <div class="flex justify-center pt-4 px-2 sm:px-0">
+                    <div class="w-full max-w-4xl">
+                        <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to home</a>
+                        <div class="bg-slate-700 p-8 rounded-xl text-white space-y-6">
+                            <h1 class="text-4xl font-bold text-red-400">Whoa There!</h1>
+                            <div class="space-y-4 text-lg">
+                                <p>We appreciate your enthusiasm for clearing things, but your IP address <span class="font-bold text-red-300">({client_ip})</span> isn't on the VIP list.</p>
+                                <p>This endpoint is restricted to authorized addresses only. Think of it as the pit boss watching over our high-stakes betting floor—except instead of card tables, we're protecting votes, and instead of a suit, the pit boss is IP filtering.</p>
+                                <div class="bg-slate-600 p-4 rounded space-y-2">
+                                    <h3 class="font-semibold text-blue-300">Why is this restricted?</h3>
+                                    <ul class="list-disc list-inside space-y-1 text-sm">
+                                        <li>We actually like our data</li>
+                                        <li>Accidentally clearing votes would ruin everyone's progress</li>
+                                        <li>Security theater is still theater, but it feels good</li>
+                                    </ul>
+                                </div>
+                                <p class="text-sm text-gray-400">If you believe this is an error, you'll need to either:</p>
+                                <ul class="list-disc list-inside space-y-1 text-sm">
+                                    <li>Configure <span class="font-mono bg-slate-600 px-2 py-1 rounded">allowed_clear_ips</span> to include your IP</li>
+                                    <li>Change your IP (kidding, don't do this)</li>
+                                    <li>Accept that the votes are eternal</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </body>
+        </html>
+        """
+
     table = dynamodb.Table(settings.votes_table_name)
 
     # Get table key schema
