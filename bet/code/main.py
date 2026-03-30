@@ -322,6 +322,38 @@ async def view_project(project: str):
                     }
                 )
 
+    if not project_events:
+        return f"""
+        <html>
+            <head>
+                <title>{settings.app_name} | {project}</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+            </head>
+            <body class="bg-slate-900">
+                <div class="flex justify-center pt-4 px-2 sm:px-0">
+                    <div class="w-full max-w-4xl">
+                        <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to home</a>
+                        <div class="bg-slate-700 p-8 rounded-xl text-white space-y-6">
+                            <h1 class="text-4xl font-bold">Project Not Found</h1>
+                            <div class="space-y-4 text-lg">
+                                <p>We searched high and low for "<span class="font-bold text-blue-400">{project}</span>" but couldn't find it.</p>
+                                <p>This could mean:</p>
+                                <ul class="list-disc list-inside space-y-2 ml-2">
+                                    <li>The bet was never made (unlikely, everyone forgets eventually)</li>
+                                    <li>You spelled it wrong (we've all been there)</li>
+                                    <li>Someone deleted it out of embarrassment (very relatable)</li>
+                                    <li>It exists in an alternate timeline where better decisions were made</li>
+                                </ul>
+                                <p class="pt-4">Try going back and creating a new bet, or checking the spelling. We won't judge you for trying again.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </body>
+        </html>
+        """
+
     return f"""
     <html>
         <head>
