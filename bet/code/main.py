@@ -198,7 +198,7 @@ async def add_bet(project: str = Form(), title: str = Form()):
     """Add a new bet to DynamoDB."""
     event_id = get_timestamp()  # Use timestamp as unique event_id
     save_bet_to_dynamodb(event_id, project, title)
-    return RedirectResponse(url="/", status_code=303)
+    return RedirectResponse(url=f"/{project}", status_code=303)
 
 @app.post("/event/{item}", response_class=HTMLResponse)
 async def event_vote(item: str, vote: str):
