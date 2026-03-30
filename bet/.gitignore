@@ -1,3 +1,5 @@
 .env
+__pycache__
+.aws-sam
 events.csv
 samconfig copy.toml
