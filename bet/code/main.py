@@ -155,6 +155,48 @@ async def event_vote(item: int, vote: str):
     # Generate and return the updated card HTML
     return event.generate_event_card(event_data)
 
+@app.get("/{project}", response_class=HTMLResponse)
+async def view_project(project: str):
+    project_events = []
+    with open('events.csv', newline='') as f:
+        reader = csv.reader(f)
+        next(reader)  # Skip header row
+        for index, row in enumerate(reader):
+            if row[0] == project:
+                project_events.append(
+                    {
+                        'index': index,
+                        'title': row[1],
+                        'over': row[2],
+                        'under': row[3],
+                        'votes': get_vote_counts_from_dynamodb(index),
+                    }
+                )
+
+    return f"""
+    <html>
+        <head>
+            <title>{settings.app_name} | {project}</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+            <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        </head>
+        <body class="bg-slate-900">
+            <div class="flex justify-center pt-4 px-2 sm:px-0">
+                <div class="w-full max-w-7xl">
+                    <div class='text-white text-3xl mb-6'>
+                        {pages.header(app_name=settings.app_name, slogan=project)}
+                    </div>
+                    <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to all bets</a>
+                    <div>
+                        {event.events(project_events)}
+                    </div>
+                </div>
+            </div>
+        </body>
+    </html>
+    """
+
 @app.get("/votes/{event_id}")
 async def get_votes(event_id: int):
     """Retrieve all votes for a specific event from DynamoDB."""
