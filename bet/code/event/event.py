@@ -78,14 +78,31 @@ def generate_event_card(item):
     """
 
 
-def events(items):
-    item_html = ""
-    for item in items:
-        html = generate_event_card(item)
-        item_html += html
+def events(grouped_items):
+    """Handle both grouped and flat event structures."""
+    # If it's a dict (grouped by project), iterate through projects
+    if isinstance(grouped_items, dict):
+        html = ""
+        for project, items in grouped_items.items():
+            html += f'<h3 class="text-white text-2xl mt-6 mb-4">{project}</h3>'
+            item_html = ""
+            for item in items:
+                item_html += generate_event_card(item)
+            html += f"""
+            <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {item_html}
+            </div>
+            """
+        return html
+    # If it's a list, use the original flat structure
+    else:
+        item_html = ""
+        for item in grouped_items:
+            html = generate_event_card(item)
+            item_html += html
 
-    return f"""
-    <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {item_html}
-    </div>
-    """
+        return f"""
+        <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {item_html}
+        </div>
+        """
