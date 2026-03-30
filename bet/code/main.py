@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
+import base64
+import urllib.parse
 
 from fastapi import FastAPI, Form
 from pydantic_settings import BaseSettings
@@ -44,6 +46,18 @@ def save_vote_to_dynamodb(timestamp: str, event_id: str, vote: str):
 
 def get_timestamp():
     return datetime.now(timezone.utc).isoformat()
+
+def encode_event_id(event_id: str) -> str:
+    """Encode event_id for safe use in HTML selectors and attributes."""
+    return base64.urlsafe_b64encode(event_id.encode()).decode().rstrip('=')
+
+def decode_event_id(encoded_id: str) -> str:
+    """Decode event_id from HTML-safe format back to original."""
+    # Add padding back if needed
+    padding = 4 - (len(encoded_id) % 4)
+    if padding != 4:
+        encoded_id += '=' * padding
+    return base64.urlsafe_b64decode(encoded_id.encode()).decode()
 
 def get_vote_counts_from_dynamodb(event_id: int):
     """Fetch vote counts for an event from DynamoDB."""
@@ -117,15 +131,16 @@ async def read_items():
 
     for index, bet in enumerate(bets):
         project = bet.get('project')
+        event_id = bet.get('event_id')
         if project not in grouped_events:
             grouped_events[project] = []
         grouped_events[project].append(
             {
-                'index': bet.get('event_id'),
+                'index': encode_event_id(event_id),
                 'title': bet.get('title'),
                 'over': '',
                 'under': '',
-                'votes': get_vote_counts_from_dynamodb(bet.get('event_id')),
+                'votes': get_vote_counts_from_dynamodb(event_id),
             }
         )
 
@@ -186,34 +201,46 @@ async def add_bet(project: str = Form(), title: str = Form()):
     return RedirectResponse(url="/", status_code=303)
 
 @app.post("/event/{item}", response_class=HTMLResponse)
-async def event_vote(item: int, vote: str):
-    timestamp = get_timestamp()
+async def event_vote(item: str, vote: str):
+    try:
+        # Decode the event_id from the encoded format
+        event_id = decode_event_id(item)
+        timestamp = get_timestamp()
 
-    # Store individual vote record with timestamp
-    vote_records.append({
-        'timestamp': timestamp,
-        'event_id': item,
-        'vote': vote
-    })
+        # Store individual vote record with timestamp
+        vote_records.append({
+            'timestamp': timestamp,
+            'event_id': event_id,
+            'vote': vote
+        })
 
-    # Save vote to DynamoDB
-    save_vote_to_dynamodb(timestamp, str(item), vote)
+        # Save vote to DynamoDB
+        save_vote_to_dynamodb(timestamp, event_id, vote)
 
-    # Get updated vote counts from DynamoDB
-    votes = get_vote_counts_from_dynamodb(item)
+        # Get updated vote counts from DynamoDB
+        votes = get_vote_counts_from_dynamodb(event_id)
 
-    # Read the event data from DynamoDB
-    bet = get_bet_by_event_id(str(item))
-    event_data = {
-        'index': bet.get('event_id', item),
-        'title': bet.get('title', ''),
-        'over': '',
-        'under': '',
-        'votes': votes,
-    }
+        # Read the event data from DynamoDB
+        bet = get_bet_by_event_id(event_id)
 
-    # Generate and return the updated card HTML
-    return event.generate_event_card(event_data)
+        event_data = {
+            'index': item,  # Use the encoded ID for the HTML
+            'title': bet.get('title', ''),
+            'over': '',
+            'under': '',
+            'votes': votes,
+        }
+
+        # Generate and return the updated card HTML
+        return event.generate_event_card(event_data)
+    except Exception as e:
+        return f"""
+        <div class="bg-red-900 p-4 rounded text-white">
+            <h3 class="font-bold mb-2">Error voting:</h3>
+            <p class="text-sm font-mono">{str(e)}</p>
+            <p class="text-xs mt-2">Item: {item}, Vote: {vote}</p>
+        </div>
+        """
 
 @app.get("/clear", response_class=HTMLResponse)
 async def clear_table():
@@ -335,13 +362,14 @@ async def view_project(project: str):
     bets = get_bets_by_project_from_dynamodb(project)
 
     for bet in bets:
+        event_id = bet.get('event_id')
         project_events.append(
             {
-                'index': bet.get('event_id'),
+                'index': encode_event_id(event_id),
                 'title': bet.get('title'),
                 'over': '',
                 'under': '',
-                'votes': get_vote_counts_from_dynamodb(bet.get('event_id')),
+                'votes': get_vote_counts_from_dynamodb(event_id),
             }
         )
 
