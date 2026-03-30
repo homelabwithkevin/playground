@@ -1,5 +1,6 @@
 def header(app_name, slogan):
     categories = [
+        '<a href="/about" class="text-blue-400 hover:text-blue-300">About</a>'
     ]
 
     category_html = ""
