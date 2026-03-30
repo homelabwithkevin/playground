@@ -18,7 +18,8 @@ load_dotenv()
 class Settings(BaseSettings):
     app_name: str = os.getenv('app_name')
     slogan: str = os.getenv('slogan')
-    table_name: str = os.getenv('table_name')
+    votes_table_name: str = os.getenv('votes_table_name')
+    bets_table_name: str = os.getenv('bets_table_name')
 
 settings = Settings()
 
@@ -32,7 +33,7 @@ dynamodb = boto3.resource('dynamodb')
 def save_vote_to_dynamodb(timestamp: str, event_id: str, vote: str):
     """Save a vote record to DynamoDB."""
     print(f'Saving to table')
-    table = dynamodb.Table(settings.table_name)
+    table = dynamodb.Table(settings.votes_table_name)
     table.put_item(
         Item={
             'timestamp': timestamp,
@@ -46,7 +47,7 @@ def get_timestamp():
 
 def get_vote_counts_from_dynamodb(event_id: int):
     """Fetch vote counts for an event from DynamoDB."""
-    table = dynamodb.Table(settings.table_name)
+    table = dynamodb.Table(settings.votes_table_name)
 
     response = table.scan(
         FilterExpression='event_id = :event_id',
@@ -63,39 +64,70 @@ def get_vote_counts_from_dynamodb(event_id: int):
 
     return votes
 
-def save_event_to_dynamodb(event_id: str, title: str, date: str):
-    """Save an event record to DynamoDB."""
-    print(f'Saving event {event_id} to DynamoDB')
-    table = dynamodb.Table(settings.table_name)
+def save_bet_to_dynamodb(event_id: str, project: str, title: str):
+    """Save a bet to the bets table in DynamoDB."""
+    print(f'Saving bet {event_id} to bets table')
+    table = dynamodb.Table(settings.bets_table_name)
     table.put_item(
         Item={
             'event_id': event_id,
-            'event_type': 'event_record',
+            'project': project,
             'title': title,
-            'date': date,
             'created_at': get_timestamp()
         }
     )
 
+def get_all_bets_from_dynamodb():
+    """Fetch all bets from DynamoDB."""
+    table = dynamodb.Table(settings.bets_table_name)
+    response = table.scan()
+    return response.get('Items', [])
+
+def get_bets_by_project_from_dynamodb(project: str):
+    """Fetch bets for a specific project from DynamoDB."""
+    table = dynamodb.Table(settings.bets_table_name)
+    response = table.query(
+        IndexName='ProjectIndex',
+        KeyConditionExpression='#proj = :project',
+        ExpressionAttributeNames={
+            '#proj': 'project'
+        },
+        ExpressionAttributeValues={
+            ':project': project
+        }
+    )
+    return response.get('Items', [])
+
+def get_bet_by_event_id(event_id: str):
+    """Fetch a bet by event_id from DynamoDB using scan."""
+    table = dynamodb.Table(settings.bets_table_name)
+    response = table.scan(
+        FilterExpression='event_id = :event_id',
+        ExpressionAttributeValues={
+            ':event_id': event_id
+        }
+    )
+    items = response.get('Items', [])
+    return items[0] if items else {}
+
 @app.get("/", response_class=HTMLResponse)
 async def read_items():
     grouped_events = {}
-    with open('events.csv', newline='') as f:
-        reader = csv.reader(f)
-        next(reader)  # Skip header row
-        for index, row in enumerate(reader):
-            project = row[0]
-            if project not in grouped_events:
-                grouped_events[project] = []
-            grouped_events[project].append(
-                {
-                    'index': index,
-                    'title': row[1],
-                    'over': row[2],
-                    'under': row[3],
-                    'votes': get_vote_counts_from_dynamodb(index),
-                }
-            )
+    bets = get_all_bets_from_dynamodb()
+
+    for index, bet in enumerate(bets):
+        project = bet.get('project')
+        if project not in grouped_events:
+            grouped_events[project] = []
+        grouped_events[project].append(
+            {
+                'index': bet.get('event_id'),
+                'title': bet.get('title'),
+                'over': '',
+                'under': '',
+                'votes': get_vote_counts_from_dynamodb(bet.get('event_id')),
+            }
+        )
 
     return f"""
     <html>
@@ -148,11 +180,9 @@ async def go_to_project(project: str = Form()):
 
 @app.post("/add-bet")
 async def add_bet(project: str = Form(), title: str = Form()):
-    """Add a new bet to the events.csv file."""
-    with open('events.csv', 'a', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow([project, title, "", ""])
-
+    """Add a new bet to DynamoDB."""
+    event_id = get_timestamp()  # Use timestamp as unique event_id
+    save_bet_to_dynamodb(event_id, project, title)
     return RedirectResponse(url="/", status_code=303)
 
 @app.post("/event/{item}", response_class=HTMLResponse)
@@ -172,20 +202,15 @@ async def event_vote(item: int, vote: str):
     # Get updated vote counts from DynamoDB
     votes = get_vote_counts_from_dynamodb(item)
 
-    # Read the event data from CSV
-    with open('events.csv', newline='') as f:
-        reader = csv.reader(f)
-        next(reader)  # Skip header row
-        for index, row in enumerate(reader):
-            if index == item:
-                event_data = {
-                    'index': index,
-                    'title': row[1],
-                    'over': row[2],
-                    'under': row[3],
-                    'votes': votes,
-                }
-                break
+    # Read the event data from DynamoDB
+    bet = get_bet_by_event_id(str(item))
+    event_data = {
+        'index': bet.get('event_id', item),
+        'title': bet.get('title', ''),
+        'over': '',
+        'under': '',
+        'votes': votes,
+    }
 
     # Generate and return the updated card HTML
     return event.generate_event_card(event_data)
@@ -193,7 +218,7 @@ async def event_vote(item: int, vote: str):
 @app.get("/clear", response_class=HTMLResponse)
 async def clear_table():
     """Clear all items from the DynamoDB table."""
-    table = dynamodb.Table(settings.table_name)
+    table = dynamodb.Table(settings.votes_table_name)
 
     # Get table key schema
     key_names = [key['AttributeName'] for key in table.key_schema]
@@ -307,20 +332,18 @@ async def about_page():
 @app.get("/{project}", response_class=HTMLResponse)
 async def view_project(project: str):
     project_events = []
-    with open('events.csv', newline='') as f:
-        reader = csv.reader(f)
-        next(reader)  # Skip header row
-        for index, row in enumerate(reader):
-            if row[0] == project:
-                project_events.append(
-                    {
-                        'index': index,
-                        'title': row[1],
-                        'over': row[2],
-                        'under': row[3],
-                        'votes': get_vote_counts_from_dynamodb(index),
-                    }
-                )
+    bets = get_bets_by_project_from_dynamodb(project)
+
+    for bet in bets:
+        project_events.append(
+            {
+                'index': bet.get('event_id'),
+                'title': bet.get('title'),
+                'over': '',
+                'under': '',
+                'votes': get_vote_counts_from_dynamodb(bet.get('event_id')),
+            }
+        )
 
     if not project_events:
         return f"""
@@ -381,7 +404,7 @@ async def view_project(project: str):
 @app.get("/votes/{event_id}")
 async def get_votes(event_id: int):
     """Retrieve all votes for a specific event from DynamoDB."""
-    table = dynamodb.Table(settings.table_name)
+    table = dynamodb.Table(settings.votes_table_name)
 
     response = table.scan(
         FilterExpression='event_id = :event_id',
