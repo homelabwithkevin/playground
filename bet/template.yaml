@@ -40,10 +40,13 @@ Resources:
         Variables:
           app_name: !Ref AppName
           slogan: !Ref Slogan
-          table_name: !Sub bet-${Environment}
+          votes_table_name: !Sub bet-${Environment}
+          bets_table_name: !Sub bets-${Environment}
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Sub bet-${Environment}
+        - DynamoDBCrudPolicy:
+            TableName: !Sub bets-${Environment}
       Events:
         Get:
           Type: HttpApi
@@ -74,6 +77,34 @@ Resources:
           KeyType: HASH
         - AttributeName: event_id
           KeyType: RANGE
+
+  BetsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "bets-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: event_id
+          AttributeType: S
+        - AttributeName: created_at
+          AttributeType: S
+        - AttributeName: project
+          AttributeType: S
+      KeySchema:
+        - AttributeName: event_id
+          KeyType: HASH
+        - AttributeName: created_at
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: ProjectIndex
+          KeySchema:
+            - AttributeName: project
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
 
 Outputs:
   Api:
