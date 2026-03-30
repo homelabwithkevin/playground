@@ -2,9 +2,9 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from pydantic_settings import BaseSettings
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from mangum import Mangum
 
 import csv
@@ -108,17 +108,37 @@ async def read_items():
         <body class="bg-slate-900">
             <div class="flex justify-center pt-4 px-2 sm:px-0">
                 <div class="w-full max-w-7xl">
-                    <div class='text-white text-3xl'>
+                    <div class='text-white text-3xl mb-8'>
                         {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
-                    <div>
-                        {event.events(grouped_events)}
+                    <div class="bg-slate-700 p-6 rounded-xl">
+                        <h2 class="text-white text-2xl font-bold mb-6">Add New Bet</h2>
+                        <form method="post" action="/add-bet" class="space-y-4">
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Project</label>
+                                <input type="text" name="project" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="Project name">
+                            </div>
+                            <div>
+                                <label class="block text-white text-sm font-semibold mb-2">Bet Title</label>
+                                <input type="text" name="title" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="Bet description">
+                            </div>
+                            <button type="submit" class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded transition-all active:scale-95">Add Bet</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </body>
     </html>
     """
+
+@app.post("/add-bet")
+async def add_bet(project: str = Form(), title: str = Form()):
+    """Add a new bet to the events.csv file."""
+    with open('events.csv', 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([project, title, "", ""])
+
+    return RedirectResponse(url="/", status_code=303)
 
 @app.post("/event/{item}", response_class=HTMLResponse)
 async def event_vote(item: int, vote: str):
