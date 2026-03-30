@@ -155,6 +155,53 @@ async def event_vote(item: int, vote: str):
     # Generate and return the updated card HTML
     return event.generate_event_card(event_data)
 
+@app.get("/clear", response_class=HTMLResponse)
+async def clear_table():
+    """Clear all items from the DynamoDB table."""
+    table = dynamodb.Table(settings.table_name)
+
+    # Get table key schema
+    key_names = [key['AttributeName'] for key in table.key_schema]
+
+    deleted_count = 0
+    response = table.scan()
+
+    with table.batch_writer() as batch:
+        # Delete first page of items
+        for item in response.get('Items', []):
+            key = {k: item[k] for k in key_names}
+            batch.delete_item(Key=key)
+            deleted_count += 1
+
+        # Handle pagination for remaining items
+        while 'LastEvaluatedKey' in response:
+            response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+            for item in response.get('Items', []):
+                key = {k: item[k] for k in key_names}
+                batch.delete_item(Key=key)
+                deleted_count += 1
+
+    return f"""
+    <html>
+        <head>
+            <title>Clear Votes</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        </head>
+        <body class="bg-slate-900">
+            <div class="flex justify-center pt-4 px-2 sm:px-0">
+                <div class="w-full max-w-7xl">
+                    <div class="bg-slate-700 p-6 rounded-xl text-white">
+                        <h1 class="text-2xl font-bold mb-4">Table Cleared</h1>
+                        <p class="text-lg mb-4">Successfully deleted <span class="font-bold text-green-400">{deleted_count}</span> items from the table.</p>
+                        <a href="/" class="text-blue-400 hover:text-blue-300">← Back to all bets</a>
+                    </div>
+                </div>
+            </div>
+        </body>
+    </html>
+    """
+
 @app.get("/{project}", response_class=HTMLResponse)
 async def view_project(project: str):
     project_events = []
@@ -213,29 +260,6 @@ async def get_votes(event_id: int):
         'event_id': event_id,
         'votes': response.get('Items', []),
         'total_votes': response.get('Count', 0)
-    }
-
-@app.get("/clear")
-async def clear_table():
-    """Clear all items from the DynamoDB table."""
-    table = dynamodb.Table(settings.table_name)
-
-    # Scan to get all items
-    response = table.scan()
-    items = response.get('Items', [])
-
-    # Delete items in batches
-    deleted_count = 0
-    with table.batch_writer(
-        overwrite_by_pkeys=['timestamp', 'event_id']
-    ) as batch:
-        for item in items:
-            batch.delete_item(Key={'timestamp': item['timestamp'], 'event_id': item['event_id']})
-            deleted_count += 1
-
-    return {
-        'message': 'Table cleared successfully',
-        'deleted_count': deleted_count
     }
 
 handler = Mangum(app, lifespan="off")
