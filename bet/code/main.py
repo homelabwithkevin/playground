@@ -79,16 +79,20 @@ def save_event_to_dynamodb(event_id: str, title: str, date: str):
 
 @app.get("/", response_class=HTMLResponse)
 async def read_items():
-    all_events = []
+    grouped_events = {}
     with open('events.csv', newline='') as f:
         reader = csv.reader(f)
+        next(reader)  # Skip header row
         for index, row in enumerate(reader):
-            all_events.append(
+            project = row[0]
+            if project not in grouped_events:
+                grouped_events[project] = []
+            grouped_events[project].append(
                 {
                     'index': index,
-                    'title': row[0],
-                    'over': row[1],
-                    'under': row[2],
+                    'title': row[1],
+                    'over': row[2],
+                    'under': row[3],
                     'votes': get_vote_counts_from_dynamodb(index),
                 }
             )
@@ -108,7 +112,7 @@ async def read_items():
                         {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
                     <div>
-                        {event.events(all_events)}
+                        {event.events(grouped_events)}
                     </div>
                 </div>
             </div>
@@ -136,13 +140,14 @@ async def event_vote(item: int, vote: str):
     # Read the event data from CSV
     with open('events.csv', newline='') as f:
         reader = csv.reader(f)
+        next(reader)  # Skip header row
         for index, row in enumerate(reader):
             if index == item:
                 event_data = {
                     'index': index,
-                    'title': row[0],
-                    'over': row[1],
-                    'under': row[2],
+                    'title': row[1],
+                    'over': row[2],
+                    'under': row[3],
                     'votes': votes,
                 }
                 break
