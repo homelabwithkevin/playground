@@ -22,7 +22,8 @@ Conditions:
 
 Globals:
   Function:
-    Timeout: 60
+    Timeout: 180
+    Memory: 256
 
 Resources:
   Topic:
@@ -40,10 +41,13 @@ Resources:
         Variables:
           app_name: !Ref AppName
           slogan: !Ref Slogan
-          table_name: !Sub bet-${Environment}
+          votes_table_name: !Sub bet-${Environment}
+          bets_table_name: !Sub bets-${Environment}
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Sub bet-${Environment}
+        - DynamoDBCrudPolicy:
+            TableName: !Sub bets-${Environment}
       Events:
         Get:
           Type: HttpApi
@@ -75,10 +79,38 @@ Resources:
         - AttributeName: event_id
           KeyType: RANGE
 
+  BetsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub "bets-${Environment}"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: event_id
+          AttributeType: S
+        - AttributeName: created_at
+          AttributeType: S
+        - AttributeName: project
+          AttributeType: S
+      KeySchema:
+        - AttributeName: event_id
+          KeyType: HASH
+        - AttributeName: created_at
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: ProjectIndex
+          KeySchema:
+            - AttributeName: project
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
 Outputs:
   Api:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello/"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}"
   Function:
     Description: "Hello World Lambda Function ARN"
     Value: !GetAtt Function.Arn
