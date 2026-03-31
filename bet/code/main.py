@@ -465,7 +465,29 @@ async def view_project(project: str):
                     <div class='text-white text-3xl mb-6'>
                         {pages.header(app_name=settings.app_name, slogan=project)}
                     </div>
-                    <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to home</a>
+                    <div class="flex gap-4 mb-4">
+                        <a href="/" class="text-blue-400 hover:text-blue-300 inline-block">← Back to home</a>
+                        <button onclick="copyToClipboard(this)" class="text-blue-400 hover:text-blue-300 inline-flex items-center gap-2 whitespace-nowrap">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            Share Project
+                        </button>
+                    </div>
+                    <script>
+                        function copyToClipboard(button) {{
+                            const url = window.location.href;
+                            navigator.clipboard.writeText(url).then(() => {{
+                                const originalText = button.innerHTML;
+                                button.innerHTML = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Copied!';
+                                button.classList.add('text-green-400');
+                                setTimeout(() => {{
+                                    button.innerHTML = originalText;
+                                    button.classList.remove('text-green-400');
+                                }}, 2000);
+                            }});
+                        }}
+                    </script>
                     <div>
                         {event.events(project_events)}
                     </div>
