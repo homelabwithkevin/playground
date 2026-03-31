@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 from datetime import datetime, timezone
 import base64
 import urllib.parse
+import string
+import random
 
 from fastapi import FastAPI, Form, Request
 from pydantic_settings import BaseSettings
@@ -59,6 +61,11 @@ def decode_event_id(encoded_id: str) -> str:
     if padding != 4:
         encoded_id += '=' * padding
     return base64.urlsafe_b64decode(encoded_id.encode()).decode()
+
+def generate_project_id(length: int = 8) -> str:
+    """Generate a random project ID with uppercase, lowercase, and numbers."""
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
 
 def get_vote_counts_from_dynamodb(event_id: int):
     """Fetch vote counts for an event from DynamoDB."""
@@ -126,9 +133,14 @@ def get_bet_by_event_id(event_id: str):
     return items[0] if items else {}
 
 @app.get("/", response_class=HTMLResponse)
-async def read_items():
+async def read_items(request: Request):
     grouped_events = {}
     bets = get_all_bets_from_dynamodb()
+
+    # Check if user's IP is allowed to create projects
+    client_ip = request.client.host
+    allowed_ips = [ip.strip() for ip in settings.allowed_clear_ips.split(',')]
+    can_create_project = client_ip in allowed_ips
 
     for index, bet in enumerate(bets):
         project = bet.get('project')
@@ -160,6 +172,7 @@ async def read_items():
                     <div class='text-white text-3xl mb-8'>
                         {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
+                    {'<div class="bg-slate-700 p-6 rounded-xl mb-8"><h2 class="text-white text-2xl font-bold mb-2">Create New Project</h2><p class="text-gray-300 text-sm mb-6">Start a new project and get a unique project ID.</p><form method="post" action="/create-project" class="space-y-4"><div><label class="block text-white text-sm font-semibold mb-2">Project Name</label><input type="text" name="project_name" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="My awesome project"></div><button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded transition-all active:scale-95">Create Project</button></form></div>' if can_create_project else ''}
                     <div class="bg-slate-700 p-6 rounded-xl mb-8">
                         <h2 class="text-white text-2xl font-bold mb-2">Go to Project</h2>
                         <p class="text-gray-300 text-sm mb-6">Enter a project name to view all bets and votes for that project.</p>
@@ -188,6 +201,62 @@ async def read_items():
                     </div>
                 </div>
             </div>
+        </body>
+    </html>
+    """
+
+@app.post("/create-project", response_class=HTMLResponse)
+async def create_project(project_name: str = Form()):
+    """Create a new project and display its unique ID."""
+    project_id = generate_project_id()
+    return f"""
+    <html>
+        <head>
+            <title>Project Created</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        </head>
+        <body class="bg-slate-900">
+            <div class="flex justify-center pt-4 px-2 sm:px-0">
+                <div class="w-full max-w-4xl">
+                    <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to home</a>
+                    <div class="bg-slate-700 p-8 rounded-xl text-white space-y-6">
+                        <h1 class="text-4xl font-bold text-green-400">Project Created!</h1>
+                        <div class="bg-slate-600 p-6 rounded-lg space-y-4">
+                            <div>
+                                <p class="text-sm text-gray-300 mb-2">Project Name</p>
+                                <p class="text-2xl font-bold text-white">{project_name}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-300 mb-2">Project ID</p>
+                                <p class="text-2xl font-mono font-bold text-blue-400">{project_id}</p>
+                                <p class="text-xs text-gray-400 mt-2">Use this ID to share your project or reference it later</p>
+                            </div>
+                        </div>
+                        <button onclick="copyProjectID()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded transition-all active:scale-95">
+                            Copy Project ID
+                        </button>
+                        <a href="/" class="block w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded text-center transition-all active:scale-95">Start Adding Bets</a>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function copyProjectID() {{
+                    const projectID = "{project_id}";
+                    navigator.clipboard.writeText(projectID).then(() => {{
+                        const button = event.target;
+                        const originalText = button.innerHTML;
+                        button.innerHTML = 'Copied!';
+                        button.classList.add('bg-green-600');
+                        button.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+                        setTimeout(() => {{
+                            button.innerHTML = originalText;
+                            button.classList.remove('bg-green-600');
+                            button.classList.add('bg-blue-600', 'hover:bg-blue-500');
+                        }}, 2000);
+                    }});
+                }}
+            </script>
         </body>
     </html>
     """
