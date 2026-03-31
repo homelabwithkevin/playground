@@ -36,6 +36,16 @@ def event(title, over, under):
 
 def generate_event_card(item):
     """Generate HTML for a single event card."""
+    is_closed = item.get('status') == 'closed'
+    closed_badge = '<span class="inline-block bg-red-600 text-white text-xs px-2 py-1 rounded ml-2">CLOSED</span>' if is_closed else ''
+
+    # Disable buttons if closed
+    button_class_yes = "button-yes w-full bg-gray-600 cursor-not-allowed rounded-lg py-2 sm:py-3 px-2 sm:px-4 font-semibold text-white text-xs sm:text-sm transition-all" if is_closed else "button-yes w-full bg-green-600 hover:bg-green-300 rounded-lg py-2 sm:py-3 px-2 sm:px-4 font-semibold text-white text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+    button_class_no = "button-no w-full bg-gray-600 cursor-not-allowed rounded-lg py-2 sm:py-3 px-2 sm:px-4 font-semibold text-white text-xs sm:text-sm transition-all" if is_closed else "button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-2 sm:py-3 px-2 sm:px-4 font-semibold text-white text-xs sm:text-sm transition-all active:scale-95 cursor-pointer"
+
+    hx_yes = "" if is_closed else f'hx-post="/event/{item["index"]}?vote=yes" hx-target="#event-{item["index"]}" hx-swap="outerHTML"'
+    hx_no = "" if is_closed else f'hx-post="/event/{item["index"]}?vote=no" hx-target="#event-{item["index"]}" hx-swap="outerHTML"'
+
     return f"""
     <div class="bg-slate-700 p-3 sm:p-6 items-center justify-center rounded-xl" id="event-{item['index']}">
     <div>
@@ -44,13 +54,13 @@ def generate_event_card(item):
             <!-- Header with Avatar and Chance Badge -->
             <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
-                    <h2 class="question-text text-white text-base sm:text-lg">{item['title']}</h2>
+                    <h2 class="question-text text-white text-base sm:text-lg">{item['title']}{closed_badge}</h2>
                 </div>
             </div>
 
             <!-- Vote Buttons -->
             <div class="grid grid-cols-2 gap-3 pt-2">
-                <button hx-post="/event/{item['index']}?vote=yes" hx-target="#event-{item['index']}" hx-swap="outerHTML" class="button-yes w-full bg-green-600 hover:bg-green-300 rounded-lg py-2 sm:py-3 px-2 sm:px-4 font-semibold text-white text-xs sm:text-sm transition-all active:scale-95 cursor-pointer">
+                <button {hx_yes} class="{button_class_yes}" {"disabled" if is_closed else ""}>
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -58,7 +68,7 @@ def generate_event_card(item):
                         Yes ({item['votes'].get('yes', 0)})
                     </span>
                 </button>
-                <button hx-post="/event/{item['index']}?vote=no" hx-target="#event-{item['index']}" hx-swap="outerHTML" class="button-no w-full bg-red-700 hover:bg-red-400 rounded-lg py-2 sm:py-3 px-2 sm:px-4 font-semibold text-white text-xs sm:text-sm transition-all active:scale-95 cursor-pointer">
+                <button {hx_no} class="{button_class_no}" {"disabled" if is_closed else ""}>
                     <span class="flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>

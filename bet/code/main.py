@@ -142,6 +142,7 @@ async def read_items():
                 'over': '',
                 'under': '',
                 'votes': get_vote_counts_from_dynamodb(event_id),
+                'status': bet.get('status'),
             }
         )
 
@@ -232,6 +233,7 @@ async def event_vote(item: str, vote: str):
             'over': '',
             'under': '',
             'votes': votes,
+            'status': bet.get('status'),
         }
 
         # Generate and return the updated card HTML
@@ -354,6 +356,7 @@ async def view_project(project: str):
                 'over': '',
                 'under': '',
                 'votes': get_vote_counts_from_dynamodb(event_id),
+                'status': bet.get('status'),
             }
         )
 
