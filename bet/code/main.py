@@ -160,7 +160,8 @@ async def read_items():
                         {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
                     <div class="bg-slate-700 p-6 rounded-xl mb-8">
-                        <h2 class="text-white text-2xl font-bold mb-6">Go to Project</h2>
+                        <h2 class="text-white text-2xl font-bold mb-2">Go to Project</h2>
+                        <p class="text-gray-300 text-sm mb-6">Enter a project name to view all bets and votes for that project.</p>
                         <form method="post" action="/go-to-project" class="space-y-4">
                             <div>
                                 <label class="block text-white text-sm font-semibold mb-2">Project Name</label>
@@ -170,7 +171,8 @@ async def read_items():
                         </form>
                     </div>
                     <div class="bg-slate-700 p-6 rounded-xl">
-                        <h2 class="text-white text-2xl font-bold mb-6">Add New Bet</h2>
+                        <h2 class="text-white text-2xl font-bold mb-2">Add New Bet</h2>
+                        <p class="text-gray-300 text-sm mb-6">Create a new bet by specifying a project and describing what you're betting on. Then share it with others to vote.</p>
                         <form method="post" action="/add-bet" class="space-y-4">
                             <div>
                                 <label class="block text-white text-sm font-semibold mb-2">Project</label>
