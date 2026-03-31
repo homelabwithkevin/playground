@@ -22,7 +22,8 @@ Conditions:
 
 Globals:
   Function:
-    Timeout: 60
+    Timeout: 180
+    Memory: 256
 
 Resources:
   Topic:
