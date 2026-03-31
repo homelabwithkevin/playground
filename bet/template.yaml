@@ -109,7 +109,7 @@ Resources:
 Outputs:
   Api:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello/"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}"
   Function:
     Description: "Hello World Lambda Function ARN"
     Value: !GetAtt Function.Arn
