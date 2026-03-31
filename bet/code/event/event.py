@@ -90,11 +90,11 @@ def generate_event_card(item):
 
 def events(grouped_items):
     """Handle both grouped and flat event structures."""
-    # If it's a dict (grouped by project), iterate through projects
+    # If it's a dict (grouped by stake), iterate through stakes
     if isinstance(grouped_items, dict):
         html = ""
-        for project, items in grouped_items.items():
-            html += f'<h3 class="text-white text-2xl mt-6 mb-4">{project}</h3>'
+        for stake, items in grouped_items.items():
+            html += f'<h3 class="text-white text-2xl mt-6 mb-4">{stake}</h3>'
             item_html = ""
             for item in items:
                 item_html += generate_event_card(item)

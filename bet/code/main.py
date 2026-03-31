@@ -172,25 +172,25 @@ async def read_items(request: Request):
                     <div class='text-white text-3xl mb-8'>
                         {pages.header(app_name=settings.app_name, slogan=settings.slogan)}
                     </div>
-                    {'<div class="bg-slate-700 p-6 rounded-xl mb-8"><h2 class="text-white text-2xl font-bold mb-2">Create New Project</h2><p class="text-gray-300 text-sm mb-6">Start a new project and get a unique project ID.</p><form method="post" action="/create-project" class="space-y-4"><div><label class="block text-white text-sm font-semibold mb-2">Project Name</label><input type="text" name="project_name" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="My awesome project"></div><button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded transition-all active:scale-95">Create Project</button></form></div>' if can_create_project else ''}
+                    {'<div class="bg-slate-700 p-6 rounded-xl mb-8"><h2 class="text-white text-2xl font-bold mb-2">Create New Stake</h2><p class="text-gray-300 text-sm mb-6">Start a new stake and get a unique stake ID.</p><form method="post" action="/create-project" class="space-y-4"><div><label class="block text-white text-sm font-semibold mb-2">Stake Name</label><input type="text" name="project_name" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="My awesome stake"></div><button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded transition-all active:scale-95">Create Stake</button></form></div>' if can_create_project else ''}
                     <div class="bg-slate-700 p-6 rounded-xl mb-8">
-                        <h2 class="text-white text-2xl font-bold mb-2">Go to Project</h2>
-                        <p class="text-gray-300 text-sm mb-6">Enter a project name to view all bets and votes for that project.</p>
+                        <h2 class="text-white text-2xl font-bold mb-2">Go to Stake</h2>
+                        <p class="text-gray-300 text-sm mb-6">Enter a stake name to view all bets and votes for that stake.</p>
                         <form method="post" action="/go-to-project" class="space-y-4">
                             <div>
-                                <label class="block text-white text-sm font-semibold mb-2">Project Name</label>
-                                <input type="text" name="project" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="Project name">
+                                <label class="block text-white text-sm font-semibold mb-2">Stake Name</label>
+                                <input type="text" name="project" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="Stake name">
                             </div>
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded transition-all active:scale-95">Go to Project</button>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded transition-all active:scale-95">Go to Stake</button>
                         </form>
                     </div>
                     <div class="bg-slate-700 p-6 rounded-xl">
                         <h2 class="text-white text-2xl font-bold mb-2">Add New Bet</h2>
-                        <p class="text-gray-300 text-sm mb-6">Create a new bet by specifying a project and describing what you're betting on. Then share it with others to vote.</p>
+                        <p class="text-gray-300 text-sm mb-6">Create a new bet by specifying a stake and describing what you're betting on. Then share it with others to vote.</p>
                         <form method="post" action="/add-bet" class="space-y-4">
                             <div>
-                                <label class="block text-white text-sm font-semibold mb-2">Project</label>
-                                <input type="text" name="project" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="Project name">
+                                <label class="block text-white text-sm font-semibold mb-2">Stake</label>
+                                <input type="text" name="project" required class="w-full bg-slate-600 text-white px-4 py-2 rounded border border-slate-500 focus:outline-none focus:border-blue-400" placeholder="Stake name">
                             </div>
                             <div>
                                 <label class="block text-white text-sm font-semibold mb-2">Bet Title</label>
@@ -207,12 +207,12 @@ async def read_items(request: Request):
 
 @app.post("/create-project", response_class=HTMLResponse)
 async def create_project(project_name: str = Form()):
-    """Create a new project and display its unique ID."""
+    """Create a new stake and display its unique ID."""
     project_id = generate_project_id()
     return f"""
     <html>
         <head>
-            <title>Project Created</title>
+            <title>Stake Created</title>
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         </head>
@@ -221,20 +221,20 @@ async def create_project(project_name: str = Form()):
                 <div class="w-full max-w-4xl">
                     <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to home</a>
                     <div class="bg-slate-700 p-8 rounded-xl text-white space-y-6">
-                        <h1 class="text-4xl font-bold text-green-400">Project Created!</h1>
+                        <h1 class="text-4xl font-bold text-green-400">Stake Created!</h1>
                         <div class="bg-slate-600 p-6 rounded-lg space-y-4">
                             <div>
-                                <p class="text-sm text-gray-300 mb-2">Project Name</p>
+                                <p class="text-sm text-gray-300 mb-2">Stake Name</p>
                                 <p class="text-2xl font-bold text-white">{project_name}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-300 mb-2">Project ID</p>
+                                <p class="text-sm text-gray-300 mb-2">Stake ID</p>
                                 <p class="text-2xl font-mono font-bold text-blue-400">{project_id}</p>
-                                <p class="text-xs text-gray-400 mt-2">Use this ID to share your project or reference it later</p>
+                                <p class="text-xs text-gray-400 mt-2">Use this ID to share your stake or reference it later</p>
                             </div>
                         </div>
                         <button onclick="copyProjectID()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded transition-all active:scale-95">
-                            Copy Project ID
+                            Copy Stake ID
                         </button>
                         <a href="/" class="block w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded text-center transition-all active:scale-95">Start Adding Bets</a>
                     </div>
@@ -442,7 +442,7 @@ async def view_project(project: str):
                     <div class="w-full max-w-4xl">
                         <a href="/" class="text-blue-400 hover:text-blue-300 mb-4 inline-block">← Back to home</a>
                         <div class="bg-slate-700 p-8 rounded-xl text-white space-y-6">
-                            <h1 class="text-4xl font-bold">Project Not Found</h1>
+                            <h1 class="text-4xl font-bold">Stake Not Found</h1>
                             <div class="space-y-4 text-lg">
                                 <p>We searched high and low for "<span class="font-bold text-blue-400">{project}</span>" but couldn't find it.</p>
                                 <p>This could mean:</p>
@@ -481,7 +481,7 @@ async def view_project(project: str):
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                             </svg>
-                            Share Project
+                            Share Stake
                         </button>
                     </div>
                     <script>
