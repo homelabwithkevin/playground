@@ -238,7 +238,7 @@ source_csv = "2025-08-16.csv"
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name, newsletter_date)
 
 # Create
-newsletter_html_content = create(opening_entry, entries, word_date)
+newsletter_html_content = create_newsletter(entries, word_date, opening_entry)
 maizzle_newsletter_html_content = create_maizzle(opening_entry, entries, word_date)
 
 # Upload
