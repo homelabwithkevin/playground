@@ -2,22 +2,27 @@ import pandas as pd
 from pathlib import Path
 
 
-def update_item(box_id: str, contents: str | None = None, notes: str | None = None) -> str:
+def update_item(
+    box_id: str,
+    contents: str | None = None,
+    notes: str | None = None
+) -> str:
     """
     Update an item's contents or notes.
-    Both fields are appended to, not replaced.
+
+    Both fields are appended to, not replaced. If a field is None, its
+    existing value is preserved.
 
     Args:
         box_id: The box identifier to update
-        contents: New content to append (or None if updating notes only)
-        notes: New notes to append (or None if updating contents only)
+        contents: New content to append (or None to preserve existing)
+        notes: New notes to append (or None to preserve existing)
 
     Returns:
         Success message with updated box_id
     """
     base_path = Path(__file__).parent.parent / "move_inventory.csv"
-    # Use dtype=str to preserve leading zeros in box_id (e.g., "001" vs 1)
-    df = pd.read_csv(base_path, dtype={'box_id': str})
+    df = pd.read_csv(base_path, dtype={"box_id": str})
 
     current_row = df[df["box_id"] == box_id]
 
@@ -28,18 +33,24 @@ def update_item(box_id: str, contents: str | None = None, notes: str | None = No
     existing_contents = existing.get("contents", "")
     existing_notes = existing.get("notes", "")
 
+    # Append new content if provided, otherwise preserve existing
     if contents is not None:
-        new_contents = contents
+        new_contents = f"{existing_contents} {contents}".strip()
     else:
         new_contents = existing_contents
 
+    # Append new notes if provided, otherwise preserve existing
     if notes is not None:
-        new_notes = notes
+        new_notes = f"{existing_notes} {notes}".strip()
     else:
         new_notes = existing_notes
 
-    df.loc[df["box_id"] == box_id, "contents"] = new_contents
-    df.loc[df["box_id"] == box_id, "notes"] = new_notes
+    # Only update fields that actually changed
+    if new_contents != existing_contents:
+        df.loc[df["box_id"] == box_id, "contents"] = new_contents
+    if new_notes != existing_notes:
+        df.loc[df["box_id"] == box_id, "notes"] = new_notes
+
     df.to_csv(base_path, index=False)
 
     return f"Updated box {box_id}: contents='{new_contents}', notes='{new_notes}'"
