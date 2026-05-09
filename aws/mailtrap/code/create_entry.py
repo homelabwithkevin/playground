@@ -37,21 +37,6 @@ def create_initial_newsletter(file_name):
     print(message)
 
 
-def parse_newsletter_csv(file):
-    entries = []
-
-    with open(file, "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            file, caption, description = line.split(",")
-            if not file == "file":
-                entries.append(
-                    {"file": file, "caption": caption, "description": description}
-                )
-
-    return entries
-
-
 def create_newsletter(entries, date, first_entry):
     posts = ""
     header = f"""
