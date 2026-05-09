@@ -11,6 +11,8 @@ I am organizing a move and need assistance managing an inventory spreadsheet usi
 - **Primary Data Format**: CSV (Local file: `move_inventory.csv`)
 - **Python Libraries**: Pandas (for CLI), pytest (for testing)
 - **Database**: None (Flat file based)
+- **Frontend Framework**: TailwindCSS (styling), HTMX (dynamic interactions)
+- **Backend Framework**: FastAPI (modern async Python framework for API endpoints)
 
 ---
 
