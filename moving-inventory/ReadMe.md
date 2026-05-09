@@ -63,6 +63,25 @@ moving-inventory/
 
 ---
 
+## Update Behavior
+- **Both `contents` and `notes` are always appended** when updating an item, not replaced.
+- Existing values are preserved and new text is added with a space separator.
+- If a field has no prior value, the new value is set directly.
+
+### Examples
+```python
+# Update contents (appends to existing)
+update_item("001", contents="winter coats")            # contents: "winter coats"
+update_item("001", contents="in garage")               # contents: "winter coats in garage"
+
+# Update notes (appends to existing)
+update_item("001", notes="winter")                     # notes: "winter"
+update_item("001", notes="coats")                      # notes: "winter coats"
+update_item("001", notes="in garage")                  # notes: "winter coats in garage"
+```
+
+---
+
 ## How to Interact
 
 ### Using the Command Line Interface
