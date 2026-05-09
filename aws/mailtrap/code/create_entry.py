@@ -9,6 +9,7 @@ client = boto3.client("s3")
 bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
 base_url = "https://ginger.homelabwithkevin.com"
+htmx_version = "2.0.2"
 newsletter_date = utils.today_newsletter()
 newsletter_date = "2025-08-16"
 newsletter = f"cdn/{newsletter_date}-newsletter"
@@ -43,7 +44,7 @@ def create_newsletter(entries, date, first_entry):
     <html>
         <head>
             <script src="https://cdn.tailwindcss.com"></script>
-            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <script src="https://unpkg.com/htmx.org@{htmx_version}"></script>
             <title>Ginger Pictures - Week of {date}</title>
         </head>
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
