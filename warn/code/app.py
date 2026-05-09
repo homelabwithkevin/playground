@@ -79,9 +79,13 @@ def extract_info(html):
     return info
 
 def lambda_handler(event, context):
+    # Check for ?json in query string to return raw JSON
+    raw_json = event.get("queryStringParameters", {})
+
     query = os.environ.get("SEARCH_QUERY")
     results = search_leo_records(query=query)
     all_infos = []
+
     for result in results['Results']:
         html = result['Html']
         info = extract_info(html)
@@ -95,14 +99,28 @@ def lambda_handler(event, context):
             }
             all_infos.append(csv_row)
 
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        },
-        "body": json.dumps({
-            'query': query,
-            'info': all_infos
-        })
-    }
+    if raw_json and raw_json.get("json") == "true":
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            "body": json.dumps({
+                'json': raw_json,
+                'query': query,
+                'info': all_infos
+            })
+        }
+    else:
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            "body": json.dumps({
+                'query': query,
+                'info': all_infos
+            })
+        }
