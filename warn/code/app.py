@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 
 def search_leo_records(query, per_page=20):
@@ -78,7 +79,8 @@ def extract_info(html):
     return info
 
 def lambda_handler(event, context):
-    results = search_leo_records(query="example")
+    query = os.environ.get("SEARCH_QUERY")
+    results = search_leo_records(query=query)
     all_infos = []
     for result in results['Results']:
         html = result['Html']
@@ -100,6 +102,7 @@ def lambda_handler(event, context):
             "Access-Control-Allow-Origin": "*"
         },
         "body": json.dumps({
+            'query': query,
             'info': all_infos
         })
     }
