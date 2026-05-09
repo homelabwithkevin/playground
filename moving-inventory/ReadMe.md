@@ -1,5 +1,7 @@
 # Moving Inventory System
 
+> **AI-Generated Context**: This project was assisted by AI. Future collaborators should reference this documentation and any relevant PR descriptions for full context.
+
 I am organizing a move and need assistance managing an inventory spreadsheet using Python.
 
 ---
