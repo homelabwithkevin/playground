@@ -1,4 +1,6 @@
 import boto3
+import os
+import shutil
 
 from functions import utils, parser
 
@@ -231,8 +233,10 @@ opening_entry = f"""
 </p>
 """
 
-word_date = "August 16th, 2025"
-source_csv = "2025-08-16.csv"
+# Backup the source CSV before parsing
+if os.path.exists(source_csv):
+    print(f'Backing up original CSV.')
+    shutil.copy(source_csv, f"{source_csv}.org")
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name, newsletter_date)
