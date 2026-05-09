@@ -159,7 +159,7 @@ def create_newsletter_maizzle(entries, date, first_entry):
         """
     end = f"""
         <div>
-            <img src="https://ginger.homelabwithkevin.com/?utm_source=mailtrap-maizzle&newsletter={newsletter_date}">
+            <img src="{base_url}/?utm_source=mailtrap-maizzle&newsletter={newsletter_date}&user={{{{template}}}}">
         </div>
     </x-main>
     """
