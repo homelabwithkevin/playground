@@ -9,7 +9,7 @@ I am organizing a move and need assistance managing an inventory spreadsheet usi
 ## Tech Stack
 
 - **Primary Data Format**: CSV (Local file: `move_inventory.csv`)
-- **Python Libraries**: Pandas (for CLI)
+- **Python Libraries**: Pandas (for CLI), pytest (for testing)
 - **Database**: None (Flat file based)
 
 ---
