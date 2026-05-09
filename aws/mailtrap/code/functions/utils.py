@@ -121,3 +121,27 @@ def save_dataframe(dataframe, filename, index=False):
     except Exception as e:
         print(f'Failed to save dataframe: {e}')
         return None
+
+def send_email(newsletter, date, to):
+    client = boto3.client("ses")
+    print(f"Sending email to: {to}")
+    try:
+        client.send_email(
+            Source="kevin@homelabwithkevin.com",
+            Destination={
+                "ToAddresses": [to],
+            },
+            Message={
+                "Subject": {
+                    "Data": f"Ginger Pictures - Week of {date}",
+                },
+                "Body": {
+                    "Html": {
+                        "Data": newsletter,
+                    },
+                },
+            },
+        )
+        print(f"Email Sent!")
+    except Exception as e:
+        print(f"Error sending email: {e}")
