@@ -23,6 +23,35 @@ I am organizing a move and need assistance managing an inventory spreadsheet usi
 | `notes`         | Additional notes/comments   |
 
 ---
+## Project Structure
+
+**Environment**:
+- **Python**: 3.14.x
+- **Web Framework**: Flask (for potential future web interface)
+- **Data Format**: CSV (local file: `move_inventory.csv`)
+
+**Design**: Core logic is split into separate `functions/*.py` modules for maintainability. The `inventory_manager.py` handles command-line parsing and serves as a single entry point that delegates to the `functions` module.
+
+```
+moving-inventory/
+├── inventory_manager.py    # Main entry point for CLI/API usage
+├── move_inventory.csv      # Data file with inventory records
+├── ReadMe.md               # This file
+│
+├── functions/              # Modular function implementations
+│   ├── __init__.py         # Exports all public functions
+│   ├── add.py              # add_item() function
+│   ├── update.py           # update_item() function
+│   ├── delete.py           # delete_item() function
+│   ├── list.py             # list_items() function
+│   ├── search.py           # search_items() function
+│   ├── count.py            # count_boxes() function
+│   └── __pycache__/        # Bytecode cache
+│
+└── __pycache__/           # Bytecode cache for main modules
+```
+
+---
 
 ## Project Goals
 1. Track inventory
