@@ -92,21 +92,3 @@ python inventory_manager.py delete 001
 # Count boxes
 python inventory_manager.py count
 ```
-
-### Python API
-
-```python
-from inventory_manager import add_item, update_item, delete_item, list_items, search_items
-
-# Add item
-add_item("winter coats", notes="garage")
-
-# Update item
-update_item("001", contents="new contents")
-
-# Search
-search_items("winter")
-
-# List all
-list_items()
-```
