@@ -146,18 +146,6 @@ def create_newsletter_maizzle(entries, date, first_entry):
     print(f"Created newsletter for maizzle!")
     return content_newsletter
 
-
-def create(first_entry, entries, date):
-    content = create_newsletter(entries, date, first_entry)
-    return content
-
-
-def create_maizzle(first_entry, entries, date):
-    content = create_newsletter_maizzle(entries, date, first_entry)
-    return content
-
-# create_initial_newsletter("newsletter")
-
 opening_entry = f"""
 <p>
     This week it's been warming up in my area. Ginger has been enjoying the porch (from inside).
