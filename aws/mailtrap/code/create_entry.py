@@ -13,21 +13,9 @@ newsletter_date = utils.today_newsletter()
 newsletter_date = "2025-08-16"
 newsletter = f"cdn/{newsletter_date}-newsletter"
 
-def get_files():
-    list_of_files = []
-
-    response = client.list_objects_v2(Bucket=bucket_name, Prefix=newsletter)
-    for obj in response.get("Contents", []):
-        if not obj["Key"].endswith(".html"):
-            cdn_path = f'{cloudfront}/{obj["Key"]}'
-            list_of_files.append(cdn_path)
-
-    return list_of_files
-
-
 def create_initial_newsletter(file_name):
     with open(f"{file_name}.html", "w") as f:
-        for file in get_files():
+        for file in utils.get_files(bucket_name, newsletter, cloudfront):
             print(file)
             f.write(file)
             f.write(f"</br>")
@@ -36,7 +24,7 @@ def create_initial_newsletter(file_name):
 
     with open(f"{file_name}.csv", "w") as f:
         f.write("file,caption" + "\n")
-        for file in get_files():
+        for file in utils.get_files(bucket_name, newsletter, cloudfront):
             f.write(file + "\n")
 
     message = f"""

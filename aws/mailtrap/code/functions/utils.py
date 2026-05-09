@@ -42,6 +42,18 @@ def randomword(length=10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
+def get_files(bucket_name, prefix, cloudfront):
+    client = boto3.client('s3')
+    list_of_files = []
+
+    response = client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+    for obj in response.get("Contents", []):
+        if not obj["Key"].endswith(".html"):
+            cdn_path = f'{cloudfront}/{obj["Key"]}'
+            list_of_files.append(cdn_path)
+
+    return list_of_files
+
 def list_bucket(bucket, prefix):
     files = []
     client = boto3.client('s3')
