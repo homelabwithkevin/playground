@@ -134,6 +134,29 @@ def save_dataframe(dataframe, filename, index=False):
         print(f'Failed to save dataframe: {e}')
         return None
 
+def create_initial_newsletter(file_name, bucket_name, newsletter, cloudfront):
+    with open(f"{file_name}.html", "w") as f:
+        for file in get_files(bucket_name, newsletter, cloudfront):
+            print(file)
+            f.write(file)
+            f.write(f"</br>")
+            f.write(f"<img src={file} height='300'>")
+            f.write(f"</br>")
+
+    with open(f"{file_name}.csv", "w") as f:
+        f.write("file,caption" + "\n")
+        for file in get_files(bucket_name, newsletter, cloudfront):
+            f.write(file + "\n")
+
+    message = f"""
+    Copy CSV to new file
+    Open HTML to reference pictures and image name
+    Update CSV as needed
+    Save CSV
+    Run the next command
+    """
+    print(message)
+
 def send_email(newsletter, date, to):
     client = boto3.client("ses")
     print(f"Sending email to: {to}")

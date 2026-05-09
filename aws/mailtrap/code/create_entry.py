@@ -14,30 +14,6 @@ newsletter_date = utils.today_newsletter()
 newsletter_date = "2025-08-16"
 newsletter = f"cdn/{newsletter_date}-newsletter"
 
-def create_initial_newsletter(file_name):
-    with open(f"{file_name}.html", "w") as f:
-        for file in utils.get_files(bucket_name, newsletter, cloudfront):
-            print(file)
-            f.write(file)
-            f.write(f"</br>")
-            f.write(f"<img src={file} height='300'>")
-            f.write(f"</br>")
-
-    with open(f"{file_name}.csv", "w") as f:
-        f.write("file,caption" + "\n")
-        for file in utils.get_files(bucket_name, newsletter, cloudfront):
-            f.write(file + "\n")
-
-    message = f"""
-    Copy CSV to new file
-    Open HTML to reference pictures and image name
-    Update CSV as needed
-    Save CSV
-    Run the next command
-    """
-    print(message)
-
-
 def create_newsletter(entries, date, first_entry):
     posts = ""
     header = f"""
