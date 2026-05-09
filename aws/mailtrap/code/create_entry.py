@@ -87,7 +87,6 @@ def create_newsletter(entries, date, first_entry):
     print(f"Created newsletter!")
     return content_newsletter
 
-
 def create_newsletter_maizzle(entries, date, first_entry):
     posts = ""
     header = f"""
