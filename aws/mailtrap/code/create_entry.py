@@ -239,7 +239,7 @@ entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name, newsletter
 
 # Create
 newsletter_html_content = create_newsletter(entries, word_date, opening_entry)
-maizzle_newsletter_html_content = create_maizzle(opening_entry, entries, word_date)
+maizzle_newsletter_html_content = create_newsletter_maizzle(entries, word_date, opening_entry)
 
 # Upload
 complete_newsletter = "newsletter.html"
