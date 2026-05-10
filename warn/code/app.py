@@ -155,6 +155,9 @@ def lambda_handler(event, context):
             </div>
         </div>
         <p class="mt-6 text-sm text-gray-400 text-center">Powered by Michigan LEO Search API</p>
+        <p class="mt-4 text-sm text-gray-500 text-center">
+            <a href="?json=true" target="_blank" class="text-blue-600 hover:text-blue-800 underline">View JSON Results</a>
+        </p>
     </div>
 </body>
 </html>
