@@ -113,14 +113,57 @@ def lambda_handler(event, context):
             })
         }
     else:
+        # Build table rows
+        table_rows = ""
+        if all_infos:
+            for row in all_infos:
+                table_rows += f'<tr><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{row["Type of company action"]}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{row["City"]}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{row["County"]}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{row["Layoff date"]}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{row["Number of jobs impacted"]}</td></tr>'
+
+        if query:
+            query_text = f'<p class="text-gray-600 mb-6">Search query: <span class="font-semibold text-blue-600">{query}</span></p>'
+        else:
+            query_text = ''
+
+        html_body = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michigan LEO Search Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-300 min-h-screen py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-4">Michigan LEO Search Results</h1>
+        {query_text}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type of company action</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">City</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">County</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Layoff date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Number of jobs impacted</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {table_rows if table_rows else '<tr><td colspan="5" class="px-6 py-4 text-sm text-gray-500 text-center">No results found</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="mt-6 text-sm text-gray-400 text-center">Powered by Michigan LEO Search API</p>
+    </div>
+</body>
+</html>
+"""
         return {
             "statusCode": 200,
             "headers": {
-                "Content-Type": "application/json",
+                "Content-Type": "text/html",
                 "Access-Control-Allow-Origin": "*"
             },
-            "body": json.dumps({
-                'query': query,
-                'info': all_infos
-            })
+            "body": html_body
         }
