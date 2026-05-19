@@ -10,6 +10,35 @@ form_image = os.getenv('FORM_IMAGE')
 environment = os.getenv('ENVIRONMENT')
 topic = os.getenv('TOPIC')
 
+def _success_response(first_name):
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/html',
+        },
+        'body': f"""
+        <html>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <head>
+                <title>Ginger Kitty Newsletter</title>
+            </head>
+            <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                <div>
+                    <div>
+                        <div>
+                            Thanks for subscribing, {first_name}!
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <img src="https://{cloudfront_url}/cdn/{form_image}">
+                    </div>
+                </div>
+            </div>
+        </html>
+        """
+    }
+
 def post(body, source_ip):
     decoded_body = base64.b64decode(body).decode('utf-8')
     body_split = decoded_body.split('&')
@@ -17,40 +46,26 @@ def post(body, source_ip):
     split_email = body_split[1].split('=')[1]
     email = split_email.replace('%40', '@')
 
-    db.put_item(first_name, email)
+    # Honeypot check - reject silently if filled
+    website_field = None
+    for field in body_split:
+        if field.startswith('website='):
+            website_field = field.split('=')[1]
+            break
+
+    if website_field:
+        print(f'Honeypot triggered from IP: {source_ip}')
+        # Return success to bot but don't save
+        return _success_response(first_name)
+
+    db.put_item(first_name, email, source_ip)
 
     # Send email upon new subscriber
     subject = f'New Subscriber - {environment} - {email}'
-    message = f'New Subscriber - {environment} {first_name} - {email}'
+    message = f'New Subscriber - {environment} {first_name} - {email} - IP: {source_ip}'
     utils.publish(topic, subject, message)
 
-    return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'text/html',
-            },
-            'body': f"""
-            <html>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <script src="https://unpkg.com/htmx.org@2.0.2"></script>
-                <head>
-                    <title>Ginger Kitty Newsletter</title>
-                </head>
-                <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
-                    <div>
-                        <div>
-                            <div>
-                                Thanks for subscribing, {first_name}!
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                            <img src="https://{cloudfront_url}/cdn/{form_image}">
-                        </div>
-                    </div>
-                </div>
-            </html>
-            """
-    }
+    return _success_response(first_name)
 
 def privacy_policy():
     return {

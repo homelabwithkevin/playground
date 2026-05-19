@@ -5,24 +5,28 @@ from functions import utils
 
 client = boto3.client('dynamodb')
 
-def put_item(first_name, email):
+def put_item(first_name, email, source_ip=None):
     table = os.environ["TABLE"]
+    item = {
+        'id': {
+            'S': str(utils.today())
+        },
+        'first_name': {
+            'S': first_name
+        },
+        'email': {
+            'S': email
+        },
+        'guid': {
+            'S': utils.randomword(6)
+        },
+    }
+    if source_ip:
+        item['source_ip'] = {'S': source_ip}
+
     response = client.put_item(
         TableName=table,
-        Item={
-            'id': {
-                'S': str(utils.today())
-            },
-            'first_name': {
-                'S': first_name
-            },
-            'email': {
-                'S': email
-            },
-            'guid': {
-                'S': utils.randomword(6)
-            },
-        }
+        Item=item
     )
 
 def put_item_v2(table, item):
