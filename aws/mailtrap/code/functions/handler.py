@@ -58,11 +58,11 @@ def post(body, source_ip):
         # Return success to bot but don't save
         return _success_response(first_name)
 
-    db.put_item(first_name, email)
+    db.put_item(first_name, email, source_ip)
 
     # Send email upon new subscriber
     subject = f'New Subscriber - {environment} - {email}'
-    message = f'New Subscriber - {environment} {first_name} - {email}'
+    message = f'New Subscriber - {environment} {first_name} - {email} - IP: {source_ip}'
     utils.publish(topic, subject, message)
 
     return _success_response(first_name)
