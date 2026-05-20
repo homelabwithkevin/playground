@@ -29,8 +29,22 @@ def parse_newsletter_csv_pandas(file, bucket, newsletter_date):
             utils.upload_file(bucket, photo, cdn_path)
 
     if not isinstance(cdn_photo, str):
-        df.to_csv(f'{file}new.csv', index=False)
+        df.to_csv(f'{file}', index=False)
     else:
         print(f'Photos already uploaded to CDN')
+
+    return entries
+
+def parse_newsletter_csv(file):
+    entries = []
+
+    with open(file, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            file, caption, description = line.split(",")
+            if not file == "file":
+                entries.append(
+                    {"file": file, "caption": caption, "description": description}
+                )
 
     return entries

@@ -42,6 +42,18 @@ def randomword(length=10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
+def get_files(bucket_name, prefix, cloudfront):
+    client = boto3.client('s3')
+    list_of_files = []
+
+    response = client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+    for obj in response.get("Contents", []):
+        if not obj["Key"].endswith(".html"):
+            cdn_path = f'{cloudfront}/{obj["Key"]}'
+            list_of_files.append(cdn_path)
+
+    return list_of_files
+
 def list_bucket(bucket, prefix):
     files = []
     client = boto3.client('s3')
@@ -121,3 +133,50 @@ def save_dataframe(dataframe, filename, index=False):
     except Exception as e:
         print(f'Failed to save dataframe: {e}')
         return None
+
+def create_initial_newsletter(file_name, bucket_name, newsletter, cloudfront):
+    with open(f"{file_name}.html", "w") as f:
+        for file in get_files(bucket_name, newsletter, cloudfront):
+            print(file)
+            f.write(file)
+            f.write(f"</br>")
+            f.write(f"<img src={file} height='300'>")
+            f.write(f"</br>")
+
+    with open(f"{file_name}.csv", "w") as f:
+        f.write("file,caption" + "\n")
+        for file in get_files(bucket_name, newsletter, cloudfront):
+            f.write(file + "\n")
+
+    message = f"""
+    Copy CSV to new file
+    Open HTML to reference pictures and image name
+    Update CSV as needed
+    Save CSV
+    Run the next command
+    """
+    print(message)
+
+def send_email(newsletter, date, to):
+    client = boto3.client("ses")
+    print(f"Sending email to: {to}")
+    try:
+        client.send_email(
+            Source="kevin@homelabwithkevin.com",
+            Destination={
+                "ToAddresses": [to],
+            },
+            Message={
+                "Subject": {
+                    "Data": f"Ginger Pictures - Week of {date}",
+                },
+                "Body": {
+                    "Html": {
+                        "Data": newsletter,
+                    },
+                },
+            },
+        )
+        print(f"Email Sent!")
+    except Exception as e:
+        print(f"Error sending email: {e}")

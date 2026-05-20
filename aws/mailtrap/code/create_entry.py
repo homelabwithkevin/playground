@@ -1,4 +1,6 @@
 import boto3
+import os
+import shutil
 
 from functions import utils, parser
 
@@ -7,60 +9,10 @@ client = boto3.client("s3")
 bucket_name = "hlb-mailtrap-s3-prod"
 cloudfront = "https://d5m8h4cywoih5.cloudfront.net"
 base_url = "https://ginger.homelabwithkevin.com"
+htmx_version = "2.0.2"
 newsletter_date = utils.today_newsletter()
 newsletter_date = "2025-08-16"
 newsletter = f"cdn/{newsletter_date}-newsletter"
-
-def get_files():
-    list_of_files = []
-
-    response = client.list_objects_v2(Bucket=bucket_name, Prefix=newsletter)
-    for obj in response.get("Contents", []):
-        if not obj["Key"].endswith(".html"):
-            cdn_path = f'{cloudfront}/{obj["Key"]}'
-            list_of_files.append(cdn_path)
-
-    return list_of_files
-
-
-def create_initial_newsletter(file_name):
-    with open(f"{file_name}.html", "w") as f:
-        for file in get_files():
-            print(file)
-            f.write(file)
-            f.write(f"</br>")
-            f.write(f"<img src={file} height='300'>")
-            f.write(f"</br>")
-
-    with open(f"{file_name}.csv", "w") as f:
-        f.write("file,caption" + "\n")
-        for file in get_files():
-            f.write(file + "\n")
-
-    message = f"""
-    Copy CSV to new file
-    Open HTML to reference pictures and image name
-    Update CSV as needed
-    Save CSV
-    Run the next command
-    """
-    print(message)
-
-
-def parse_newsletter_csv(file):
-    entries = []
-
-    with open(file, "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            file, caption, description = line.split(",")
-            if not file == "file":
-                entries.append(
-                    {"file": file, "caption": caption, "description": description}
-                )
-
-    return entries
-
 
 def create_newsletter(entries, date, first_entry):
     posts = ""
@@ -68,7 +20,7 @@ def create_newsletter(entries, date, first_entry):
     <html>
         <head>
             <script src="https://cdn.tailwindcss.com"></script>
-            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <script src="https://unpkg.com/htmx.org@{htmx_version}"></script>
             <title>Ginger Pictures - Week of {date}</title>
         </head>
         <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
@@ -135,7 +87,6 @@ def create_newsletter(entries, date, first_entry):
     print(f"Created newsletter!")
     return content_newsletter
 
-
 def create_newsletter_maizzle(entries, date, first_entry):
     posts = ""
     header = f"""
@@ -183,7 +134,7 @@ def create_newsletter_maizzle(entries, date, first_entry):
         """
     end = f"""
         <div>
-            <img src="https://ginger.homelabwithkevin.com/?utm_source=mailtrap-maizzle&newsletter={newsletter_date}">
+            <img src="{base_url}/?utm_source=mailtrap-maizzle&newsletter={newsletter_date}&user={{{{template}}}}">
         </div>
     </x-main>
     """
@@ -194,43 +145,6 @@ def create_newsletter_maizzle(entries, date, first_entry):
 
     print(f"Created newsletter for maizzle!")
     return content_newsletter
-
-
-def create(first_entry, entries, date):
-    content = create_newsletter(entries, date, first_entry)
-    return content
-
-
-def create_maizzle(first_entry, entries, date):
-    content = create_newsletter_maizzle(entries, date, first_entry)
-    return content
-
-
-def send_email(newsletter, date, to):
-    client = boto3.client("ses")
-    print(f"Sending email to: {to}")
-    try:
-        client.send_email(
-            Source="kevin@homelabwithkevin.com",
-            Destination={
-                "ToAddresses": [to],
-            },
-            Message={
-                "Subject": {
-                    "Data": f"Ginger Pictures - Week of {date}",
-                },
-                "Body": {
-                    "Html": {
-                        "Data": newsletter,
-                    },
-                },
-            },
-        )
-        print(f"Email Sent!")
-    except Exception as e:
-        print(f"Error sending email: {e}")
-
-# create_initial_newsletter("newsletter")
 
 opening_entry = f"""
 <p>
@@ -256,15 +170,17 @@ opening_entry = f"""
 </p>
 """
 
-word_date = "August 16th, 2025"
-source_csv = "2025-08-16.csv"
+# Backup the source CSV before parsing
+if os.path.exists(source_csv):
+    print(f'Backing up original CSV.')
+    shutil.copy(source_csv, f"{source_csv}.org")
 
 # Parse CSV and upload to CDN
 entries = parser.parse_newsletter_csv_pandas(source_csv, bucket_name, newsletter_date)
 
 # Create
-newsletter_html_content = create(opening_entry, entries, word_date)
-maizzle_newsletter_html_content = create_maizzle(opening_entry, entries, word_date)
+newsletter_html_content = create_newsletter(entries, word_date, opening_entry)
+maizzle_newsletter_html_content = create_newsletter_maizzle(entries, word_date, opening_entry)
 
 # Upload
 complete_newsletter = "newsletter.html"
