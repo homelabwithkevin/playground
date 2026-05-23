@@ -39,7 +39,34 @@ def _success_response(first_name):
         """
     }
 
+def _duplicate_ip_response():
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/html',
+        },
+        'body': f"""
+        <html>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <head>
+                <title>Ginger Kitty Newsletter</title>
+            </head>
+            <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                <div>
+                    <div class="text-red-600">
+                        <div>
+                            It looks like you've already subscribed from this location. Thank you!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </html>
+        """
+    }
+
 def post(body, source_ip):
+    print(f"Posting to website...")
     decoded_body = base64.b64decode(body).decode('utf-8')
     body_split = decoded_body.split('&')
     first_name = body_split[0].split('=')[1]
@@ -57,6 +84,13 @@ def post(body, source_ip):
         print(f'Honeypot triggered from IP: {source_ip}')
         # Return success to bot but don't save
         return _success_response(first_name)
+
+    table = os.getenv('TABLE')
+
+    # Check if IP already has a subscription
+    if db.ip_has_subscription(table, source_ip):
+        print(f'Duplicate IP subscription attempt from: {source_ip}')
+        return _duplicate_ip_response()
 
     db.put_item(first_name, email, source_ip)
 
