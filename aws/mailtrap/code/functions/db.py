@@ -168,6 +168,21 @@ def get_votes(table, newsletter, parse=False):
         sorted_votes = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
         return sorted_votes
 
+def ip_has_subscription(table, source_ip):
+    print(f'Scanning DB for duplicate IP for subscriber: {source_ip}')
+    response = client.scan(
+        TableName=table,
+        FilterExpression='source_ip = :ip',
+        ExpressionAttributeValues={
+            ':ip': {
+                'S': source_ip
+            }
+        }
+    )
+    response_length = len(response['Items'])
+    print(f'IPs Found: {response_length}')
+    return response_length > 0
+
 def get_archive_items(table, save_to_file=True):
     import pandas as pd
     """
