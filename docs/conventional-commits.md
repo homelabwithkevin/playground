@@ -5,15 +5,17 @@ Just doucmenting conventional commits
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/#summary)
 - [StackOverFlow](https://stackoverflow.com/questions/26944762/when-to-use-chore-as-type-of-commit-message)
 
+
 # Commit Types
-| type | optional scope | description | 
-| ---- | -------------- | ----------- | 
-| fix | | hotfix/bug fix |
-| feat | |  new feature |
-| BREAKING CHANGE | | big breaking change update |
-| chore | | grunt tasks, internal only |
-| docs | | documentation update |
-| style | | style update |
-| refactor | | refactor of code; not fixing any bugs or adds a feature |
-| perf | | code update that improves performance |
-| tests | | adding tests to code |
+
+| Type                | Optional Scope | Description                                                    |
+|---------------------|----------------|----------------------------------------------------------------|
+| fix                 |                | Hotfix/bug fix                                                 |
+| feat                |                | New feature                                                    |
+| BREAKING CHANGE     |                | Big breaking change update                                     |
+| chore               |                | Grunt tasks, internal only                                     |
+| docs                |                | Documentation update                                           |
+| style               |                | Style update                                                   |
+| refactor            |                | Refactor of code; not fixing any bugs or adding features       |
+| perf                |                | Code update that improves performance                          |
+| tests               |                | Adding tests to code                                           |
