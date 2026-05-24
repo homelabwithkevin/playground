@@ -8,14 +8,19 @@ Just doucmenting conventional commits
 
 # Commit Types
 
-| Type                | Optional Scope | Description                                                    |
-|---------------------|----------------|----------------------------------------------------------------|
-| fix                 |                | Hotfix/bug fix                                                 |
-| feat                |                | New feature                                                    |
-| BREAKING CHANGE     |                | Big breaking change update                                     |
-| chore               |                | Grunt tasks, internal only                                     |
-| docs                |                | Documentation update                                           |
-| style               |                | Style update                                                   |
-| refactor            |                | Refactor of code; not fixing any bugs or adding features       |
-| perf                |                | Code update that improves performance                          |
-| tests               |                | Adding tests to code                                           |
+# Commit Types
+
+| Type                | Optional Scope | Description                                                                 |
+|---------------------|----------------|-----------------------------------------------------------------------------|
+| `fix`               | *(any)*        | Bug fix — a change that fixes a bug                                         |
+| `feat`              | *(any)*        | A new feature                                                               |
+| `BREAKING CHANGE`   | —              | A breaking change — a commit that changes functionality                     |
+| `chore`             | *(any)*        | Build process or auxiliary tooling changes (not code)                       |
+| `docs`              | *(any)*        | Documentation updates only                                                  |
+| `style`             | *(any)*        | Changes that do not affect the meaning of the code (whitespace, formatting) |
+| `refactor`          | *(any)*        | Code changes that neither fix bugs nor add features                         |  
+| `perf`              | *(any)*        | Code changes that improve performance                                       |
+| `test`              | *(any)*        | Adding, fixing, or removing tests                                           |
+| `build`             | *(any)*        | Changes to the build system or external dependencies                        |
+| `ci`                | *(any)*        | Changes to CI configuration files and scripts                               |
+| `revert`            | —              | Reverts a previous commit                                                   |
