@@ -1,5 +1,5 @@
 # Conventional Commits
-Just doucmenting conventional commits
+Just documenting conventional commits
 
 # Sources
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/#summary)
