@@ -5,9 +5,6 @@ Just doucmenting conventional commits
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/#summary)
 - [StackOverFlow](https://stackoverflow.com/questions/26944762/when-to-use-chore-as-type-of-commit-message)
 
-
-# Commit Types
-
 # Commit Types
 
 | Type                | Optional Scope | Description                                                                 |
