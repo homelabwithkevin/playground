@@ -1,0 +1,2 @@
+# Read me
+These are various random labs / projects I've done/hosted in AWS. Some folders not in this directory (one directory above) may be hosted in AWS, too. And I just forgot to put them in this folder. or wanted more high-level.
