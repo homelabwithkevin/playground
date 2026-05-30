@@ -183,6 +183,29 @@ def ip_has_subscription(table, source_ip):
     print(f'IPs Found: {response_length}')
     return response_length > 0
 
+def user_read_newsletter(table, user, date):
+    print(f'Checking if user {user} already read newsletter on {date}')
+    response = client.query(
+        TableName=table,
+        IndexName='newsletter-index',
+        KeyConditionExpression='year_month_day = :date',
+        FilterExpression='#user = :user',
+        ExpressionAttributeNames={
+            '#user': 'user'
+        },
+        ExpressionAttributeValues={
+            ':date': {
+                'S': date
+            },
+            ':user': {
+                'S': user
+            }
+        }
+    )
+    found = len(response['Items']) > 0
+    print(f'User already read: {found}')
+    return found
+
 def get_archive_items(table, save_to_file=True):
     import pandas as pd
     """
