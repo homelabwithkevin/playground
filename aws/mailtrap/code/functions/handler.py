@@ -366,6 +366,8 @@ def vote(table, query_string_parameters, source_ip):
 
 def utm_source(query_string_parameters, request_path, source_ip, topic):
     table = os.getenv('TABLE_UTM')
+    user = query_string_parameters.get('user')
+    date = utils.year_month_day()
 
     item =  {
         'timestamp': {
