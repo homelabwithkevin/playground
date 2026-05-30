@@ -187,8 +187,8 @@ def user_read_newsletter(table, user, date):
     print(f'Checking if user {user} already read newsletter on {date}')
     response = client.query(
         TableName=table,
-        IndexName='newsletter-index',
-        KeyConditionExpression='year_month_day = :date',
+        IndexName='newsletter',
+        KeyConditionExpression='newsletter = :date',
         FilterExpression='#user = :user',
         ExpressionAttributeNames={
             '#user': 'user'
