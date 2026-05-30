@@ -369,6 +369,10 @@ def utm_source(query_string_parameters, request_path, source_ip, topic):
     user = query_string_parameters.get('user')
     date = utils.year_month_day()
 
+    if user and db.user_read_newsletter(table, user, date):
+        print(f'User {user} already read newsletter today, skipping record')
+        return
+
     item =  {
         'timestamp': {
             'S': str(utils.today())
@@ -380,7 +384,7 @@ def utm_source(query_string_parameters, request_path, source_ip, topic):
             'S': str(utils.year_month())
         },
         'year_month_day': {
-            'S': str(utils.year_month_day())
+            'S': date
         },
         'source_ip': {
             'S': source_ip
@@ -399,5 +403,5 @@ def utm_source(query_string_parameters, request_path, source_ip, topic):
         }
 
     db.put_item_v2(table, item)
-    message = f"The user read the newsletter: {query_string_parameters['user']}"
-    utils.publish(topic=topic, subject=f'Newsletter Viewed {utils.year_month_day()}', message=message)
+    message = f"The user read the newsletter: {user}"
+    utils.publish(topic=topic, subject=f'Newsletter Viewed {date}', message=message)
