@@ -3,4 +3,3 @@ resource "azurerm_resource_group" "resource-group" {
   name     = each.key
   location = var.region
 }
-
