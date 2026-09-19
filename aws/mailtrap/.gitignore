@@ -12,6 +12,7 @@ tmp
 archive
 csvs
 layer
+python
 
 # Files
 samconfig.toml
