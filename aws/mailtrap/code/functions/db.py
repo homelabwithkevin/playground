@@ -5,24 +5,28 @@ from functions import utils
 
 client = boto3.client('dynamodb')
 
-def put_item(first_name, email):
+def put_item(first_name, email, source_ip=None):
     table = os.environ["TABLE"]
+    item = {
+        'id': {
+            'S': str(utils.today())
+        },
+        'first_name': {
+            'S': first_name
+        },
+        'email': {
+            'S': email
+        },
+        'guid': {
+            'S': utils.randomword(6)
+        },
+    }
+    if source_ip:
+        item['source_ip'] = {'S': source_ip}
+
     response = client.put_item(
         TableName=table,
-        Item={
-            'id': {
-                'S': str(utils.today())
-            },
-            'first_name': {
-                'S': first_name
-            },
-            'email': {
-                'S': email
-            },
-            'guid': {
-                'S': utils.randomword(6)
-            },
-        }
+        Item=item
     )
 
 def put_item_v2(table, item):
@@ -163,6 +167,44 @@ def get_votes(table, newsletter, parse=False):
     else:
         sorted_votes = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
         return sorted_votes
+
+def ip_has_subscription(table, source_ip):
+    print(f'Scanning DB for duplicate IP for subscriber: {source_ip}')
+    response = client.scan(
+        TableName=table,
+        FilterExpression='source_ip = :ip',
+        ExpressionAttributeValues={
+            ':ip': {
+                'S': source_ip
+            }
+        }
+    )
+    response_length = len(response['Items'])
+    print(f'IPs Found: {response_length}')
+    return response_length > 0
+
+def user_read_newsletter(table, user, date):
+    print(f'Checking if user {user} already read newsletter on {date}')
+    response = client.query(
+        TableName=table,
+        IndexName='newsletter',
+        KeyConditionExpression='newsletter = :date',
+        FilterExpression='#user = :user',
+        ExpressionAttributeNames={
+            '#user': 'user'
+        },
+        ExpressionAttributeValues={
+            ':date': {
+                'S': date
+            },
+            ':user': {
+                'S': user
+            }
+        }
+    )
+    found = len(response['Items']) > 0
+    print(f'User already read: {found}')
+    return found
 
 def get_archive_items(table, save_to_file=True):
     import pandas as pd

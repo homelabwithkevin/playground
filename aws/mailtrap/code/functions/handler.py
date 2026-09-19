@@ -10,47 +10,96 @@ form_image = os.getenv('FORM_IMAGE')
 environment = os.getenv('ENVIRONMENT')
 topic = os.getenv('TOPIC')
 
+def _success_response(first_name):
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/html',
+        },
+        'body': f"""
+        <html>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <head>
+                <title>Ginger Kitty Newsletter</title>
+            </head>
+            <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                <div>
+                    <div>
+                        <div>
+                            Thanks for subscribing, {first_name}!
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <img src="https://{cloudfront_url}/cdn/{form_image}">
+                    </div>
+                </div>
+            </div>
+        </html>
+        """
+    }
+
+def _duplicate_ip_response():
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'text/html',
+        },
+        'body': f"""
+        <html>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+            <head>
+                <title>Ginger Kitty Newsletter</title>
+            </head>
+            <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
+                <div>
+                    <div class="text-red-600">
+                        <div>
+                            It looks like you've already subscribed from this location. Thank you!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </html>
+        """
+    }
+
 def post(body, source_ip):
+    print(f"Posting to website...")
     decoded_body = base64.b64decode(body).decode('utf-8')
     body_split = decoded_body.split('&')
     first_name = body_split[0].split('=')[1]
     split_email = body_split[1].split('=')[1]
     email = split_email.replace('%40', '@')
 
-    db.put_item(first_name, email)
+    # Honeypot check - reject silently if filled
+    website_field = None
+    for field in body_split:
+        if field.startswith('website='):
+            website_field = field.split('=')[1]
+            break
+
+    if website_field:
+        print(f'Honeypot triggered from IP: {source_ip}')
+        # Return success to bot but don't save
+        return _success_response(first_name)
+
+    table = os.getenv('TABLE')
+
+    # Check if IP already has a subscription
+    if db.ip_has_subscription(table, source_ip):
+        print(f'Duplicate IP subscription attempt from: {source_ip}')
+        return _duplicate_ip_response()
+
+    db.put_item(first_name, email, source_ip)
 
     # Send email upon new subscriber
     subject = f'New Subscriber - {environment} - {email}'
-    message = f'New Subscriber - {environment} {first_name} - {email}'
+    message = f'New Subscriber - {environment} {first_name} - {email} - IP: {source_ip}'
     utils.publish(topic, subject, message)
 
-    return {
-            'statusCode': 200,
-            'headers': {
-                'Content-Type': 'text/html',
-            },
-            'body': f"""
-            <html>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <script src="https://unpkg.com/htmx.org@2.0.2"></script>
-                <head>
-                    <title>Ginger Kitty Newsletter</title>
-                </head>
-                <div class="flex justify-center mt-8 max-w-[400px] lg:max-w-full">
-                    <div>
-                        <div>
-                            <div>
-                                Thanks for subscribing, {first_name}!
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                            <img src="https://{cloudfront_url}/cdn/{form_image}">
-                        </div>
-                    </div>
-                </div>
-            </html>
-            """
-    }
+    return _success_response(first_name)
 
 def privacy_policy():
     return {
@@ -317,6 +366,12 @@ def vote(table, query_string_parameters, source_ip):
 
 def utm_source(query_string_parameters, request_path, source_ip, topic):
     table = os.getenv('TABLE_UTM')
+    user = query_string_parameters.get('user')
+    date = utils.year_month_day()
+
+    if user and db.user_read_newsletter(table, user, date):
+        print(f'User {user} already read newsletter today, skipping record')
+        return
 
     item =  {
         'timestamp': {
@@ -329,7 +384,7 @@ def utm_source(query_string_parameters, request_path, source_ip, topic):
             'S': str(utils.year_month())
         },
         'year_month_day': {
-            'S': str(utils.year_month_day())
+            'S': date
         },
         'source_ip': {
             'S': source_ip
@@ -348,5 +403,5 @@ def utm_source(query_string_parameters, request_path, source_ip, topic):
         }
 
     db.put_item_v2(table, item)
-    message = f"The user read the newsletter: {query_string_parameters['user']}"
-    utils.publish(topic=topic, subject=f'Newsletter Viewed {utils.year_month_day()}', message=message)
+    message = f"The user read the newsletter: {user}"
+    utils.publish(topic=topic, subject=f'Newsletter Viewed {date}', message=message)
