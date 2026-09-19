@@ -6,8 +6,7 @@ prod:
       stack_name: hlb-mailtrap-s3-prod
       resolve_s3: true
       s3_prefix: hlb-mailtrap-s3-prod
-      region: us-east-1
-      confirm_changeset: false
+      confirm_changeset: true
       capabilities: CAPABILITY_IAM
       image_repositories: []
   global:
