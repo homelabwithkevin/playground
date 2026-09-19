@@ -1,5 +1,9 @@
 version: 0.1
 
+global:
+  parameters:
+    region: us-east-1
+
 prod:
   deploy:
     parameters:
@@ -9,9 +13,6 @@ prod:
       confirm_changeset: true
       capabilities: CAPABILITY_IAM
       image_repositories: []
-  global:
-    parameters:
-      region: us-east-1
 
 develop:
   deploy:
@@ -22,6 +23,3 @@ develop:
       confirm_changeset: false
       capabilities: CAPABILITY_IAM
       image_repositories: []
-  global:
-    parameters:
-      region: us-east-1
