@@ -28,9 +28,13 @@ def parse_newsletter_csv_pandas(source_csv, bucket, newsletter_date):
             cdn_file = f'{utils.randomword()}.{extension}'
             cdn_path = f'cdn/{newsletter_date}-newsletter/{cdn_file}'
 
-            df.at[index, 'cdn_photo'] = cdn_path
-            print(f'Uploading {photo} to S3 CDN: {cdn_path}')
-            utils.upload_file(bucket, photo, cdn_path)
+            try:
+                df.at[index, 'cdn_photo'] = cdn_path
+                print(f'Uploading {photo} to S3 CDN: {cdn_path}')
+                utils.upload_file(bucket, photo, cdn_path)
+            except Exception as e:
+                print(f'Failed to set cdn_photo: {e}')
+                return
 
     if not isinstance(cdn_photo, str):
         df.to_csv(f'{source_csv}', index=False)
