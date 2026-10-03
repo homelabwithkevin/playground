@@ -5,6 +5,7 @@ from functions import utils
 def parse_newsletter_csv_pandas(source_csv, bucket, newsletter_date):
     entries = []
     df = pd.read_csv(source_csv)
+    df['cdn_photo'] = df['cdn_photo'].astype(str)
 
     for index, row in df.iterrows():
         photo = row['file']
