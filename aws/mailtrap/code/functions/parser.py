@@ -8,12 +8,14 @@ def parse_newsletter_csv_pandas(source_csv, bucket, newsletter_date):
     df['cdn_photo'] = df['cdn_photo'].astype(str)
 
     for index, row in df.iterrows():
+        order = row['order']
         photo = row['file']
         cdn_photo = row['cdn_photo']
         title = row['title']
         description = row['description']
 
         entries.append({
+            'order': order,
             'photo': photo,
             'cdn_photo': cdn_photo,
             'title': title,
