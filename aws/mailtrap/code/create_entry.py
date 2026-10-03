@@ -47,7 +47,6 @@ def create_newsletter(entries, date, first_entry):
 
     x = 0
     for entry in entries:
-        print(entry)
 
         if x == 0:
             x += 1
@@ -112,7 +111,6 @@ def create_newsletter_maizzle(entries, date, first_entry):
 
     x = 0
     for entry in entries:
-        print(entry)
 
         if x == 0:
             x += 1
