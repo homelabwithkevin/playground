@@ -2,34 +2,42 @@ import pandas as pd
 
 from functions import utils
 
-def parse_newsletter_csv_pandas(file, bucket, newsletter_date):
+def parse_newsletter_csv_pandas(source_csv, bucket, newsletter_date):
     entries = []
-    df = pd.read_csv(file)
+    df = pd.read_csv(source_csv)
+    df['cdn_photo'] = df['cdn_photo'].astype(str)
 
     for index, row in df.iterrows():
+        order = row['order']
         photo = row['file']
         cdn_photo = row['cdn_photo']
         title = row['title']
         description = row['description']
 
         entries.append({
+            'order': order,
             'photo': photo,
             'cdn_photo': cdn_photo,
             'title': title,
             'description': description
         })
 
-        if not isinstance(cdn_photo, str):
+        # if not isinstance(cdn_photo, str):
+        if pd.isna(cdn_photo) or not str(cdn_photo).strip():
             extension = photo.split('.')[-1]
             cdn_file = f'{utils.randomword()}.{extension}'
             cdn_path = f'cdn/{newsletter_date}-newsletter/{cdn_file}'
 
-            df.at[index, 'cdn_photo'] = cdn_path
-            print(f'Uploading {photo} to S3 CDN: {cdn_path}')
-            utils.upload_file(bucket, photo, cdn_path)
+            try:
+                df.at[index, 'cdn_photo'] = cdn_path
+                print(f'Uploading {photo} to S3 CDN: {cdn_path}')
+                utils.upload_file(bucket, photo, cdn_path)
+            except Exception as e:
+                print(f'Failed to set cdn_photo: {e}')
+                return
 
     if not isinstance(cdn_photo, str):
-        df.to_csv(f'{file}', index=False)
+        df.to_csv(f'{source_csv}', index=False)
     else:
         print(f'Photos already uploaded to CDN')
 
