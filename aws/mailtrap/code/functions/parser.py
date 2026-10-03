@@ -22,7 +22,8 @@ def parse_newsletter_csv_pandas(source_csv, bucket, newsletter_date):
             'description': description
         })
 
-        if not isinstance(cdn_photo, str):
+        # if not isinstance(cdn_photo, str):
+        if pd.isna(cdn_photo) or not str(cdn_photo).strip():
             extension = photo.split('.')[-1]
             cdn_file = f'{utils.randomword()}.{extension}'
             cdn_path = f'cdn/{newsletter_date}-newsletter/{cdn_file}'
