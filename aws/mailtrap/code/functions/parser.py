@@ -2,9 +2,9 @@ import pandas as pd
 
 from functions import utils
 
-def parse_newsletter_csv_pandas(file, bucket, newsletter_date):
+def parse_newsletter_csv_pandas(source_csv, bucket, newsletter_date):
     entries = []
-    df = pd.read_csv(file)
+    df = pd.read_csv(source_csv)
 
     for index, row in df.iterrows():
         photo = row['file']
@@ -29,7 +29,7 @@ def parse_newsletter_csv_pandas(file, bucket, newsletter_date):
             utils.upload_file(bucket, photo, cdn_path)
 
     if not isinstance(cdn_photo, str):
-        df.to_csv(f'{file}', index=False)
+        df.to_csv(f'{source_csv}', index=False)
     else:
         print(f'Photos already uploaded to CDN')
 
